@@ -1,0 +1,5 @@
+Line 310: Class MSComDlg.CommonDialog of control cmdlog1 was not a loaded control class.
+Line 313: The property name _ExtentX in cmdlog1 is invalid.
+Line 314: The property name _ExtentY in cmdlog1 is invalid.
+Line 315: The property name _Version in cmdlog1 is invalid.
+Line 316: The property name CancelError in cmdlog1 is invalid.
