@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IBP2018", "IBP2018\IBP2018.csproj", "{23FF723C-C391-4103-B98B-0279F4470F1D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quintessence.MotionDriverModel", "Quintessence.MotionDriverModel\Quintessence.MotionDriverModel.csproj", "{8173879C-CE59-432A-BAC5-C00F9CB186A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quintessence.MotionDriverViewModel", "Quintessence.MotionDriverViewModel\Quintessence.MotionDriverViewModel.csproj", "{2FF36F13-AFAF-4033-8A2C-B9414C8E7DED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{23FF723C-C391-4103-B98B-0279F4470F1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23FF723C-C391-4103-B98B-0279F4470F1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23FF723C-C391-4103-B98B-0279F4470F1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8173879C-CE59-432A-BAC5-C00F9CB186A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8173879C-CE59-432A-BAC5-C00F9CB186A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8173879C-CE59-432A-BAC5-C00F9CB186A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8173879C-CE59-432A-BAC5-C00F9CB186A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FF36F13-AFAF-4033-8A2C-B9414C8E7DED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FF36F13-AFAF-4033-8A2C-B9414C8E7DED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FF36F13-AFAF-4033-8A2C-B9414C8E7DED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FF36F13-AFAF-4033-8A2C-B9414C8E7DED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
