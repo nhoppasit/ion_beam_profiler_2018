@@ -8,7 +8,7 @@ namespace Quintessence.Meter.Gpib34401a
 {
     public class Gpib34401aInfo : INotifyPropertyChanged
     {
-        #region Implementation
+        #region INotifyPropertyChanged Implementation
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged(string propertyName)
         {
@@ -18,23 +18,12 @@ namespace Quintessence.Meter.Gpib34401a
             }
         }
         #endregion
-
-        public Gpib34401aInfo(int BoardNumber, int address)
-        {
-
-        }
-
+                
         /* ----------------------------------------------------------  
          * Gpib Name
          * ----------------------------------------------------------  */
-        private string _GpibInterfaceId;
-        public string GpibInterfaceId
-        {
-            get
-            {
-                return _GpibInterfaceId;
-            }
-        }
+        private string _GpibInterfaceId; public string GpibInterfaceId { get { return _GpibInterfaceId; } }
+        private string _VisaAddress; public string VisaAddress { get { return _VisaAddress; } }
         private int _GpibBoardNumber;
         public int GpibBoardNumber
         {
@@ -43,18 +32,22 @@ namespace Quintessence.Meter.Gpib34401a
             {
                 _GpibBoardNumber = value;
                 _GpibInterfaceId = "GPIB" + _GpibBoardNumber.ToString();
+                _VisaAddress = _GpibInterfaceId + "::" + _GpibAddress.ToString() + "::INSTR";
                 OnPropertyChanged("GpibBoardNumber");
                 OnPropertyChanged("GpibInterfaceId");
+                OnPropertyChanged("VisaAddress");
             }
         }
-        private string _GpibAddress;
-        public string GpibAddress
+        private int _GpibAddress;
+        public int GpibAddress
         {
             get { return _GpibAddress; }
             set
             {
                 _GpibAddress = value;
+                _VisaAddress = _GpibInterfaceId + "::" + _GpibAddress.ToString() + "::INSTR";
                 OnPropertyChanged("GpibAddress");
+                OnPropertyChanged("VisaAddress");
             }
         }
 
@@ -68,6 +61,7 @@ namespace Quintessence.Meter.Gpib34401a
          * Read Interval
          * ----------------------------------------------------------  */
         private int _ReadIntervalMillisecond; public int ReadIntervalMillisecond { get { return _ReadIntervalMillisecond; } set { _ReadIntervalMillisecond = value; OnPropertyChanged("ReadIntervalMillisecond"); } }
+
 
     }
 

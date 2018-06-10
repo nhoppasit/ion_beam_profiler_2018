@@ -3,9 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:IBP2018"
+        xmlns:local="clr-namespace:IBP2018"              
         mc:Ignorable="d"
         Title="Ion Beam Profiler 2018" Height="450" Width="1000" Icon="Images/Science Network Neighborhood.ico" WindowState="Maximized">
+
+    <Window.Resources>
+
+    </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -101,7 +105,7 @@
                 <!--X Jogging-->
                 <RibbonGroup Header="X Jog" KeyTip="X">
                     <RibbonButton x:Name="mnuXJogNegative" Label="X-" KeyTip="XN" LargeImageSource="Images/progman.exe_143.ico"/>
-                    <RibbonButton x:Name="mnuXJogPositive" Label="X+" KeyTip="XP" LargeImageSource="Images/progman.exe_144.ico"/>                    
+                    <RibbonButton x:Name="mnuXJogPositive" Label="X+" KeyTip="XP" LargeImageSource="Images/progman.exe_144.ico"/>
                 </RibbonGroup>
                 <!--Y Joging-->
                 <RibbonGroup Header="Y Jog" KeyTip="Y">
@@ -149,7 +153,7 @@
                             <RibbonMenuItem Header="Set as Zero"/>
                         </RibbonMenuButton>
                         <RibbonTextBox Grid.Row="0" Grid.Column="5" x:Name="txtZLPos1" Text="0.00" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" VerticalAlignment="Center"/>
-                        <Label Grid.Row="0" Grid.Column="6" Content="mm" VerticalAlignment="Center"/>                        
+                        <Label Grid.Row="0" Grid.Column="6" Content="mm" VerticalAlignment="Center"/>
                     </Grid>
                 </RibbonGroup>
                 <!--Resolution-->
@@ -326,7 +330,7 @@
                             <Label Content="Volt"/>
                         </StackPanel>
                         <RibbonCheckBox Label=" Auto read" SmallImageSource="Images/Refresh.png"/>
-                    </StackPanel>                    
+                    </StackPanel>
                 </RibbonGroup>
                 <!--PORT-->
                 <RibbonGroup Header="PORT">
@@ -335,7 +339,7 @@
                             <RibbonMenuItem Header="Re-connect"/>
                         </RibbonMenuButton>
                         <RibbonTextBox x:Name="txtDMMPortName" Text="COM6" HorizontalContentAlignment="Center" TextBoxWidth="60"/>
-                    </StackPanel>                    
+                    </StackPanel>
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>
