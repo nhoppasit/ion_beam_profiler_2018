@@ -5,13 +5,9 @@ VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IBP2018", "IBP2018\IBP2018.csproj", "{23FF723C-C391-4103-B98B-0279F4470F1D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quintessence.MotionDriverModel", "Quintessence.MotionDriverModel\Quintessence.MotionDriverModel.csproj", "{8173879C-CE59-432A-BAC5-C00F9CB186A9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quintessence.Meter", "Quintessence.Meter\Quintessence.Meter.csproj", "{C62854FD-5639-4DC6-B2CE-4A349EAFA50D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quintessence.MotionDriverViewModel", "Quintessence.MotionDriverViewModel\Quintessence.MotionDriverViewModel.csproj", "{2FF36F13-AFAF-4033-8A2C-B9414C8E7DED}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quintessence.MeterModel", "Quintessence.MeterModel\Quintessence.MeterModel.csproj", "{480791AA-EAD6-4A39-A9A0-92076D01767A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quintessence.MeterViewModel", "Quintessence.MeterViewModel\Quintessence.MeterViewModel.csproj", "{A968A79E-9D88-492B-9346-A0C323421783}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quintessence.MotionControl", "Quintessence.MotionControl\Quintessence.MotionControl.csproj", "{A10BF690-ADBE-4B31-8A36-3657427334A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,22 +19,14 @@ Global
 		{23FF723C-C391-4103-B98B-0279F4470F1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23FF723C-C391-4103-B98B-0279F4470F1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23FF723C-C391-4103-B98B-0279F4470F1D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8173879C-CE59-432A-BAC5-C00F9CB186A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8173879C-CE59-432A-BAC5-C00F9CB186A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8173879C-CE59-432A-BAC5-C00F9CB186A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8173879C-CE59-432A-BAC5-C00F9CB186A9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2FF36F13-AFAF-4033-8A2C-B9414C8E7DED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2FF36F13-AFAF-4033-8A2C-B9414C8E7DED}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2FF36F13-AFAF-4033-8A2C-B9414C8E7DED}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2FF36F13-AFAF-4033-8A2C-B9414C8E7DED}.Release|Any CPU.Build.0 = Release|Any CPU
-		{480791AA-EAD6-4A39-A9A0-92076D01767A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{480791AA-EAD6-4A39-A9A0-92076D01767A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{480791AA-EAD6-4A39-A9A0-92076D01767A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{480791AA-EAD6-4A39-A9A0-92076D01767A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A968A79E-9D88-492B-9346-A0C323421783}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A968A79E-9D88-492B-9346-A0C323421783}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A968A79E-9D88-492B-9346-A0C323421783}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A968A79E-9D88-492B-9346-A0C323421783}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C62854FD-5639-4DC6-B2CE-4A349EAFA50D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C62854FD-5639-4DC6-B2CE-4A349EAFA50D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C62854FD-5639-4DC6-B2CE-4A349EAFA50D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C62854FD-5639-4DC6-B2CE-4A349EAFA50D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A10BF690-ADBE-4B31-8A36-3657427334A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A10BF690-ADBE-4B31-8A36-3657427334A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A10BF690-ADBE-4B31-8A36-3657427334A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A10BF690-ADBE-4B31-8A36-3657427334A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

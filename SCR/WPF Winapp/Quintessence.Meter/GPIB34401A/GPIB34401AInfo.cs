@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Quintessence.MeterModel
+namespace Quintessence.Meter.GPIB34401A
 {
-    public class DMM34401A
+    public class GPIB34401AInfo
     {
         /* ----------------------------------------------------------  
          * Measured Value
@@ -17,11 +17,6 @@ namespace Quintessence.MeterModel
          * Read Interval
          * ----------------------------------------------------------  */
         private int _ReadIntervalMillisecond; public int ReadIntervalMillisecond { get { return _ReadIntervalMillisecond; } set { _ReadIntervalMillisecond = value; } }
-
-        /* ----------------------------------------------------------  
-         * Read Interval
-         * ----------------------------------------------------------  */
-
-
+                
     }
 }

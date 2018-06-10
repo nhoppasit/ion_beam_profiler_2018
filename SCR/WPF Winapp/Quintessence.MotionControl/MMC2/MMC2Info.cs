@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Quintessence.MMC2Model
+namespace Quintessence.MotionControl.MMC2
 {
-    public class MMC2
+    public class MMC2Info
     {
         /* ----------------------------------------------------------  
          * กายภาพของมอเตอร์ 5-phase

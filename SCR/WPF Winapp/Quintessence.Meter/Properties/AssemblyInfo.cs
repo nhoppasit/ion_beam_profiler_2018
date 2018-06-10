@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Quintessence.MeterViewModel")]
+[assembly: AssemblyTitle("Quintessence.Meter")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Quintessence.MeterViewModel")]
+[assembly: AssemblyProduct("Quintessence.Meter")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("a968a79e-9d88-492b-9346-a0c323421783")]
+[assembly: Guid("c62854fd-5639-4dc6-b2ce-4a349eafa50d")]
 
 // Version information for an assembly consists of the following four values:
 //
