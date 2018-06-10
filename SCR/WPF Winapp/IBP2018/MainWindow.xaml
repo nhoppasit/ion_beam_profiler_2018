@@ -3,15 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:IBP2018"              
+        xmlns:local="clr-namespace:IBP2018"        
+              xmlns:twometerVm="clr-namespace:Quintessence.Meter.Gpib34401a;assembly=Quintessence.Meter"
         mc:Ignorable="d"
         Title="Ion Beam Profiler 2018" Height="450" Width="1000" Icon="Images/Science Network Neighborhood.ico" WindowState="Maximized">
 
     <Window.Resources>
-
+        <twometerVm:TwoAmmeterViewModel x:Key="ammeters"/>
     </Window.Resources>
 
-    <Grid>
+    <Grid DataContext="{Binding Source={StaticResource ammeters}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
@@ -89,11 +90,11 @@
                 <RibbonGroup Header="Meter value">
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal">
-                            <RibbonTextBox x:Name="txtDMMValue1_2" Text="0.0000" TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>
+                            <RibbonTextBox x:Name="txtDMMValue1_2" Text="{Binding Path=Current1, Mode=OneWay}"  TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>
                             <Label Content="Volt"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <RibbonTextBox x:Name="txtDMMValue2_2" Text="0.0000" TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>
+                            <RibbonTextBox x:Name="txtDMMValue2_2" Text="{Binding Path=Current2, Mode=OneWay}" TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>
                             <Label Content="Volt"/>
                         </StackPanel>
                     </StackPanel>
@@ -326,10 +327,11 @@
                 <RibbonGroup Header="Measure">
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal">
-                            <RibbonTextBox x:Name="txtDMMValue1" Text="0.0000" TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>
+                            <RibbonTextBox x:Name="txtDMMValue1" Text="{Binding Path=Current1,Mode=OneWay}" TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>
                             <Label Content="Volt"/>
                         </StackPanel>
                         <RibbonCheckBox Label=" Auto read" SmallImageSource="Images/Refresh.png"/>
+                        <RibbonButton Label="Read" Command="{Binding Measure}"/>
                     </StackPanel>
                 </RibbonGroup>
                 <!--PORT-->

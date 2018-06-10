@@ -43,11 +43,10 @@
   <ItemGroup>
     <Compile Include="Gpib34401a\Gpib34401aInfo.cs" />
     <Compile Include="Gpib34401a\Gpib34401aRelayCommand.cs" />
-    <Compile Include="Gpib34401a\Gpib34401aViewModel.cs" />
+    <Compile Include="Gpib34401a\AmmeterViewModel.cs" />
+    <Compile Include="Gpib34401a\TwoAmmeterViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Ibp2018\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
