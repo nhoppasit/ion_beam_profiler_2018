@@ -13,10 +13,18 @@ E:\Work 2018\PHYSICS\IBP2018\SCR_01\IBP2018\IBP2018\IBP2018\obj\Debug\IBP2018.cs
 E:\Work 2018\PHYSICS\IBP2018\SCR_01\IBP2018\IBP2018\IBP2018\obj\Debug\IBP2018.exe
 E:\Work 2018\PHYSICS\IBP2018\SCR_01\IBP2018\IBP2018\IBP2018\obj\Debug\IBP2018.pdb
 E:\Work 2018\PHYSICS\IBP2018\SCR_01\IBP2018\IBP2018\IBP2018\obj\Debug\IBP2018.csprojResolveAssemblyReference.cache
+E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\bin\Debug\IBP2018.exe.config
+E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\bin\Debug\IBP2018.exe
+E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\bin\Debug\IBP2018.pdb
 E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\obj\Debug\IBP2018.csprojResolveAssemblyReference.cache
 E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\obj\Debug\MainWindow.g.cs
 E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\obj\Debug\App.g.cs
 E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\obj\Debug\IBP2018_MarkupCompile.cache
 E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\obj\Debug\IBP2018_MarkupCompile.lref
+E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\obj\Debug\MainWindow.baml
+E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\obj\Debug\IBP2018.g.resources
+E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\obj\Debug\IBP2018.Properties.Resources.resources
+E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\obj\Debug\IBP2018.csproj.GenerateResource.cache
+E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\obj\Debug\IBP2018.csproj.CoreCompileInputs.cache
 E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\obj\Debug\IBP2018.exe
 E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\obj\Debug\IBP2018.pdb
