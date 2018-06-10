@@ -85,11 +85,11 @@
                 <RibbonGroup Header="Meter value">
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal">
-                            <RibbonTextBox x:Name="txtDMMValue2" Text="0.0000" TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>
+                            <RibbonTextBox x:Name="txtDMMValue1_2" Text="0.0000" TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>
                             <Label Content="Volt"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <RibbonTextBox x:Name="txtDMMValue2" Text="0.0000" TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>
+                            <RibbonTextBox x:Name="txtDMMValue2_2" Text="0.0000" TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>
                             <Label Content="Volt"/>
                         </StackPanel>
                     </StackPanel>
