@@ -42,11 +42,5 @@
     <Compile Include="MMC2\MMC2Info.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Quintessence.Commands\Quintessence.Commands.csproj">
-      <Project>{d8a8d003-3906-49e1-9915-d8b8c1e7aeb6}</Project>
-      <Name>Quintessence.Commands</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

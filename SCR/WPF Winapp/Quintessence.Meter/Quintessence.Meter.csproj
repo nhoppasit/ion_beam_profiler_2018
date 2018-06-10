@@ -30,6 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -39,15 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GPIB34401A\GPIB34401AInfo.cs" />
-    <Compile Include="GPIB34401A\GPIB34401AViewModel.cs" />
+    <Compile Include="Gpib34401a\Gpib34401aInfo.cs" />
+    <Compile Include="Gpib34401a\Gpib34401aRelayCommand.cs" />
+    <Compile Include="Gpib34401a\Gpib34401aViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Quintessence.Commands\Quintessence.Commands.csproj">
-      <Project>{d8a8d003-3906-49e1-9915-d8b8c1e7aeb6}</Project>
-      <Name>Quintessence.Commands</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
