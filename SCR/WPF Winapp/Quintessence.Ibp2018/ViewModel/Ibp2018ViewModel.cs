@@ -9,6 +9,8 @@ using Quintessence.MotionControl.MMC2;
 using Quintessence.WpfCommands;
 using System.Windows.Input;
 using System.Windows;
+using System.Threading;
+using System.Windows.Threading;
 
 namespace Quintessence.Ibp2018.ViewModel
 {
@@ -105,7 +107,7 @@ namespace Quintessence.Ibp2018.ViewModel
 
         private void ExecuteInitializeMeterMethod(object parameter)
         {
-            //isBusy = true;
+            //isBusy = false;
             Current1 += 1;
             System.Threading.Thread.Sleep(1000);
             GpibResponse gr = _Ammeters[0].CreateIO488Object();
