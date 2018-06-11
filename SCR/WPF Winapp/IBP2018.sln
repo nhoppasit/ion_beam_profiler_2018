@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quintessence.Meter", "Quint
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quintessence.MotionControl", "Quintessence.MotionControl\Quintessence.MotionControl.csproj", "{A10BF690-ADBE-4B31-8A36-3657427334A1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quintessence.Ibp", "Quintessence.Ibp2018\Quintessence.Ibp.csproj", "{C6AEB9C6-BDEE-4B08-BE26-234EEAE9A29D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quintessence.WpfCommands", "Quintessence.WpfCommands\Quintessence.WpfCommands.csproj", "{5AFB31CD-C63D-4F81-A151-4721BDBCB395}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{A10BF690-ADBE-4B31-8A36-3657427334A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A10BF690-ADBE-4B31-8A36-3657427334A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A10BF690-ADBE-4B31-8A36-3657427334A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6AEB9C6-BDEE-4B08-BE26-234EEAE9A29D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6AEB9C6-BDEE-4B08-BE26-234EEAE9A29D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6AEB9C6-BDEE-4B08-BE26-234EEAE9A29D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6AEB9C6-BDEE-4B08-BE26-234EEAE9A29D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AFB31CD-C63D-4F81-A151-4721BDBCB395}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AFB31CD-C63D-4F81-A151-4721BDBCB395}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AFB31CD-C63D-4F81-A151-4721BDBCB395}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AFB31CD-C63D-4F81-A151-4721BDBCB395}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
