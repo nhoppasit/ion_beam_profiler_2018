@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ivi.Visa.Interop;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -18,10 +19,10 @@ namespace Quintessence.Meter.Gpib34401a
             }
         }
         #endregion
-                
+
         /* ----------------------------------------------------------  
          * Gpib Name
-         * ----------------------------------------------------------  */
+         * ---------------------------------------------------------- */
         private string _GpibInterfaceId; public string GpibInterfaceId { get { return _GpibInterfaceId; } }
         private string _VisaAddress; public string VisaAddress { get { return _VisaAddress; } }
         private int _GpibBoardNumber;
@@ -52,6 +53,28 @@ namespace Quintessence.Meter.Gpib34401a
         }
 
         /* ----------------------------------------------------------  
+         * GPIB interface
+         * formattedIO interface
+         * ---------------------------------------------------------- */
+        private Ivi.Visa.Interop.FormattedIO488 ioDmm;
+
+        public GpibResponse CreateIO488Object()
+        {
+            try
+            {
+                ioDmm = new FormattedIO488Class();
+                GpibResponse gr = new GpibResponse("00", "OK", null);
+                return gr;
+            }
+            catch (SystemException ex)
+            {
+                GpibResponse gr = new GpibResponse("EX", "FormattedIO488Class object creation failure. " + ex.Source + "  " + ex.Message, ex);
+                return gr;
+            }
+        }
+        
+
+        /* ----------------------------------------------------------  
          * Measured Value
          * ----------------------------------------------------------  */
         private float _Current; public float Current { get { return _Current; } set { _Current = value; OnPropertyChanged("Current"); } }
@@ -62,10 +85,5 @@ namespace Quintessence.Meter.Gpib34401a
          * ----------------------------------------------------------  */
         private int _ReadIntervalMillisecond; public int ReadIntervalMillisecond { get { return _ReadIntervalMillisecond; } set { _ReadIntervalMillisecond = value; OnPropertyChanged("ReadIntervalMillisecond"); } }
 
-
     }
-
-
-
-
 }

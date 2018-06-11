@@ -30,6 +30,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ivi.Visa.Interop, Version=5.3.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>C:\Program Files\IVI Foundation\VISA\VisaCom64\Primary Interop Assemblies\Ivi.Visa.Interop.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -45,8 +50,8 @@
     <Compile Include="Gpib34401a\Gpib34401aRelayCommand.cs" />
     <Compile Include="Gpib34401a\AmmeterViewModel.cs" />
     <Compile Include="Gpib34401a\TwoAmmeterViewModel.cs" />
+    <Compile Include="GpibResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -27,6 +27,8 @@ namespace IBP2018
             InitializeComponent();
             InitializeRibbonComboboxMember();
             SetStatesText();
+
+            // "Version: " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
 
         // เพิ่มค่า Step
