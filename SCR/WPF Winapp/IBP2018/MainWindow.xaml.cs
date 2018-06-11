@@ -74,7 +74,7 @@ namespace IBP2018
                  sb.Append(Environment.NewLine);
                  sb.Append("Y Range = ( "); sb.Append(cboYStart.SelectedItem.ToString()); sb.Append(", "); sb.Append(cboYEnd.SelectedItem.ToString()); sb.Append(" ) mm");
                  lbScannerSetting2.Content = sb.ToString();
-                 
+                                 
              });
         }
     }

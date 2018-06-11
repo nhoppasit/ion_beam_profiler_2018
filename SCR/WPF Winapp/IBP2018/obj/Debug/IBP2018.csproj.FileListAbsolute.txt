@@ -33,3 +33,7 @@ E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\
 E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\obj\Debug\IBP2018.pdb
 E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\bin\Debug\Ivi.Visa.Interop.dll
 E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\bin\Debug\Ivi.Visa.Interop.xml
+E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\bin\Debug\Quintessence.Ibp2018.dll
+E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\bin\Debug\Quintessence.WpfCommands.dll
+E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\bin\Debug\Quintessence.Ibp2018.pdb
+E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\bin\Debug\Quintessence.WpfCommands.pdb

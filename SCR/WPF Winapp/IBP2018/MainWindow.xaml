@@ -4,15 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IBP2018"        
-              xmlns:twometerVm="clr-namespace:Quintessence.Meter.Gpib34401a;assembly=Quintessence.Meter"
+              xmlns:ibp2018vm="clr-namespace:Quintessence.Ibp2018.ViewModel;assembly=Quintessence.Ibp2018"
         mc:Ignorable="d"
         Title="Ion Beam Profiler 2018" Height="450" Width="1000" Icon="Images/Science Network Neighborhood.ico" WindowState="Maximized">
 
     <Window.Resources>
-        <twometerVm:TwoAmmeterViewModel x:Key="ammeters"/>
+        <ibp2018vm:Ibp2018ViewModel x:Name="ibp2018VM" x:Key="ibp2018VM"/>
     </Window.Resources>
 
-    <Grid DataContext="{Binding Source={StaticResource ammeters}}">
+    <Grid x:Name="mainGrid" DataContext="{Binding Source={StaticResource ibp2018VM}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
@@ -38,7 +38,7 @@
                 </RibbonGroup>
                 <!--Scan control-->
                 <RibbonGroup Header="Scan">
-                    <RibbonButton x:Name="mnuRun" Label="Run" KeyTip="R" LargeImageSource="Images/FORWARD-1.ICO" />
+                    <RibbonButton x:Name="mnuRun" Label="Run" KeyTip="R" LargeImageSource="Images/FORWARD-1.ICO" Command="{Binding InitializeMeter}"/>
                     <RibbonButton x:Name="mnuHold" Label="Pause" KeyTip="R" LargeImageSource="Images/PAUSE-1.ICO" />
                     <RibbonButton x:Name="mnuStop" Label="Stop" KeyTip="R" LargeImageSource="Images/STOP-1.ICO" />
                 </RibbonGroup>
@@ -90,7 +90,7 @@
                 <RibbonGroup Header="Meter value">
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal">
-                            <RibbonTextBox x:Name="txtDMMValue1_2" Text="{Binding Path=Current1, Mode=OneWay}"  TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>
+                            <RibbonTextBox x:Name="txtDMMValue1_2" Text="{Binding Path=Current1Text, Mode=OneWay}"  TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>
                             <Label Content="Volt"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
@@ -327,7 +327,7 @@
                 <RibbonGroup Header="Measure">
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal">
-                            <RibbonTextBox x:Name="txtDMMValue1" Text="{Binding Path=Current1,Mode=OneWay}" TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>
+                            <RibbonTextBox x:Name="txtDMMValue1" Text="{Binding Path=Current1Text,Mode=OneWay}" TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>
                             <Label Content="Volt"/>
                         </StackPanel>
                         <RibbonCheckBox Label=" Auto read" SmallImageSource="Images/Refresh.png"/>

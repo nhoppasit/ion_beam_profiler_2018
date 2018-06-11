@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ComponentModel;
+using Quintessence.Meter;
 using Quintessence.Meter.Gpib34401a;
 using Quintessence.MotionControl.MMC2;
 using Quintessence.WpfCommands;
@@ -45,7 +46,8 @@ namespace Quintessence.Ibp2018.ViewModel
                 OnPropertyChanged("A1VisaAddress");
             }
         }
-        public string A1VisaAddress       {
+        public string A1VisaAddress
+        {
             get { return _Ammeters[0].VisaAddress; }
         }
 
@@ -64,8 +66,9 @@ namespace Quintessence.Ibp2018.ViewModel
         }
         public string A2VisaAddress { get { return _Ammeters[1].VisaAddress; } }
 
-        public string Current1 { get { return _Ammeters[0].Current.ToString(); } set { _Ammeters[0].Current = Convert.ToSingle(value); OnPropertyChanged("Current1"); } }
+        public string Current1Text { get { return _Ammeters[0].Current.ToString(); } set { _Ammeters[0].Current = Convert.ToSingle(value); OnPropertyChanged("Current1Text"); } }
         public string Current2 { get { return _Ammeters[1].Current.ToString(); } set { _Ammeters[1].Current = Convert.ToSingle(value); OnPropertyChanged("Current2"); } }
+        public float Current1 { get { return _Ammeters[0].Current; } set { _Ammeters[0].Current = value; OnPropertyChanged("Current1Text"); } }
 
         private bool isBusy = false;
 
@@ -87,7 +90,7 @@ namespace Quintessence.Ibp2018.ViewModel
             a2.ReadIntervalMillisecond = 333;
             _Ammeters.Add(a2);
 
-            Current1 = "100.01";
+            Current1Text = "100.01";
             Current2 = "200.02";
 
             InitializeMeter = new RelayCommand(ExecuteInitializeMeterMethod, CanExecuteInitializeMeterMethod);
@@ -95,11 +98,19 @@ namespace Quintessence.Ibp2018.ViewModel
             Measure = new RelayCommand(ExecuteMeasureMethod, CanExecuteMeasureMethod);
         }
 
-        private bool CanExecuteInitializeMeterMethod(object parameter) { return !isBusy; }
+        private bool CanExecuteInitializeMeterMethod(object parameter)
+        {
+            return !isBusy;
+        }
 
         private void ExecuteInitializeMeterMethod(object parameter)
         {
-            MessageBox.Show("Hello...  Ammeter");
+            isBusy = true;
+            Current1 += 1;
+            System.Threading.Thread.Sleep(1000);
+            GpibResponse gr = _Ammeters[0].CreateIO488Object();
+            Current1 += 1;
+            isBusy = false;
         }
 
         private bool CanExecuteConfigureMeterMethod(object parameter) { return !isBusy; }
@@ -113,7 +124,7 @@ namespace Quintessence.Ibp2018.ViewModel
 
         private void ExecuteMeasureMethod(object parameter)
         {
-            Current1 = "111.11";
+            Current1Text = "111.11";
             Current2 = "222.22";
             MessageBox.Show("Measured");
         }
