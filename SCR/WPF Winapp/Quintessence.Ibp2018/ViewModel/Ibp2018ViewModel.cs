@@ -93,7 +93,7 @@ namespace Quintessence.Ibp2018.ViewModel
             Current1Text = "100.01";
             Current2 = "200.02";
 
-            InitializeMeter = new RelayCommand(ExecuteInitializeMeterMethod, CanExecuteInitializeMeterMethod);
+            InitializeMeter = new DelegateCommand(ExecuteInitializeMeterMethod, CanExecuteInitializeMeterMethod);
             ConfigureMeter = new RelayCommand(ExecuteConfigureMeterMethod, CanExecuteConfigureMeterMethod);
             Measure = new RelayCommand(ExecuteMeasureMethod, CanExecuteMeasureMethod);
         }
@@ -105,12 +105,12 @@ namespace Quintessence.Ibp2018.ViewModel
 
         private void ExecuteInitializeMeterMethod(object parameter)
         {
-            isBusy = true;
+            //isBusy = true;
             Current1 += 1;
             System.Threading.Thread.Sleep(1000);
             GpibResponse gr = _Ammeters[0].CreateIO488Object();
             Current1 += 1;
-            isBusy = false;
+            //isBusy = false;
         }
 
         private bool CanExecuteConfigureMeterMethod(object parameter) { return !isBusy; }
