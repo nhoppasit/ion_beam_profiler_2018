@@ -36,6 +36,7 @@ namespace IBP2018
         {
             for (int i = 1; i <= 25; i++)
             {
+                // Mininum resolution of 0.02 millimeters in X and Y axis
                 catXStep.Items.Add((i * 0.02).ToString("F2"));
                 catYStep.Items.Add((i * 0.02).ToString("F2"));
             }
