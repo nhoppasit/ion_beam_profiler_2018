@@ -323,6 +323,17 @@
                         <Label Grid.Row="0" Grid.Column="2" Content="sec/Point"/>
                     </StackPanel>
                 </RibbonGroup>
+                <!--Sampling Averaging Number-->
+                <RibbonGroup Header="Averaging Number">
+                    <StackPanel Orientation="Vertical">
+                        <RibbonComboBox Grid.Row="0" Grid.Column="1" SelectionBoxWidth="30" KeyTip="N">
+                            <RibbonGallery x:Name="cboAveragingNumber">
+                                <RibbonGalleryCategory x:Name="catAveragingNumber"/>
+                            </RibbonGallery>
+                        </RibbonComboBox>
+                        <Label Grid.Row="0" Grid.Column="2" Content="Times"/>
+                    </StackPanel>
+                </RibbonGroup>
                 <!--Measure-->
                 <RibbonGroup Header="Measure">
                     <StackPanel Orientation="Vertical">
