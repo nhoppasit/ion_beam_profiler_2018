@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:IBP2018"        
               xmlns:ibp2018vm="clr-namespace:Quintessence.Ibp2018.ViewModel;assembly=Quintessence.Ibp2018"
         mc:Ignorable="d"
-        Title="Ion Beam Profiler 2018" Height="450" Width="1000" Icon="Images/Science Network Neighborhood.ico" WindowState="Maximized">
+        Title="Ion Beam Profiler 2018" Height="450" Width="1000" Icon="Images/Science Network Neighborhood.ico" WindowState="Maximized" DataContext="{Binding Main, Source={StaticResource Locator}}">
 
     <Window.Resources>
         <ibp2018vm:Ibp2018ViewModel x:Name="ibp2018VM" x:Key="ibp2018VM"/>
@@ -40,7 +40,7 @@
                 <RibbonGroup Header="Scan">
                     <RibbonButton x:Name="mnuRun" Label="Run" KeyTip="R" LargeImageSource="Images/FORWARD-1.ICO" Command="{Binding InitializeMeter}"/>
                     <RibbonButton x:Name="mnuHold" Label="Pause" KeyTip="R" LargeImageSource="Images/PAUSE-1.ICO" />
-                    <RibbonButton x:Name="mnuStop" Label="Stop" KeyTip="R" LargeImageSource="Images/STOP-1.ICO" />
+                    <RibbonButton x:Name="mnuStop" Label="Stop" KeyTip="R" LargeImageSource="Images/STOP-1.ICO" Command="{Binding Measure}"/>
                 </RibbonGroup>
                 <!--Logical Position-->
                 <RibbonGroup Header="Logical Position" KeyTip="L">

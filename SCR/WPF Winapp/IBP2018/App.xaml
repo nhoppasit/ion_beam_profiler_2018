@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:IBP2018"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        
+        
     </Application.Resources>
 </Application>

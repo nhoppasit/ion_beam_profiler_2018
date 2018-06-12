@@ -11,10 +11,12 @@ using System.Windows.Input;
 using System.Windows;
 using System.Threading;
 using System.Windows.Threading;
+using GalaSoft.MvvmLight.Threading;
+using GalaSoft.MvvmLight;
 
 namespace Quintessence.Ibp2018.ViewModel
 {
-    public class Ibp2018ViewModel : INotifyPropertyChanged
+    public class Ibp2018ViewModel : ViewModelBase, INotifyPropertyChanged
     {
         #region INotifyPropertyChanged Implementation
         public event PropertyChangedEventHandler PropertyChanged;
@@ -107,12 +109,23 @@ namespace Quintessence.Ibp2018.ViewModel
 
         private void ExecuteInitializeMeterMethod(object parameter)
         {
-            //isBusy = false;
-            Current1 += 1;
-            System.Threading.Thread.Sleep(1000);
-            GpibResponse gr = _Ammeters[0].CreateIO488Object();
-            Current1 += 1;
-            //isBusy = false;
+            ThreadPool.QueueUserWorkItem(
+                o =>
+                {
+                    // This is a background operation!
+
+                    DispatcherHelper.CheckBeginInvokeOnUI(
+                            () =>
+                            {
+                                // Dispatch back to the main thread
+                                //isBusy = false;
+                                Current1 += 1;
+                                System.Threading.Thread.Sleep(1000);
+                                GpibResponse gr = _Ammeters[0].CreateIO488Object();
+                                Current1 += 1;
+                                //isBusy = false;
+                            });
+                });
         }
 
         private bool CanExecuteConfigureMeterMethod(object parameter) { return !isBusy; }
@@ -126,9 +139,22 @@ namespace Quintessence.Ibp2018.ViewModel
 
         private void ExecuteMeasureMethod(object parameter)
         {
-            Current1Text = "111.11";
-            Current2 = "222.22";
-            MessageBox.Show("Measured");
+            ThreadPool.QueueUserWorkItem(
+                o =>
+                {
+                    // This is a background operation!
+
+                    DispatcherHelper.CheckBeginInvokeOnUI(
+                            () =>
+                            {
+                                // Dispatch back to the main thread
+                                //isBusy = false;
+                                Current1Text = "111.11";
+                                Current2 = "222.22";
+                                MessageBox.Show("Measured");
+                                //isBusy = false;
+                            });
+                });
         }
     }
 }

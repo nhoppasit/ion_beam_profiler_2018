@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using GalaSoft.MvvmLight.Threading;
 
 namespace IBP2018
 {
@@ -13,5 +14,9 @@ namespace IBP2018
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            DispatcherHelper.Initialize();
+        }
     }
 }
