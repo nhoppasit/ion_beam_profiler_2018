@@ -37,3 +37,5 @@ E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\
 E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\obj\Debug\IBP2018.csproj.CopyComplete
 E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\obj\Debug\IBP2018.exe
 E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\obj\Debug\IBP2018.pdb
+E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\bin\Debug\Quintessence.MotionControl.dll
+E:\Work 2018\PHYSICS\IBP2018\repo\ion_beam_profiler_2018\SCR\WPF Winapp\IBP2018\bin\Debug\Quintessence.MotionControl.pdb

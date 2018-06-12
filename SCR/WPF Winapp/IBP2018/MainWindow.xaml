@@ -346,8 +346,15 @@
             </RibbonTab>
         </Ribbon>
 
-        <!--Current Data-->
-        <DataGrid Grid.Row="1" x:Name="dgCurrentData"/>
+        <!--Current File-->
+        <ListView x:Name="lstCurrentFile" Grid.Row="1">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Address" Width="200" DisplayMemberBinding="{Binding Address}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
 
     </Grid>
 
