@@ -111,12 +111,14 @@ namespace Quintessence.Ibp2018.ViewModel
                 {
                     while (true)
                     {
-                        //isBusyAmmeter1 = true;
-                        Current1 += 1;
-                        System.Threading.Thread.Sleep(1000);
-                        GpibResponse gr = _Ammeters[0].CreateIO488Object();
+                        isBusyAmmeter1 = true;
                         Current1 += 1;
                         //isBusyAmmeter1 = false;
+                        System.Threading.Thread.Sleep(1000);
+                        GpibResponse gr = _Ammeters[0].CreateIO488Object();
+                        //isBusyAmmeter1 = true;
+                        Current1 += 1;
+                        isBusyAmmeter1 = false;
                     }
                 });
         }
