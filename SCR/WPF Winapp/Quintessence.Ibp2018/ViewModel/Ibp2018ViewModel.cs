@@ -106,10 +106,13 @@ namespace Quintessence.Ibp2018.ViewModel
         private void ExecuteInitializeMeterMethod(object parameter)
         {
             //isBusy = true;
-            Current1 += 1;
-            System.Threading.Thread.Sleep(1000);
-            GpibResponse gr = _Ammeters[0].CreateIO488Object();
-            Current1 += 1;
+            while (true)
+            {
+                Current1 += 1;
+                System.Threading.Thread.Sleep(1000);
+                GpibResponse gr = _Ammeters[0].CreateIO488Object();
+                Current1 += 1;
+            }
             //isBusy = false;
         }
 
@@ -124,9 +127,10 @@ namespace Quintessence.Ibp2018.ViewModel
 
         private void ExecuteMeasureMethod(object parameter)
         {
-            Current1Text = "111.11";
+            //Current1Text = "111.11";
+            Current1 += 1;
             Current2 = "222.22";
-            MessageBox.Show("Measured");
+            //MessageBox.Show("Measured");
         }
     }
 }
