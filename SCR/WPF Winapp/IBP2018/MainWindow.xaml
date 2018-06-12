@@ -227,17 +227,6 @@
                         <Label Grid.Row="1" Grid.Column="4" Content="mm"/>
                     </Grid>
                 </RibbonGroup>
-                <!--Sampling rate-->
-                <RibbonGroup Header="Sensor interval">
-                    <StackPanel Orientation="Vertical">
-                        <RibbonComboBox Grid.Row="0" Grid.Column="1" SelectionBoxWidth="30">
-                            <RibbonGallery x:Name="cboSensorInterval">
-                                <RibbonGalleryCategory x:Name="catSensorInterval"/>
-                            </RibbonGallery>
-                        </RibbonComboBox>
-                        <Label Grid.Row="0" Grid.Column="2" Content="sec/Point"/>
-                    </StackPanel>
-                </RibbonGroup>
                 <!--X Limit-->
                 <RibbonGroup Header="X Limit" KeyTip="X">
                     <Grid>
@@ -323,6 +312,17 @@
 
             <!--DMM-->
             <RibbonTab Header="Meter" KeyTip="M">
+                <!--Sampling rate-->
+                <RibbonGroup Header="Sensor interval">
+                    <StackPanel Orientation="Vertical">
+                        <RibbonComboBox Grid.Row="0" Grid.Column="1" SelectionBoxWidth="30" KeyTip="I">
+                            <RibbonGallery x:Name="cboSensorInterval">
+                                <RibbonGalleryCategory x:Name="catSensorInterval"/>
+                            </RibbonGallery>
+                        </RibbonComboBox>
+                        <Label Grid.Row="0" Grid.Column="2" Content="sec/Point"/>
+                    </StackPanel>
+                </RibbonGroup>
                 <!--Measure-->
                 <RibbonGroup Header="Measure">
                     <StackPanel Orientation="Vertical">
