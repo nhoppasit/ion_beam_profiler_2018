@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:IBP2018"        
+        xmlns:local="clr-namespace:IBP2018"    
               xmlns:ibp2018vm="clr-namespace:Quintessence.Ibp2018.ViewModel;assembly=Quintessence.Ibp2018"
         mc:Ignorable="d"
         Title="Ion Beam Profiler 2018" Height="450" Width="1000" Icon="Images/Science Network Neighborhood.ico" WindowState="Maximized">
@@ -358,15 +358,17 @@
         </Ribbon>
 
         <!--Current File-->
-        <ListView x:Name="lstCurrentFile" Grid.Row="1">
+        <!--<ListView x:Name="lstCurrentFile" Grid.Row="1">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
                     <GridViewColumn Header="Address" Width="200" DisplayMemberBinding="{Binding Address}"/>
                 </GridView>
             </ListView.View>
-        </ListView>
+        </ListView>-->
+
+        <DataGrid Grid.Row="1" x:Name="dgvCurrent1" AutoGenerateColumns="False" ItemsSource="{Binding Datatable}" local:DataGridColumnsBehavior.BindableColumns="{Binding ColumnCollection}" />
 
     </Grid>
-
+    
 </RibbonWindow>

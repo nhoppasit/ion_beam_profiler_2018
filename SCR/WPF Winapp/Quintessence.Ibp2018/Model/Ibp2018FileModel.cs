@@ -76,6 +76,6 @@ namespace Quintessence.Ibp2018.Model
          *    Need dynamic columns code!
          *    
          * ----------------------------------------------------- */
-         private string 
+         
     }
 }
