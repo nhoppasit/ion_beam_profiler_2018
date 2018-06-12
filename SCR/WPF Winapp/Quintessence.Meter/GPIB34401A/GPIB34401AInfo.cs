@@ -21,7 +21,7 @@ namespace Quintessence.Meter.Gpib34401a
         #endregion
 
         /* ----------------------------------------------------------  
-         * Gpib Name
+         * Gpib properties
          * ---------------------------------------------------------- */
         private string _GpibInterfaceId; public string GpibInterfaceId { get { return _GpibInterfaceId; } }
         private string _VisaAddress; public string VisaAddress { get { return _VisaAddress; } }
@@ -55,9 +55,12 @@ namespace Quintessence.Meter.Gpib34401a
         /* ----------------------------------------------------------  
          * GPIB interface
          * formattedIO interface
+         *   1. Create IO object
+         *   2. Intialize meter via GPIB
+         *   3. Configure meter via GPIB
+         *   4. Measure Value
          * ---------------------------------------------------------- */
         private Ivi.Visa.Interop.FormattedIO488 ioDmm;
-
         public GpibResponse CreateIO488Object()
         {
             try
@@ -72,18 +75,51 @@ namespace Quintessence.Meter.Gpib34401a
                 return gr;
             }
         }
-        
+        public GpibResponse InitializeMeter()
+        {
+            // Verify IO 
+            if (ioDmm == null)
+            {
+                GpibResponse gr = CreateIO488Object();
+                if (!gr.Code.Equals("00")) return gr;
+            }
+
+            throw new NotImplementedException();
+        }
+        public GpibResponse ConfigureMeter() { throw new NotImplementedException(); }
+        public GpibResponse Measure() { throw new NotImplementedException(); }
 
         /* ----------------------------------------------------------  
          * Measured Value
          * ----------------------------------------------------------  */
-        private float _Current; public float Current { get { return _Current; } set { _Current = value; OnPropertyChanged("Current"); } }
-        private float _Voltage; public float Voltage { get { return _Voltage; } set { _Voltage = value; OnPropertyChanged("Voltage"); } }
+        private double _Current; public double Current { get { return _Current; } set { _Current = value; OnPropertyChanged("Current"); } }
+        private double _Voltage; public double Voltage { get { return _Voltage; } set { _Voltage = value; OnPropertyChanged("Voltage"); } }
 
         /* ----------------------------------------------------------  
          * Read Interval
          * ----------------------------------------------------------  */
         private int _ReadIntervalMillisecond; public int ReadIntervalMillisecond { get { return _ReadIntervalMillisecond; } set { _ReadIntervalMillisecond = value; OnPropertyChanged("ReadIntervalMillisecond"); } }
 
+        /* ----------------------------------------------------------  
+         * Demo mode
+         * There is no interface but can get random data 
+         * for measureing demonstration
+         * ----------------------------------------------------------  */
+        static int demoIdForCurrent = 0;
+        public double PeriodicRangeOfCurrent = 30;
+        public void ResetDemoIdForCurrent() { demoIdForCurrent = 0; }
+        public void GenerateDemoCurrent()
+        {
+            Current = Math.Sin(2 * Math.PI * demoIdForCurrent / PeriodicRangeOfCurrent);
+            demoIdForCurrent += 1;
+        }
+        static int demoIdForVoltage = 0;
+        public double PeriodicRangeOfVoltage = 30;
+        public void ResetDemoIdForVoltage() { demoIdForVoltage = 0; }
+        public void GenerateDemoVoltage()
+        {
+            Voltage = Math.Sin(2 * Math.PI * demoIdForVoltage / PeriodicRangeOfVoltage);
+            demoIdForVoltage += 1;
+        }
     }
 }

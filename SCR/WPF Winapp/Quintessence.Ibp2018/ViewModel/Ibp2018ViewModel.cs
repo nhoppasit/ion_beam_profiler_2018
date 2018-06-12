@@ -26,17 +26,19 @@ namespace Quintessence.Ibp2018.ViewModel
         }
         #endregion
 
-        /*
+        /* ----------------------------------------------------------
          * MODELS
          *  - Two Ammeter, Gpib
          *  - Two MMC2, Serial port
-         */
+         * ---------------------------------------------------------- */
         private IList<Gpib34401aInfo> _Ammeters;
         public IList<Gpib34401aInfo> Ammeters { get { return _Ammeters; } set { _Ammeters = value; } }
+        private IList<MMC2Info> _MMC2s;
+        public IList<MMC2Info> MMC2s { get { return _MMC2s; } set { _MMC2s = value; } }
 
-        /*
-         * Ammeter 1 Properties
-         */
+        /* ----------------------------------------------------------
+         * Ammeter-1 Properties
+         * ---------------------------------------------------------- */
         public int A1GpibAddress
         {
             get { return _Ammeters[0].GpibAddress; }
@@ -47,14 +49,17 @@ namespace Quintessence.Ibp2018.ViewModel
                 OnPropertyChanged("A1VisaAddress");
             }
         }
-        public string A1VisaAddress
+        public string A1VisaAddressText
         {
             get { return _Ammeters[0].VisaAddress; }
         }
+        public double Current1 { get { return _Ammeters[0].Current; } set { _Ammeters[0].Current = value; OnPropertyChanged("Current1Text"); } }
+        public string Current1Text { get { return _Ammeters[0].Current.ToString(); } set { _Ammeters[0].Current = Convert.ToSingle(value); OnPropertyChanged("Current1Text"); } }
+        private bool isBusyAmmeter1 = false;
 
-        /*
-         * Ammeter 2 Properties
-         */
+        /* ----------------------------------------------------------
+         * Ammeter-2 Properties
+         * ---------------------------------------------------------- */
         public int A2GpibAddress
         {
             get { return _Ammeters[1].GpibAddress; }
@@ -65,14 +70,14 @@ namespace Quintessence.Ibp2018.ViewModel
                 OnPropertyChanged("A2VisaAddress");
             }
         }
-        public string A2VisaAddress { get { return _Ammeters[1].VisaAddress; } }
+        public string A2VisaAddressText { get { return _Ammeters[1].VisaAddress; } }
+        public double Current2 { get { return _Ammeters[1].Current; } set { _Ammeters[1].Current = value; OnPropertyChanged("Current2Text"); } }
+        public string Current2Text { get { return _Ammeters[0].Current.ToString(); } set { _Ammeters[0].Current = Convert.ToSingle(value); OnPropertyChanged("Current1Text"); } }
+        private bool isBusyAmmeter2 = false;
 
-        public string Current1Text { get { return _Ammeters[0].Current.ToString(); } set { _Ammeters[0].Current = Convert.ToSingle(value); OnPropertyChanged("Current1Text"); } }
-        public string Current2 { get { return _Ammeters[1].Current.ToString(); } set { _Ammeters[1].Current = Convert.ToSingle(value); OnPropertyChanged("Current2"); } }
-        public float Current1 { get { return _Ammeters[0].Current; } set { _Ammeters[0].Current = value; OnPropertyChanged("Current1Text"); } }
-
-        private bool isBusyAmmeter1 = false;
-
+        /* ----------------------------------------------------------
+         * Commands for binding to buttons
+         * ---------------------------------------------------------- */
         public ICommand InitializeMeter { get; set; }
         public ICommand ConfigureMeter { get; set; }
         public ICommand Measure { get; set; }
@@ -92,7 +97,7 @@ namespace Quintessence.Ibp2018.ViewModel
             _Ammeters.Add(a2);
 
             Current1Text = "100.01";
-            Current2 = "200.02";
+            Current2Text = "200.02";
 
             InitializeMeter = new DelegateCommand(ExecuteInitializeMeterMethod, CanExecuteInitializeMeterMethod);
             ConfigureMeter = new RelayCommand(ExecuteConfigureMeterMethod, CanExecuteConfigureMeterMethod);
