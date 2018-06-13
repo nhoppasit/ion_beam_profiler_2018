@@ -141,23 +141,23 @@ namespace Quintessence.Ibp2018.ViewModel
 
             Datatable.Columns.Add("Name", typeof(string));
             Datatable.Columns.Add("Color", typeof(string));
-            Datatable.Columns.Add("Phone", typeof(string));
+            Datatable.Columns.Add("Col_0.2", typeof(string));
 
             Datatable.Rows.Add("Vinoth", "#00FF00", "456345654");
             Datatable.Rows.Add("lkjasdgl", "Blue", "45654");
             Datatable.Rows.Add("Vinoth", "#FF0000", "456456");
 
             System.Windows.Data.Binding bindings = new System.Windows.Data.Binding("Name");
-            System.Windows.Data.Binding bindings1 = new System.Windows.Data.Binding("Phone");
-            System.Windows.Data.Binding bindings2 = new System.Windows.Data.Binding("Color");
+            System.Windows.Data.Binding bindings1 = new System.Windows.Data.Binding("Color");
+            System.Windows.Data.Binding bindings2 = new System.Windows.Data.Binding("Col_0.2");
             DataGridTextColumn s = new DataGridTextColumn();
             s.Header = "Name";
             s.Binding = bindings;
             DataGridTextColumn s1 = new DataGridTextColumn();
-            s1.Header = "Phone";
+            s1.Header = "Color";
             s1.Binding = bindings1;
             DataGridTextColumn s2 = new DataGridTextColumn();
-            s2.Header = "Color";
+            s2.Header = "Col_0.2";
             s2.Binding = bindings2;
 
             FrameworkElementFactory textblock = new FrameworkElementFactory(typeof(TextBlock));
