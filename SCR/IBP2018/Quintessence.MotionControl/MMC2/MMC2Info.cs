@@ -136,8 +136,8 @@ namespace Quintessence.MotionControl.MMC2
             {
                 if (demo)
                 {
-                    _ActualXStep += 1;
-                    _ActualYStep += 1;
+                    _ActualXStep += 10;
+                    _ActualYStep += 10;
                     _SensorX = "K";
                     _SensorY = "K";
                     _IsReady = true;

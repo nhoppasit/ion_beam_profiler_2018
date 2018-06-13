@@ -85,9 +85,12 @@ namespace Quintessence.Ibp2018.ViewModel
         private MMC2Info _XyMmc;
         public MMC2Info XyMmc { get { return _XyMmc; } set { _XyMmc = value; } }
         public string XyMmcPortName { get { return _XyMmc.SerialPortName; } set { _XyMmc.SerialPortName = value; OnPropertyChanged("XyMmcPortName"); } }
+        public string XLPosText { get { return _XyMmc.ActualX.ToString("F2"); } }
+        public string YLPosText { get { return _XyMmc.ActualY.ToString("F2"); } }
         private MMC2Info _ZMmc;
         public MMC2Info ZMmc { get { return _ZMmc; } set { _ZMmc = value; } }
         public string ZMmcPortName { get { return _ZMmc.SerialPortName; } set { _ZMmc.SerialPortName = value; OnPropertyChanged("ZMmcPortName"); } }
+        public string ZLPosText { get { return _ZMmc.ActualX.ToString("F2"); } }
 
         /* ----------------------------------------------------------
          * Current tables
@@ -213,7 +216,10 @@ namespace Quintessence.Ibp2018.ViewModel
                         try
                         {
                             XyMmc.QueryPosition(true);
+                            OnPropertyChanged("XLPosText");
+                            OnPropertyChanged("YLPosText");
                             ZMmc.QueryPosition(true);
+                            OnPropertyChanged("ZLPosText");
                         }
                         catch (Exception ex) { }
                         Thread.Sleep(500);
