@@ -108,7 +108,7 @@ namespace Quintessence.Meter.Gpib34401a
         static int demoIdForCurrent = 0;
         public double PeriodicRangeOfCurrent = 30;
         public void ResetDemoIdForCurrent() { demoIdForCurrent = 0; }
-        public void GenerateDemoCurrent()
+        public void GenerateNewDemoCurrent()
         {
             Current = Math.Sin(2 * Math.PI * demoIdForCurrent / PeriodicRangeOfCurrent);
             demoIdForCurrent += 1;

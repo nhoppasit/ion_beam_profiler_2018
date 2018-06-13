@@ -358,15 +358,6 @@
         </Ribbon>
 
         <!--Current File-->
-        <!--<ListView x:Name="lstCurrentFile" Grid.Row="1">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn Header="Address" Width="200" DisplayMemberBinding="{Binding Address}"/>
-                </GridView>
-            </ListView.View>
-        </ListView>-->
-
         <DataGrid Grid.Row="1" x:Name="dgvCurrent1" AutoGenerateColumns="False" ItemsSource="{Binding Datatable}" local:DataGridColumnsBehavior.BindableColumns="{Binding ColumnCollection}" />
 
     </Grid>

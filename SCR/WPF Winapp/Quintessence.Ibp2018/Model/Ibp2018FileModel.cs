@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ComponentModel;
+using System.Data;
+using Quintessence.Meter.Gpib34401a;
 
 namespace Quintessence.Ibp2018.Model
 {
@@ -54,10 +56,10 @@ namespace Quintessence.Ibp2018.Model
          *    2. 3D surface configurations
          * ----------------------------------------------------- */
         private int _RowsCount;
-        private int _ColumnsCount;      
+        private int _ColumnsCount;
     }
 
-    public class Ibp2018RowModel : INotifyPropertyChanged
+    public class Ibp2018DataTableModel : INotifyPropertyChanged
     {
         #region INotifyPropertyChanged Implementation
         public event PropertyChangedEventHandler PropertyChanged;
@@ -73,9 +75,47 @@ namespace Quintessence.Ibp2018.Model
         /* -----------------------------------------------------
          * Properties of file
          *    - Rows of current
-         *    Need dynamic columns code!
+         *    Need dynamic columns code in view-model code!
          *    
          * ----------------------------------------------------- */
-         
+        private DataTable dataTable = new DataTable();
+        public DataTable Datatable
+        {
+            get
+            {
+                return dataTable;
+            }
+            set
+            {
+                if (dataTable != value)
+                {
+                    dataTable = value;
+                }
+                OnPropertyChanged("Datatable");
+            }
+        }
+
+        public void GenerateNewDemoData(int rowCount, int colCount, double xStep, double yStep)
+        {
+            // Colums
+            dataTable.Columns.Add("Y_Step", typeof(string));
+            for (int i = 0; i < colCount; i++)
+                dataTable.Columns.Add("X_" + (i * xStep).ToString("F2"), typeof(string));
+
+            // Data rows
+            Gpib34401aInfo meter = new Gpib34401aInfo();
+            for (int r = 0; r < rowCount; r++)
+            {
+                DataRow dataRow = dataTable.NewRow();
+                dataRow[0] = (r*yStep).ToString("F2");
+                for (int c = 1; c < colCount; c++)
+                {
+                    meter.GenerateNewDemoCurrent();
+                    dataRow[c] = meter.Current.ToString("0.0000");
+                }
+                dataTable.Rows.Add(dataRow);
+            }
+
+        }
     }
 }

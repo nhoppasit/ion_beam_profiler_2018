@@ -14,6 +14,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using System.Data;
 using System.Windows.Media;
+using Quintessence.Ibp2018.Model;
 
 namespace Quintessence.Ibp2018.ViewModel
 {
@@ -39,6 +40,8 @@ namespace Quintessence.Ibp2018.ViewModel
         public IList<Gpib34401aInfo> Ammeters { get { return _Ammeters; } set { _Ammeters = value; } }
         private IList<MMC2Info> _MMC2s;
         public IList<MMC2Info> MMC2s { get { return _MMC2s; } set { _MMC2s = value; } }
+        private IList<Ibp2018DataTableModel> _CurrentTables;
+        public IList<Ibp2018DataTableModel> CurrentTables { get { return _CurrentTables; } set { _CurrentTables = value; } }
 
         /* ----------------------------------------------------------
          * Ammeter-1 Properties
@@ -79,6 +82,10 @@ namespace Quintessence.Ibp2018.ViewModel
         public string Current2Text { get { return _Ammeters[0].Current.ToString(); } set { _Ammeters[0].Current = Convert.ToSingle(value); OnPropertyChanged("Current1Text"); } }
         private bool isBusyAmmeter2 = false;
 
+
+        /* ----------------------------------------------------------
+         * ColumnCollection designed for dynamic datagrid columns
+         * ---------------------------------------------------------- */
         private ObservableCollection<DataGridColumn> _columnCollection = new ObservableCollection<DataGridColumn>();
         public ObservableCollection<DataGridColumn> ColumnCollection
         {
@@ -94,20 +101,23 @@ namespace Quintessence.Ibp2018.ViewModel
                 //base.OnPropertyChanged<ObservableCollection<DataGridColumn>>(() => this.ColumnCollection);
             }
         }
-        private DataTable _datatable = new DataTable();
-        public DataTable Datatable
+        
+        /* ----------------------------------------------------------
+         * File / Current-1 Properties
+         * ---------------------------------------------------------- */
+        public DataTable CurrentTable1
         {
             get
             {
-                return _datatable;
+                return _CurrentTables[0].Datatable;
             }
             set
             {
-                if (_datatable != value)
+                if (_CurrentTables[0].Datatable != value)
                 {
-                    _datatable = value;
+                    _CurrentTables[0].Datatable = value;
                 }
-                OnPropertyChanged("Datatable");
+                OnPropertyChanged("CurrentTable1");
             }
         }
 
@@ -139,14 +149,8 @@ namespace Quintessence.Ibp2018.ViewModel
             ConfigureMeter = new RelayCommand(ExecuteConfigureMeterMethod, CanExecuteConfigureMeterMethod);
             Measure = new RelayCommand(ExecuteMeasureMethod, CanExecuteMeasureMethod);
 
-            Datatable.Columns.Add("Name", typeof(string));
-            Datatable.Columns.Add("Color", typeof(string));
-            Datatable.Columns.Add("Phone", typeof(string));
-
-            Datatable.Rows.Add("Vinoth", "#00FF00", "456345654");
-            Datatable.Rows.Add("lkjasdgl", "Blue", "45654");
-            Datatable.Rows.Add("Vinoth", "#FF0000", "456456");
-
+            // Current-1 table
+            _CurrentTables[0].GenerateNewDemoData(10, 10, 0.02, 0.02);
             System.Windows.Data.Binding bindings = new System.Windows.Data.Binding("Name");
             System.Windows.Data.Binding bindings1 = new System.Windows.Data.Binding("Phone");
             System.Windows.Data.Binding bindings2 = new System.Windows.Data.Binding("Color");
