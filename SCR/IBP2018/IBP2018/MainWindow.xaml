@@ -354,10 +354,14 @@
                         <RibbonTextBox x:Name="txtDMMPortName" Text="COM6" HorizontalContentAlignment="Center" TextBoxWidth="60"/>
                     </StackPanel>
                 </RibbonGroup>
+                <!--Demo-->
+                <RibbonGroup Header="Demo data">
+                    <RibbonButton x:Name="mnuDemoData" Label="Demo data" Command="{Binding GenerateNewDemoData}"/>
+                </RibbonGroup>
             </RibbonTab>
         </Ribbon>
 
-        <!--Current File-->
+        <!--Current File ต้องทำ 2 meter tab and 3d surface-->
         <DataGrid Grid.Row="1" x:Name="dgvCurrent1" AutoGenerateColumns="False" ItemsSource="{Binding CurrentTable1}" local:DataGridColumnsBehavior.BindableColumns="{Binding ColumnCollection}" />
 
     </Grid>

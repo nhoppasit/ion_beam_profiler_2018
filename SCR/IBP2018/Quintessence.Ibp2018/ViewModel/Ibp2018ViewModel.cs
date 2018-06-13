@@ -128,6 +128,7 @@ namespace Quintessence.Ibp2018.ViewModel
         public ICommand InitializeMeter { get; set; }
         public ICommand ConfigureMeter { get; set; }
         public ICommand Measure { get; set; }
+        public ICommand GenerateNewDemoData { get; set; }
 
         /* ----------------------------------------------------------
          * CONSTRUCTOR
@@ -162,6 +163,7 @@ namespace Quintessence.Ibp2018.ViewModel
             InitializeMeter = new RelayCommand(ExecuteInitializeMeterMethod, CanExecuteInitializeMeterMethod);
             ConfigureMeter = new RelayCommand(ExecuteConfigureMeterMethod, CanExecuteConfigureMeterMethod);
             Measure = new RelayCommand(ExecuteMeasureMethod, CanExecuteMeasureMethod);
+            GenerateNewDemoData = new RelayCommand(ExecuteGenerateDemoDataMethod, CanExecuteGenerateDemoDataMethod);
         }
 
         /* ----------------------------------------------------------
@@ -185,9 +187,6 @@ namespace Quintessence.Ibp2018.ViewModel
                         GpibResponse gr = _Ammeters[0].CreateIO488Object();
                         Current1 += 1;
                     }
-                    canMeasure = true;
-                    canPause = false;
-                    canStop = false;
                 });
         }
 
@@ -214,7 +213,7 @@ namespace Quintessence.Ibp2018.ViewModel
             MessageBox.Show("Measured");
             canMeasure = true;
             canPause = false;
-            canStop = false;         
+            canStop = false;
         }
 
         /* ----------------------------------------------------------
@@ -222,25 +221,23 @@ namespace Quintessence.Ibp2018.ViewModel
          * ---------------------------------------------------------- */
         private void GenerateDemoData()
         {
-            ThreadPool.QueueUserWorkItem(
-                o =>
-                {
-                    // Current-1 data table
-                    _CurrentTables[0].GenerateNewDemoData(0.02, 0.02, 0, 20, 0, 20);
+            canDemo = false;
+            // Current-1 data table
+            _CurrentTables[0].GenerateNewDemoData(0.02, 0.02, 0, 20, 0, 20);
 
-                    // Binding columns name and header
-                    for (int i = 0; i < _CurrentTables[0].ColumnNames.Count; i++)
-                    {
-                        Binding binding = new Binding(_CurrentTables[0].ColumnNames[i]);
-                        DataGridTextColumn textColumn = new DataGridTextColumn();
-                        textColumn.Header = _CurrentTables[0].ColumnHeaders[i];
-                        textColumn.Binding = binding;
-                        ColumnCollection.Add(textColumn);
-                    }
-                });
+            // Binding columns name and header
+            for (int i = 0; i < _CurrentTables[0].ColumnNames.Count; i++)
+            {
+                Binding binding = new Binding(_CurrentTables[0].ColumnNames[i]);
+                DataGridTextColumn textColumn = new DataGridTextColumn();
+                textColumn.Header = _CurrentTables[0].ColumnHeaders[i];
+                textColumn.Binding = binding;
+                ColumnCollection.Add(textColumn);
+            }
+            canDemo = true;
         }
         private bool canDemo = true;
         private bool CanExecuteGenerateDemoDataMethod(object parameter) { return canDemo; }
-        
+        public void ExecuteGenerateDemoDataMethod(object parameter) { GenerateDemoData(); }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -43,10 +44,15 @@ namespace IBP2018
                 }
                 else if (ne.Action == NotifyCollectionChangedAction.Add)
                 {
-                    foreach (DataGridColumn column in ne.NewItems)
-                    {
-                        dataGrid.Columns.Add(column);
-                    }
+                    ThreadPool.QueueUserWorkItem(
+                        o =>
+                        {
+                            foreach (DataGridColumn column in ne.NewItems)
+                            {
+                                App.Current.Dispatcher.Invoke(new Action(() => dataGrid.Columns.Add(column)));
+                                //dataGrid.Columns.Add(column);
+                            }
+                        });
                 }
                 else if (ne.Action == NotifyCollectionChangedAction.Move)
                 {
