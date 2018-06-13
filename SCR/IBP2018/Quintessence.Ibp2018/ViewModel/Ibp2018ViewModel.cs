@@ -133,7 +133,6 @@ namespace Quintessence.Ibp2018.ViewModel
             }
         }
 
-
         /* ----------------------------------------------------------
          * Commands for binding to buttons
          * ---------------------------------------------------------- */
@@ -145,6 +144,8 @@ namespace Quintessence.Ibp2018.ViewModel
         // Commands of xy and z mmc reconnect
         public ICommand ReconnectXyMmc { get; set; }
         public ICommand ReconnectZMmc { get; set; }
+        public ICommand QueryScanner { get; set; }
+        public ICommand UnqueryScanner { get; set; }
 
         /* ----------------------------------------------------------
          * CONSTRUCTOR
@@ -166,7 +167,9 @@ namespace Quintessence.Ibp2018.ViewModel
 
             // Create XYZ scanner object
             _XyMmc = new MMC2Info();
+            _XyMmc.SerialPortName = "COM1";
             _ZMmc = new MMC2Info();
+            _ZMmc.SerialPortName = "COM2";
 
             // Create data tables object
             _CurrentTables = new List<Ibp2018DataTableModel>();
@@ -186,7 +189,45 @@ namespace Quintessence.Ibp2018.ViewModel
             // Serial port of xy and z mmc
             ReconnectXyMmc = new RelayCommand(ExecuteReconnectXyMmcMethod, CanExecuteReconnectXyMmcMethod);
             ReconnectZMmc = new RelayCommand(ExecuteReconnectZMmcMethod, CanExecuteReconnectZMmcMethod);
+
+            // Query and unquery scanner 
+            QueryScanner = new RelayCommand(ExecuteQueryScannerMethod, CanExecuteQueryScannerMethod);
+            UnqueryScanner = new RelayCommand(ExecuteUnqueryScannerMethod, CanExecuteUnqueryScannerMethod);
         }
+
+        /* ----------------------------------------------------------
+         * Query and unquery scanner
+         * ---------------------------------------------------------- */
+        private bool canQueryScanner = true;
+        private bool _continueQueryScanner = true;
+        private bool CanExecuteQueryScannerMethod(object parameter) { return canQueryScanner; }
+        private void ExecuteQueryScannerMethod(object parameter)
+        {
+            ThreadPool.QueueUserWorkItem(
+                o =>
+                {
+                    canQueryScanner = true;
+                    _continueQueryScanner = true;
+                    while (_continueQueryScanner)
+                    {
+                        try
+                        {
+                            XyMmc.QueryPosition(true);
+                            ZMmc.QueryPosition(true);
+                        }
+                        catch (Exception ex) { }
+                        Thread.Sleep(500);
+                    }
+                    MessageBox.Show("Auto query turned OFF.", "Query scanner", MessageBoxButton.OK, MessageBoxImage.Information);
+                });
+        }
+        private bool CanExecuteUnqueryScannerMethod(object parameter) { return true; }
+        private void ExecuteUnqueryScannerMethod(object parameter)
+        {
+            _continueQueryScanner = false;
+            canQueryScanner = true;
+        }
+
 
         /* ----------------------------------------------------------
          * Initialize Meter
@@ -216,7 +257,6 @@ namespace Quintessence.Ibp2018.ViewModel
                         }
                         catch (Exception ex) { }
                     }
-
                 });
         }
 

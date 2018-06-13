@@ -24,10 +24,10 @@ namespace Quintessence.MotionControl.MMC2
         /* ----------------------------------------------------------  
          * กายภาพของมอเตอร์ 5-phase
          * ----------------------------------------------------------  */
-        public const float MillimeterPerStep = 1f / 500.0f;
-        public const float StepPerMillimeter = 500f;
-        public const float StepPerDegree = 500f / 360f;
-        public const float DegreePerStep = 360f / 500f;
+        public const double MillimeterPerStep = 1f / 500.0;
+        public const double StepPerMillimeter = 500;
+        public const double StepPerDegree = 500 / 360;
+        public const double DegreePerStep = 360 / 500;
 
         /* ----------------------------------------------------------  
          * พอร์ต
@@ -37,9 +37,13 @@ namespace Quintessence.MotionControl.MMC2
         /* ----------------------------------------------------------  
          * ข้อมูลตำแหน่ง
          * ----------------------------------------------------------  */
-        private int _ActualXStep; public int ActualXStep { get { return _ActualXStep; } set { _ActualXStep = value; } }
-        private int _ActualYStep; public int ActualYStep { get { return _ActualYStep; } set { _ActualYStep = value; } }
-        private bool _IsReady; public bool IsReady { get { return _IsReady; } set { _IsReady = value; } }
+        private int _ActualXStep; public int ActualXStep { get { return _ActualXStep; } }
+        public double ActualX { get { return (double)_ActualXStep * MillimeterPerStep; } }
+        private int _ActualYStep; public int ActualYStep { get { return _ActualYStep; } }
+        public double ActualY { get { return (double)_ActualYStep * MillimeterPerStep; } }
+        private string _SensorX; public string SensorX { get { return _SensorX; } }
+        private string _SensorY; public string SensorY { get { return _SensorY; } }
+        private bool _IsReady; public bool IsReady { get { return _IsReady; } }
 
         /* ----------------------------------------------------------  
          * การเคลื่อนที่แบบสัมพัทธ์
@@ -50,24 +54,24 @@ namespace Quintessence.MotionControl.MMC2
         /* ----------------------------------------------------------  
          * Resolution
          * ----------------------------------------------------------  */
-        private float _XScanResolution; public float XScanResolution { get { return _XScanResolution; } set { _XScanResolution = value; } }
-        private float _YScanResolution; public float YScanResolution { get { return _YScanResolution; } set { _YScanResolution = value; } }
+        private double _XScanResolution; public double XScanResolution { get { return _XScanResolution; } set { _XScanResolution = value; } }
+        private double _YScanResolution; public double YScanResolution { get { return _YScanResolution; } set { _YScanResolution = value; } }
 
         /* ----------------------------------------------------------  
          * Scan Area
          * ----------------------------------------------------------  */
-        private float _XScanMinimum; public float XScanMinimum { get { return _XScanMinimum; } set { _XScanMinimum = value; } }
-        private float _YScanMinimum; public float YScanMinimum { get { return _YScanMinimum; } set { _YScanMinimum = value; } }
-        private float _XScanMaximum; public float XScanMaximum { get { return _XScanMaximum; } set { _XScanMaximum = value; } }
-        private float _YScanMaximum; public float YScanMaximum { get { return _YScanMaximum; } set { _YScanMaximum = value; } }
+        private double _XScanMinimum; public double XScanMinimum { get { return _XScanMinimum; } set { _XScanMinimum = value; } }
+        private double _YScanMinimum; public double YScanMinimum { get { return _YScanMinimum; } set { _YScanMinimum = value; } }
+        private double _XScanMaximum; public double XScanMaximum { get { return _XScanMaximum; } set { _XScanMaximum = value; } }
+        private double _YScanMaximum; public double YScanMaximum { get { return _YScanMaximum; } set { _YScanMaximum = value; } }
 
         /* ----------------------------------------------------------  
          * Figture Range
          * ----------------------------------------------------------  */
-        private float _XFigtureMinimum; public float XFigtureMinimum { get { return _XFigtureMinimum; } set { _XFigtureMinimum = value; } }
-        private float _YFigtureMinimum; public float YFigtureMinimum { get { return _YFigtureMinimum; } set { _YFigtureMinimum = value; } }
-        private float _XFigtureMaximum; public float XFigtureMaximum { get { return _XFigtureMaximum; } set { _XFigtureMaximum = value; } }
-        private float _YFigtureMaximum; public float YFigtureMaximum { get { return _YFigtureMaximum; } set { _YFigtureMaximum = value; } }
+        private double _XFigtureMinimum; public double XFigtureMinimum { get { return _XFigtureMinimum; } set { _XFigtureMinimum = value; } }
+        private double _YFigtureMinimum; public double YFigtureMinimum { get { return _YFigtureMinimum; } set { _YFigtureMinimum = value; } }
+        private double _XFigtureMaximum; public double XFigtureMaximum { get { return _XFigtureMaximum; } set { _XFigtureMaximum = value; } }
+        private double _YFigtureMaximum; public double YFigtureMaximum { get { return _YFigtureMaximum; } set { _YFigtureMaximum = value; } }
 
         /* ----------------------------------------------------------  
          * Initialize serial port
@@ -119,6 +123,73 @@ namespace Quintessence.MotionControl.MMC2
             catch (Exception ex)
             {
                 PortResponse pr = new PortResponse("DE", "Disconnected " + _SerialPortName + " error. " + ex.Message, ex);
+                return pr;
+            }
+        }
+
+        /* ----------------------------------------------------------  
+         * Read current position and sensors
+         * ----------------------------------------------------------  */
+        public PortResponse QueryPosition(bool demo = false)
+        {
+            try
+            {
+                if (demo)
+                {
+                    _ActualXStep += 1;
+                    _ActualYStep += 1;
+                    _SensorX = "K";
+                    _SensorY = "K";
+                    _IsReady = true;
+                    PortResponse pr = new PortResponse(PortResponse.DEMO, "Demo mode.", null);
+                    return pr;
+                }
+
+                Port.Write("Q:\n");
+                string Incomming = string.Empty;
+                Incomming = Port.ReadLine();
+                string[] aStr = Incomming.Split(',');
+                int val;
+                if (aStr == null)
+                {
+                    PortResponse pr = new PortResponse(PortResponse.ERR_QUERY, "Invalid existing buffer!", null);
+                    return pr;
+                }
+                else
+                {
+                    if (1 <= aStr.Length)
+                    {
+                        if (int.TryParse(aStr[0], out val)) _ActualXStep = val;
+                        else _ActualXStep = 0;
+                    }
+                    if (2 <= aStr.Length)
+                    {
+                        if (int.TryParse(aStr[1], out val)) _ActualYStep = val;
+                        else _ActualYStep = 0;
+                    }
+                    if (3 <= aStr.Length)
+                    {
+                        _SensorX = aStr[2];
+                    }
+                    if (4 <= aStr.Length)
+                    {
+                        _SensorY = aStr[3];
+                    }
+                    if (5 <= aStr.Length)
+                    {
+                        if (aStr[4] == "R") _IsReady = true;
+                        else _IsReady = false;
+                    }
+                    PortResponse pr = new PortResponse(PortResponse.SUCCESS, "", null);
+                    return pr;
+                }
+            }
+            catch (Exception ex)
+            {
+                _ActualXStep = _ActualYStep = 0;
+                _SensorX = _SensorY = "";
+                _IsReady = true;
+                PortResponse pr = new PortResponse(PortResponse.ERR_QUERY, "Query on " + _SerialPortName + " error. " + ex.Message, ex);
                 return pr;
             }
         }

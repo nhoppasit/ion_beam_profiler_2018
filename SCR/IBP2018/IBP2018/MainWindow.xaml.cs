@@ -35,18 +35,29 @@ namespace IBP2018
             // "Version: " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
             mnuDemoData.Click += MnuDemoData_Click;
+            chkAutoQueryScanner.Checked += ChkAutoQueryScanner_Checked;
+            chkAutoQueryScanner.Unchecked += ChkAutoQueryScanner_Unchecked;
         }
 
-        BackgroundWorker bw = new BackgroundWorker();
-
-        private void MnuDemoData_Click(object sender, RoutedEventArgs e)
+        private void ChkAutoQueryScanner_Unchecked(object sender, RoutedEventArgs e)
         {
             Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
+            vm.UnqueryScanner.Execute(new object());
+        }
 
+        private void ChkAutoQueryScanner_Checked(object sender, RoutedEventArgs e)
+        {
+            Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
+            vm.QueryScanner.Execute(new object());
+        }
+
+        BackgroundWorker bwDefineTableColumns = new BackgroundWorker();
+        private void MnuDemoData_Click(object sender, RoutedEventArgs e)
+        {                      
             WaitDialog dlg = new WaitDialog();
             dlg.Title = "Wait";
             dlg.Topmost = true;
-            bw.DoWork += (o, ea) =>
+            bwDefineTableColumns.DoWork += (o, ea) =>
             {
                 dlg.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
                 {
@@ -67,7 +78,7 @@ namespace IBP2018
                     Thread.Sleep(100);
                 }
             };
-            bw.RunWorkerCompleted += (o, ea) =>
+            bwDefineTableColumns.RunWorkerCompleted += (o, ea) =>
             {
                 dlg.Close();
             };
@@ -76,7 +87,7 @@ namespace IBP2018
                 dlg.Show();
                 Thread.Sleep(100);
             }));
-            bw.RunWorkerAsync();
+            bwDefineTableColumns.RunWorkerAsync();
         }
 
 
