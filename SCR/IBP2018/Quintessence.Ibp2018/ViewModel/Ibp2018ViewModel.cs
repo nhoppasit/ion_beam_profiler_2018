@@ -63,7 +63,7 @@ namespace Quintessence.Ibp2018.ViewModel
         }
         public double Current1 { get { return _Ammeters[0].Current; } set { _Ammeters[0].Current = value; OnPropertyChanged("Current1Text"); } }
         public string Current1Text { get { return _Ammeters[0].Current.ToString(); } set { _Ammeters[0].Current = Convert.ToSingle(value); OnPropertyChanged("Current1Text"); } }
-        private bool isBusyAmmeter1 = false;
+        private bool canMeasure = true, canPause = false, canStop = false;
 
         /* ----------------------------------------------------------
          * Ammeter-2 Properties
@@ -129,8 +129,12 @@ namespace Quintessence.Ibp2018.ViewModel
         public ICommand ConfigureMeter { get; set; }
         public ICommand Measure { get; set; }
 
+        /* ----------------------------------------------------------
+         * CONSTRUCTOR
+         * ---------------------------------------------------------- */
         public Ibp2018ViewModel()
         {
+            // Create meters object
             _Ammeters = new List<Gpib34401aInfo>();
             Gpib34401aInfo a1 = new Gpib34401aInfo();
             a1.GpibBoardNumber = 0;
@@ -143,69 +147,100 @@ namespace Quintessence.Ibp2018.ViewModel
             a2.ReadIntervalMillisecond = 333;
             _Ammeters.Add(a2);
 
+            // Create XYZ scanner object
+
+            // Create data tables object
+            _CurrentTables = new List<Ibp2018DataTableModel>();
+            _CurrentTables.Add(new Ibp2018DataTableModel());
+            _CurrentTables.Add(new Ibp2018DataTableModel());
+
+            // Initialize meter objects
             Current1Text = "100.01";
             Current2Text = "200.02";
 
-            InitializeMeter = new DelegateCommand(ExecuteInitializeMeterMethod, CanExecuteInitializeMeterMethod);
+            // Create commands
+            InitializeMeter = new RelayCommand(ExecuteInitializeMeterMethod, CanExecuteInitializeMeterMethod);
             ConfigureMeter = new RelayCommand(ExecuteConfigureMeterMethod, CanExecuteConfigureMeterMethod);
             Measure = new RelayCommand(ExecuteMeasureMethod, CanExecuteMeasureMethod);
-
-            // Current-1 data table
-            _CurrentTables = new List<Ibp2018DataTableModel>();
-            _CurrentTables.Add(new Ibp2018DataTableModel());
-            _CurrentTables[0].GenerateNewDemoData(0.02, 0.02, 0, 20, 0, 20);
-
-            // Binding columns name and header
-            for (int i = 0; i < _CurrentTables[0].ColumnNames.Count; i++)
-            {
-                Binding binding = new Binding(_CurrentTables[0].ColumnNames[i]);
-                DataGridTextColumn textColumn = new DataGridTextColumn();
-                textColumn.Header = _CurrentTables[0].ColumnHeaders[i];
-                textColumn.Binding = binding;
-                ColumnCollection.Add(textColumn);
-            }
         }
 
-        private bool CanExecuteInitializeMeterMethod(object parameter)
-        {
-            return !isBusyAmmeter1;
-        }
-
+        /* ----------------------------------------------------------
+         * Initialize Meter
+         * ---------------------------------------------------------- */
+        private bool CanExecuteInitializeMeterMethod(object parameter) { return canMeasure; }
+        private bool _continueInitMeter = true;
         private void ExecuteInitializeMeterMethod(object parameter)
         {
             ThreadPool.QueueUserWorkItem(
                 o =>
                 {
-                    while (true)
+                    _continueInitMeter = true;
+                    canMeasure = false;
+                    canPause = true;
+                    canStop = true;
+                    while (_continueInitMeter)
                     {
-                        isBusyAmmeter1 = true;
                         Current1 += 1;
-                        //isBusyAmmeter1 = false;
                         System.Threading.Thread.Sleep(1000);
                         GpibResponse gr = _Ammeters[0].CreateIO488Object();
-                        //isBusyAmmeter1 = true;
                         Current1 += 1;
-                        isBusyAmmeter1 = false;
                     }
+                    canMeasure = true;
+                    canPause = false;
+                    canStop = false;
                 });
         }
 
-        private bool CanExecuteConfigureMeterMethod(object parameter) { return !isBusyAmmeter1; }
-
+        /* ----------------------------------------------------------
+         * Configure meter
+         * ---------------------------------------------------------- */
+        private bool CanExecuteConfigureMeterMethod(object parameter) { return canPause; }
         private void ExecuteConfigureMeterMethod(object parameter)
         {
-            MessageBox.Show("Configured");
+            _continueInitMeter = false;
+            canMeasure = true;
+            canPause = false;
+            canStop = true;
         }
 
-        private bool CanExecuteMeasureMethod(object parameter) { return !isBusyAmmeter1; }
-
+        /* ----------------------------------------------------------
+         * Measurement
+         * ---------------------------------------------------------- */
+        private bool CanExecuteMeasureMethod(object parameter) { return canStop; }
         private void ExecuteMeasureMethod(object parameter)
         {
-            Current1 += 1;
-            //Current1Text = "111.11";
-            //Current2 = "222.22";
-            //MessageBox.Show("Measured");
+            _continueInitMeter = false;
+            Current1Text = "111.11";
+            MessageBox.Show("Measured");
+            canMeasure = true;
+            canPause = false;
+            canStop = false;         
         }
 
+        /* ----------------------------------------------------------
+         * DEMO DATA
+         * ---------------------------------------------------------- */
+        private void GenerateDemoData()
+        {
+            ThreadPool.QueueUserWorkItem(
+                o =>
+                {
+                    // Current-1 data table
+                    _CurrentTables[0].GenerateNewDemoData(0.02, 0.02, 0, 20, 0, 20);
+
+                    // Binding columns name and header
+                    for (int i = 0; i < _CurrentTables[0].ColumnNames.Count; i++)
+                    {
+                        Binding binding = new Binding(_CurrentTables[0].ColumnNames[i]);
+                        DataGridTextColumn textColumn = new DataGridTextColumn();
+                        textColumn.Header = _CurrentTables[0].ColumnHeaders[i];
+                        textColumn.Binding = binding;
+                        ColumnCollection.Add(textColumn);
+                    }
+                });
+        }
+        private bool canDemo = true;
+        private bool CanExecuteGenerateDemoDataMethod(object parameter) { return canDemo; }
+        
     }
 }

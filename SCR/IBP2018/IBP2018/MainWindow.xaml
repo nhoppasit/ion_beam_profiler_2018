@@ -39,7 +39,7 @@
                 <!--Scan control-->
                 <RibbonGroup Header="Scan">
                     <RibbonButton x:Name="mnuRun" Label="Run" KeyTip="R" LargeImageSource="Images/FORWARD-1.ICO" Command="{Binding InitializeMeter}"/>
-                    <RibbonButton x:Name="mnuHold" Label="Pause" KeyTip="R" LargeImageSource="Images/PAUSE-1.ICO" />
+                    <RibbonButton x:Name="mnuHold" Label="Pause" KeyTip="R" LargeImageSource="Images/PAUSE-1.ICO" Command="{Binding ConfigureMeter}"/>
                     <RibbonButton x:Name="mnuStop" Label="Stop" KeyTip="R" LargeImageSource="Images/STOP-1.ICO" Command="{Binding Measure}"/>
                 </RibbonGroup>
                 <!--Logical Position-->
