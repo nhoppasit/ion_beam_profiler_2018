@@ -155,16 +155,14 @@ namespace Quintessence.Ibp2018.ViewModel
             _CurrentTables.Add(new Ibp2018DataTableModel());
             _CurrentTables[0].GenerateNewDemoData(0.02, 0.02, 0, 0.1, 0, 0.1);
 
-            // Binding columns
-            List<Binding> bindings = new List<Binding>();
-            List<DataGridTextColumn> textColumns = new List<DataGridTextColumn>();
+            // Binding columns name and header
             for (int i = 0; i < _CurrentTables[0].ColumnNames.Count; i++)
             {
-                bindings.Add(new Binding(_CurrentTables[0].ColumnNames[i]));
-                textColumns.Add(new DataGridTextColumn());
-                textColumns[i].Header = _CurrentTables[0].ColumnHeaders[i];
-                textColumns[i].Binding = bindings[i];
-                ColumnCollection.Add(textColumns[i]);
+                Binding binding = new Binding(_CurrentTables[0].ColumnNames[i]);
+                DataGridTextColumn textColumn = new DataGridTextColumn();
+                textColumn.Header = _CurrentTables[0].ColumnHeaders[i];
+                textColumn.Binding = binding;
+                ColumnCollection.Add(textColumn);
             }
         }
 
