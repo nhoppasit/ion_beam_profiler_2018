@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace IBP2018
 {
@@ -48,6 +49,7 @@ namespace IBP2018
                     {
                         dataGrid.Columns.Add(column);
                     }
+
                 }
                 else if (ne.Action == NotifyCollectionChangedAction.Move)
                 {

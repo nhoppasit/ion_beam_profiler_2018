@@ -15,6 +15,7 @@ using System.Windows.Controls;
 using System.Data;
 using System.Windows.Media;
 using Quintessence.Ibp2018.Model;
+using Quintessence.Ibp2018.View;
 using System.Windows.Data;
 
 namespace Quintessence.Ibp2018.ViewModel
@@ -227,23 +228,17 @@ namespace Quintessence.Ibp2018.ViewModel
         /* ----------------------------------------------------------
          * DEMO DATA
          * ---------------------------------------------------------- */
+        bool _continueProcessing = true;
         private void GenerateDemoData()
         {
-            bool _continueProcessing=true;
-            ThreadPool.QueueUserWorkItem(
-                o =>
-                {
-                    while (_continueProcessing)
-                    {
-                        Current1 += 1;
-                        Thread.Sleep(200);
-                    }
-                });
+            AboutBox1 dlg = new AboutBox1();
+            dlg.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            dlg.TopMost = true;
+            dlg.Show();
 
-            
-            //canDemo = false;
+            canDemo = false;
             // Current-1 data table
-            _CurrentTables[0].GenerateNewDemoColumns(0.1, 0.1, 0, 20, 0, 20, true);
+            _CurrentTables[0].GenerateNewDemoColumns(0.02, 0.02, 0, 20, 0, 20);
 
             // Binding columns name and header
             for (int i = 0; i < _CurrentTables[0].ColumnNames.Count; i++)
@@ -254,7 +249,9 @@ namespace Quintessence.Ibp2018.ViewModel
                 textColumn.Binding = binding;
                 ColumnCollection.Add(textColumn);
             }
-            _continueProcessing = false;
+
+            dlg.Close();
+            dlg.Dispose();
             canDemo = true;
         }
         private bool canDemo = true;
