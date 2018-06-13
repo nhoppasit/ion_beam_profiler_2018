@@ -138,9 +138,9 @@
     <Resource Include="Images\Refresh.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Quintessence.Ibp2018\Quintessence.Ibp.csproj">
+    <ProjectReference Include="..\Quintessence.Ibp2018\Quintessence.Ibp2018.csproj">
       <Project>{c6aeb9c6-bdee-4b08-be26-234eeae9a29d}</Project>
-      <Name>Quintessence.Ibp</Name>
+      <Name>Quintessence.Ibp2018</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

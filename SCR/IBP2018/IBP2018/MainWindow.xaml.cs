@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Threading;
 using System.ComponentModel;
+using Quintessence.Ibp2018.ViewModel;
 
 namespace IBP2018
 {
@@ -40,6 +41,8 @@ namespace IBP2018
 
         private void MnuDemoData_Click(object sender, RoutedEventArgs e)
         {
+            Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
+
             WaitGenerateColumnDialog dlg = new WaitGenerateColumnDialog();
             dlg.Title = "Wait";
             dlg.Topmost = true;
