@@ -54,8 +54,8 @@ namespace Quintessence.MotionControl.MMC2
         /* ----------------------------------------------------------  
          * Resolution
          * ----------------------------------------------------------  */
-        private double _XScanResolution; public double XScanResolution { get { return _XScanResolution; } set { _XScanResolution = value; } }
-        private double _YScanResolution; public double YScanResolution { get { return _YScanResolution; } set { _YScanResolution = value; } }
+        private double _XScanResolution; public double XScanStep { get { return _XScanResolution; } set { _XScanResolution = value; } }
+        private double _YScanResolution; public double YScanStep { get { return _YScanResolution; } set { _YScanResolution = value; } }
 
         /* ----------------------------------------------------------  
          * Scan Area

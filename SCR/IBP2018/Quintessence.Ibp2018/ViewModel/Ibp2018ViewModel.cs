@@ -87,6 +87,66 @@ namespace Quintessence.Ibp2018.ViewModel
         public string XyMmcPortName { get { return _XyMmc.SerialPortName; } set { _XyMmc.SerialPortName = value; OnPropertyChanged("XyMmcPortName"); } }
         public string XLPosText { get { return _XyMmc.ActualX.ToString("F2"); } }
         public string YLPosText { get { return _XyMmc.ActualY.ToString("F2"); } }
+        public string XScanStep
+        {
+            get { return _XyMmc.XScanStep.ToString(); }
+            set
+            {
+                try { _XyMmc.XScanStep = Convert.ToDouble(value); }
+                catch { _XyMmc.XScanStep = 0; }
+                OnPropertyChanged("XScanStep");
+            }
+        }
+        public string YScanStep
+        {
+            get { return _XyMmc.YScanStep.ToString(); }
+            set
+            {
+                try { _XyMmc.YScanStep = Convert.ToDouble(value); }
+                catch { _XyMmc.YScanStep = 0; }
+                OnPropertyChanged("YScanStep");
+            }
+        }
+        public string XScanMinimum
+        {
+            get { return _XyMmc.XScanMinimum.ToString(); }
+            set
+            {
+                try { _XyMmc.XScanMinimum = Convert.ToDouble(value); }
+                catch { _XyMmc.XScanMinimum = 0; }
+                OnPropertyChanged("XScanMinimum");
+            }
+        }
+        public string YScanMinimum
+        {
+            get { return _XyMmc.YScanMinimum.ToString(); }
+            set
+            {
+                try { _XyMmc.YScanMinimum = Convert.ToDouble(value); }
+                catch { _XyMmc.YScanMinimum = 0; }
+                OnPropertyChanged("YScanMinimum");
+            }
+        }
+        public string XScanMaximum
+        {
+            get { return _XyMmc.XScanMaximum.ToString(); }
+            set
+            {
+                try { _XyMmc.XScanMaximum = Convert.ToDouble(value); }
+                catch { _XyMmc.XScanMaximum = 0; }
+                OnPropertyChanged("XScanMaximum");
+            }
+        }
+        public string YScanMaximum
+        {
+            get { return _XyMmc.YScanMaximum.ToString(); }
+            set
+            {
+                try { _XyMmc.YScanMaximum = Convert.ToDouble(value); }
+                catch { _XyMmc.YScanMaximum = 0; }
+                OnPropertyChanged("YScanMaximum");
+            }
+        }
         private MMC2Info _ZMmc;
         public MMC2Info ZMmc { get { return _ZMmc; } set { _ZMmc = value; } }
         public string ZMmcPortName { get { return _ZMmc.SerialPortName; } set { _ZMmc.SerialPortName = value; OnPropertyChanged("ZMmcPortName"); } }
@@ -179,10 +239,6 @@ namespace Quintessence.Ibp2018.ViewModel
             _CurrentTables.Add(new Ibp2018DataTableModel());
             _CurrentTables.Add(new Ibp2018DataTableModel());
 
-            // Initialize meter objects
-            Current1Text = "100.01";
-            Current2Text = "200.02";
-
             // Create commands
             InitializeMeter = new RelayCommand(ExecuteInitializeMeterMethod, CanExecuteInitializeMeterMethod);
             ConfigureMeter = new RelayCommand(ExecuteConfigureMeterMethod, CanExecuteConfigureMeterMethod);
@@ -224,7 +280,7 @@ namespace Quintessence.Ibp2018.ViewModel
                         catch (Exception ex) { }
                         Thread.Sleep(500);
                     }
-                    MessageBox.Show("Auto query turned OFF.", "Query scanner", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Auto query is turned OFF.", "X-Y Scanner", MessageBoxButton.OK, MessageBoxImage.Information);
                 });
         }
         private bool CanExecuteUnqueryScannerMethod(object parameter) { return true; }
@@ -255,11 +311,12 @@ namespace Quintessence.Ibp2018.ViewModel
                         try
                         {
                             Current1 += 1;
+                            Thread.Sleep(1000);
+
                             //DataTable dt = CurrentTable1;
                             DataRow r = CurrentTable1.Rows[scanY_Idx];
                             r[scanX_Idx + 1] = Current1;
 
-                            Thread.Sleep(1000);
                         }
                         catch (Exception ex) { }
                     }
@@ -285,7 +342,6 @@ namespace Quintessence.Ibp2018.ViewModel
         private void ExecuteMeasureMethod(object parameter)
         {
             _continueInitMeter = false;
-            Current1Text = "111.11";
             MessageBox.Show("Measured");
             canMeasure = true;
             canPause = false;
@@ -301,8 +357,10 @@ namespace Quintessence.Ibp2018.ViewModel
             // Wait for columns.count
 
             canDemo = false;
+            ColumnsGenerating = true;
+
             // Current-1 data table
-            _CurrentTables[0].GenerateNewDemoColumns(0.02, 0.02, 0, 20, 0, 20);
+            _CurrentTables[0].GenerateNewDemoColumns(_XyMmc.XScanStep, _XyMmc.YScanStep, _XyMmc.XScanMinimum, _XyMmc.XScanMaximum, _XyMmc.YScanMinimum, _XyMmc.YScanMaximum);
 
             // Binding columns name and header
             for (int i = 0; i < _CurrentTables[0].ColumnNames.Count; i++)
@@ -314,9 +372,13 @@ namespace Quintessence.Ibp2018.ViewModel
                 ColumnCollection.Add(textColumn);
             }
 
+
+
+            ColumnsGenerating = false;
             canDemo = true;
         }
         private bool canDemo = true;
+        public bool ColumnsGenerating = false;
         private bool CanExecuteGenerateDemoDataMethod(object parameter) { return canDemo; }
         public void ExecuteGenerateDemoDataMethod(object parameter) { GenerateDemoData(); }
 

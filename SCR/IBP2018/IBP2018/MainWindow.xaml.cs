@@ -53,15 +53,22 @@ namespace IBP2018
 
         BackgroundWorker bwDefineTableColumns = new BackgroundWorker();
         private void MnuDemoData_Click(object sender, RoutedEventArgs e)
-        {                      
+        {
+            Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
             WaitDialog dlg = new WaitDialog();
             dlg.Title = "Wait";
             dlg.Topmost = true;
             bwDefineTableColumns.DoWork += (o, ea) =>
             {
+                Thread.Sleep(100);
                 dlg.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
                 {
-                    dlg.Show();
+                    try
+                    {
+                        dlg.Visibility = Visibility.Visible;
+                        dlg.Show();
+                    }
+                    catch { }
                     Thread.Sleep(100);
                 }));
                 Stopwatch sw = new Stopwatch();
@@ -69,12 +76,14 @@ namespace IBP2018
                 bool _continue = true;
                 while (_continue)
                 {
-                    if (sw.ElapsedMilliseconds > 1000 * 20)
+                    // Timeout
+                    if (sw.ElapsedMilliseconds > 1000 * 10)
                     {
                         sw.Stop();
                         _continue = false;
                     }
-                    if (dgvCurrent1.Columns.Count >= 1000) _continue = false;
+                    // Break by columns count
+                    if (!vm.ColumnsGenerating) _continue = false;
                     Thread.Sleep(100);
                 }
             };
@@ -84,6 +93,7 @@ namespace IBP2018
             };
             dlg.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
             {
+                dlg.Visibility = Visibility.Visible;
                 dlg.Show();
                 Thread.Sleep(100);
             }));

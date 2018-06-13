@@ -155,7 +155,7 @@
                         </RibbonMenuButton>
                         <RibbonTextBox Grid.Row="0" Grid.Column="5" x:Name="txtZLPos1" Text="{Binding ZLPosText, Mode=OneWay}" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" VerticalAlignment="Center"/>
                         <Label Grid.Row="0" Grid.Column="6" Content="mm" VerticalAlignment="Center"/>
-                        <RibbonCheckBox x:Name="chkAutoQueryScanner" Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="3" Label=" Auto read" SmallImageSource="Images/Refresh.png"/>
+                        <RibbonCheckBox x:Name="chkAutoQueryScanner" Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="3" Label=" Auto query" SmallImageSource="Images/Refresh.png"/>
                     </Grid>
                 </RibbonGroup>
                 <!--Resolution-->
@@ -171,15 +171,15 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="X Step"/>
-                        <RibbonComboBox Grid.Row="0" Grid.Column="1" SelectionBoxWidth="30">
-                            <RibbonGallery x:Name="cboXStep">
+                        <RibbonComboBox Grid.Row="0" Grid.Column="1" SelectionBoxWidth="30" IsEditable="True">
+                            <RibbonGallery x:Name="cboXStep" SelectedItem="{Binding XScanStep}">
                                 <RibbonGalleryCategory x:Name="catXStep"/>
                             </RibbonGallery>
                         </RibbonComboBox>
                         <Label Grid.Row="0" Grid.Column="2" Content="mm"/>
                         <Label Grid.Row="1" Grid.Column="0" Content="Y Step"/>
-                        <RibbonComboBox Grid.Row="1" Grid.Column="1" SelectionBoxWidth="30">
-                            <RibbonGallery x:Name="cboYStep">
+                        <RibbonComboBox Grid.Row="1" Grid.Column="1" SelectionBoxWidth="30" IsEditable="True">
+                            <RibbonGallery x:Name="cboYStep" SelectedItem="{Binding YScanStep}">
                                 <RibbonGalleryCategory x:Name="catYStep"/>
                             </RibbonGallery>
                         </RibbonComboBox>
@@ -201,26 +201,26 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="X Axis"/>
-                        <RibbonComboBox Grid.Row="0" Grid.Column="1" SelectionBoxWidth="30">
+                        <RibbonComboBox Grid.Row="0" Grid.Column="1" SelectionBoxWidth="30" IsEditable="True">
                             <RibbonGallery x:Name="cboXStart">
                                 <RibbonGalleryCategory x:Name="catXStart"/>
                             </RibbonGallery>
                         </RibbonComboBox>
                         <Label Grid.Row="0" Grid.Column="2" Content="to"/>
-                        <RibbonComboBox Grid.Row="0" Grid.Column="3" SelectionBoxWidth="30">
+                        <RibbonComboBox Grid.Row="0" Grid.Column="3" SelectionBoxWidth="30" IsEditable="True">
                             <RibbonGallery x:Name="cboXEnd">
                                 <RibbonGalleryCategory x:Name="catXEnd"/>
                             </RibbonGallery>
                         </RibbonComboBox>
                         <Label Grid.Row="0" Grid.Column="4" Content="mm"/>
                         <Label Grid.Row="1" Grid.Column="0" Content="Y Axis"/>
-                        <RibbonComboBox Grid.Row="1" Grid.Column="1" SelectionBoxWidth="30">
+                        <RibbonComboBox Grid.Row="1" Grid.Column="1" SelectionBoxWidth="30" IsEditable="True">
                             <RibbonGallery x:Name="cboYStart">
                                 <RibbonGalleryCategory x:Name="catYStart"/>
                             </RibbonGallery>
                         </RibbonComboBox>
                         <Label Grid.Row="1" Grid.Column="2" Content="to"/>
-                        <RibbonComboBox Grid.Row="1" Grid.Column="3" SelectionBoxWidth="30">
+                        <RibbonComboBox Grid.Row="1" Grid.Column="3" SelectionBoxWidth="30" IsEditable="True">
                             <RibbonGallery x:Name="cboYEnd">
                                 <RibbonGalleryCategory x:Name="catYEnd"/>
                             </RibbonGallery>
