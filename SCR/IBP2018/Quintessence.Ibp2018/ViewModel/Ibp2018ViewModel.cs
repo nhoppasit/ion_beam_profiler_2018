@@ -153,7 +153,7 @@ namespace Quintessence.Ibp2018.ViewModel
             // Current-1 data table
             _CurrentTables = new List<Ibp2018DataTableModel>();
             _CurrentTables.Add(new Ibp2018DataTableModel());
-            _CurrentTables[0].GenerateNewDemoData(0.02, 0.02, 0, 0.1, 0, 0.1);
+            _CurrentTables[0].GenerateNewDemoData(0.02, 0.02, 0, 20, 0, 20);
 
             // Binding columns name and header
             for (int i = 0; i < _CurrentTables[0].ColumnNames.Count; i++)
