@@ -15,7 +15,6 @@ using System.Windows.Controls;
 using System.Data;
 using System.Windows.Media;
 using Quintessence.Ibp2018.Model;
-using Quintessence.Ibp2018.View;
 using System.Windows.Data;
 using Quintessence.MotionControl;
 
@@ -41,12 +40,6 @@ namespace Quintessence.Ibp2018.ViewModel
          * ---------------------------------------------------------- */
         private IList<Gpib34401aInfo> _Ammeters;
         public IList<Gpib34401aInfo> Ammeters { get { return _Ammeters; } set { _Ammeters = value; } }
-        private MMC2Info _XyMmc;
-        public MMC2Info XyMmc { get { return _XyMmc; } set { _XyMmc = value; } }
-        private MMC2Info _ZMmc;
-        public MMC2Info ZMmc { get { return _ZMmc; } set { _ZMmc = value; } }
-        private IList<Ibp2018DataTableModel> _CurrentTables;
-        public IList<Ibp2018DataTableModel> CurrentTables { get { return _CurrentTables; } set { _CurrentTables = value; } }
 
         /* ----------------------------------------------------------
          * Ammeter-1 Properties
@@ -85,27 +78,22 @@ namespace Quintessence.Ibp2018.ViewModel
         public string A2VisaAddressText { get { return _Ammeters[1].VisaAddress; } }
         public double Current2 { get { return _Ammeters[1].Current; } set { _Ammeters[1].Current = value; OnPropertyChanged("Current2Text"); } }
         public string Current2Text { get { return _Ammeters[0].Current.ToString(); } set { _Ammeters[0].Current = Convert.ToSingle(value); OnPropertyChanged("Current1Text"); } }
-        private bool isBusyAmmeter2 = false;
-
 
         /* ----------------------------------------------------------
-         * ColumnCollection designed for dynamic datagrid columns
+         * X-Y scanner and Z axis object
          * ---------------------------------------------------------- */
-        private ObservableCollection<DataGridColumn> _columnCollection = new ObservableCollection<DataGridColumn>();
-        public ObservableCollection<DataGridColumn> ColumnCollection
-        {
-            get
-            {
-                return this._columnCollection;
-            }
-            set
-            {
-                _columnCollection = value;
-                OnPropertyChanged("ColumnCollection");
-                //Error
-                //base.OnPropertyChanged<ObservableCollection<DataGridColumn>>(() => this.ColumnCollection);
-            }
-        }
+        private MMC2Info _XyMmc;
+        public MMC2Info XyMmc { get { return _XyMmc; } set { _XyMmc = value; } }
+        public string XyMmcPortName { get { return _XyMmc.SerialPortName; } set { _XyMmc.SerialPortName = value; OnPropertyChanged("XyMmcPortName"); } }
+        private MMC2Info _ZMmc;
+        public MMC2Info ZMmc { get { return _ZMmc; } set { _ZMmc = value; } }
+        public string ZMmcPortName { get { return _ZMmc.SerialPortName; } set { _ZMmc.SerialPortName = value; OnPropertyChanged("ZMmcPortName"); } }
+
+        /* ----------------------------------------------------------
+         * Current tables
+         * ---------------------------------------------------------- */
+        private IList<Ibp2018DataTableModel> _CurrentTables;
+        public IList<Ibp2018DataTableModel> CurrentTables { get { return _CurrentTables; } set { _CurrentTables = value; } }
 
         /* ----------------------------------------------------------
          * File / Current-1 Properties
@@ -127,6 +115,26 @@ namespace Quintessence.Ibp2018.ViewModel
         }
 
         /* ----------------------------------------------------------
+         * ColumnCollection designed for dynamic datagrid columns
+         * ---------------------------------------------------------- */
+        private ObservableCollection<DataGridColumn> _columnCollection = new ObservableCollection<DataGridColumn>();
+        public ObservableCollection<DataGridColumn> ColumnCollection
+        {
+            get
+            {
+                return this._columnCollection;
+            }
+            set
+            {
+                _columnCollection = value;
+                OnPropertyChanged("ColumnCollection");
+                //Error
+                //base.OnPropertyChanged<ObservableCollection<DataGridColumn>>(() => this.ColumnCollection);
+            }
+        }
+
+
+        /* ----------------------------------------------------------
          * Commands for binding to buttons
          * ---------------------------------------------------------- */
         public ICommand InitializeMeter { get; set; }
@@ -134,8 +142,9 @@ namespace Quintessence.Ibp2018.ViewModel
         public ICommand Measure { get; set; }
         public ICommand GenerateNewDemoData { get; set; }
 
-        // Serial port command
-        public ICommand ReconnectMMC2 { get; set; }
+        // Commands of xy and z mmc reconnect
+        public ICommand ReconnectXyMmc { get; set; }
+        public ICommand ReconnectZMmc { get; set; }
 
         /* ----------------------------------------------------------
          * CONSTRUCTOR
@@ -156,6 +165,8 @@ namespace Quintessence.Ibp2018.ViewModel
             _Ammeters.Add(a2);
 
             // Create XYZ scanner object
+            _XyMmc = new MMC2Info();
+            _ZMmc = new MMC2Info();
 
             // Create data tables object
             _CurrentTables = new List<Ibp2018DataTableModel>();
@@ -172,8 +183,9 @@ namespace Quintessence.Ibp2018.ViewModel
             Measure = new RelayCommand(ExecuteMeasureMethod, CanExecuteMeasureMethod);
             GenerateNewDemoData = new RelayCommand(ExecuteGenerateDemoDataMethod, CanExecuteGenerateDemoDataMethod);
 
-            // Serial port
-            ReconnectMMC2 = new RelayCommand();
+            // Serial port of xy and z mmc
+            ReconnectXyMmc = new RelayCommand(ExecuteReconnectXyMmcMethod, CanExecuteReconnectXyMmcMethod);
+            ReconnectZMmc = new RelayCommand(ExecuteReconnectZMmcMethod, CanExecuteReconnectZMmcMethod);
         }
 
         /* ----------------------------------------------------------
@@ -278,14 +290,27 @@ namespace Quintessence.Ibp2018.ViewModel
                     XyMmcReconnecting = true;
                     XyMmcConnected = false;
                     PortResponse pr = XyMmc.Connect();
-                    XyMmcConnected = true;
-                    XyMmcReconnecting = false;
+                    if (pr.Code == PortResponse.SUCCESS)
+                    {
+                        XyMmcConnected = true;
+                        XyMmcReconnecting = false;
+                        MessageBox.Show("X-Y scanner mmc2 on " + XyMmc.SerialPortName + " reconnected.", "X-Y scanner", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        XyMmcConnected = true;
+                        XyMmcReconnecting = false;
+                        MessageBox.Show("Cannot reconnect X-Y scanner mmc2 on " + XyMmc.SerialPortName + ". " + pr.Message,
+                        "X-Y scanner", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    }
                 }
                 catch (Exception ex)
                 {
                     PortResponse pr = new PortResponse("RE", ex.Message, ex);
                     XyMmcConnected = false;
                     XyMmcReconnecting = false;
+                    MessageBox.Show("Cannot reconnect X-Y scanner mmc2 on " + XyMmc.SerialPortName + ". " + ex.Message,
+                        "X-Y scanner", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             }
             canReconnectXyMmc = true;

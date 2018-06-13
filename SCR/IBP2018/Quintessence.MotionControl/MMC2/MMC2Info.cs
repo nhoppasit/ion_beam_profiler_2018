@@ -4,11 +4,23 @@ using System.Linq;
 using System.Text;
 using System.IO.Ports;
 using System.Threading;
+using System.ComponentModel;
 
 namespace Quintessence.MotionControl.MMC2
 {
-    public class MMC2Info
+    public class MMC2Info : INotifyPropertyChanged
     {
+        #region INotifyPropertyChanged Implementation
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+        #endregion
+
         /* ----------------------------------------------------------  
          * กายภาพของมอเตอร์ 5-phase
          * ----------------------------------------------------------  */
@@ -65,6 +77,8 @@ namespace Quintessence.MotionControl.MMC2
         {
             try
             {
+                if (_SerialPortName == null) return new PortResponse(PortResponse.ERR_PORTNAME, "Port name cannot be null.", null);
+                if (_SerialPortName.Equals("")) return new PortResponse(PortResponse.ERR_PORTNAME, "Port name must not be empty.", null);
                 if (Port == null)
                 {
                     Port = new SerialPort();
@@ -84,12 +98,12 @@ namespace Quintessence.MotionControl.MMC2
                 Port.NewLine = "\n";
                 Port.Open();
                 Thread.Sleep(100);
-                PortResponse pr = new PortResponse("00", "Connected", null);
+                PortResponse pr = new PortResponse(PortResponse.SUCCESS, "Connected on " + _SerialPortName + " successful. ", null);
                 return pr;
             }
             catch (Exception ex)
             {
-                PortResponse pr = new PortResponse("CE", "Connected " + _SerialPortName + " error. " + ex.Message, ex);
+                PortResponse pr = new PortResponse(PortResponse.ERR_OPEN, "Connect on " + _SerialPortName + " error. " + ex.Message, ex);
                 return pr;
             }
         }

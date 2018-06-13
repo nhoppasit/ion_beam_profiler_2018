@@ -17,9 +17,9 @@ namespace IBP2018
     /// <summary>
     /// Interaction logic for WaitGenerateColumnDialog.xaml
     /// </summary>
-    public partial class WaitGenerateColumnDialog : Window
+    public partial class WaitDialog : Window
     {
-        public WaitGenerateColumnDialog()
+        public WaitDialog()
         {
             InitializeComponent();
         }

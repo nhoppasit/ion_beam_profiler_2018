@@ -299,11 +299,11 @@
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
                         <RibbonMenuButton Grid.Row="0" Grid.Column="0" Label="X-Y MMC">
-                            <RibbonMenuItem Header="Re-connect"/>
+                            <RibbonMenuItem Header="Re-connect" KeyTip="RX" Command="{Binding ReconnectXyMmc}"/>
                         </RibbonMenuButton>
-                        <RibbonTextBox Grid.Row="0" Grid.Column="1" x:Name="txtXYPortName" Text="COM4" HorizontalContentAlignment="Center" TextBoxWidth="60"/>
+                        <RibbonTextBox Grid.Row="0" Grid.Column="1" x:Name="txtXYPortName" Text=""  HorizontalContentAlignment="Center" TextBoxWidth="60"/>
                         <RibbonMenuButton Grid.Row="1" Grid.Column="0" Label="Z MMC" HorizontalContentAlignment="Right">
-                            <RibbonMenuItem Header="Re-connect"/>
+                            <RibbonMenuItem Header="Re-connect" KeyTip="RZ" Command="{Binding ReconnectZMmc}"/>
                         </RibbonMenuButton>
                         <RibbonTextBox Grid.Row="1" Grid.Column="1" x:Name="txtZPortName" Text="COM5" HorizontalContentAlignment="Center" TextBoxWidth="60"/>
                     </Grid>

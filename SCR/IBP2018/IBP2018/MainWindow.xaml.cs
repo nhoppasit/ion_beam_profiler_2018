@@ -43,11 +43,16 @@ namespace IBP2018
         {
             Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
 
-            WaitGenerateColumnDialog dlg = new WaitGenerateColumnDialog();
+            WaitDialog dlg = new WaitDialog();
             dlg.Title = "Wait";
             dlg.Topmost = true;
             bw.DoWork += (o, ea) =>
             {
+                dlg.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
+                {
+                    dlg.Show();
+                    Thread.Sleep(100);
+                }));
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
                 bool _continue = true;
@@ -72,29 +77,6 @@ namespace IBP2018
                 Thread.Sleep(100);
             }));
             bw.RunWorkerAsync();
-
-            //this.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
-            //{
-            //    WaitGenerateColumnDialog dlg = new WaitGenerateColumnDialog();
-            //    dlg.Topmost = true;                
-            //    dlg.Show();
-            //    Thread.Sleep(100);
-            //    Stopwatch sw = new Stopwatch();
-            //    sw.Start();
-            //    bool _continue = true;
-            //    while (_continue)
-            //    {
-            //        if (sw.ElapsedMilliseconds > 1000 * 20)
-            //        {
-            //            sw.Stop();
-            //            _continue = false;
-            //        }
-            //        if (dgvCurrent1.Columns.Count >= 1000) _continue = false;
-            //        Thread.Sleep(100);
-            //    }
-            //    dlg.Close();
-            //}));
-
         }
 
 
