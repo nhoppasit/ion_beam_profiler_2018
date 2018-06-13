@@ -171,6 +171,7 @@ namespace Quintessence.Ibp2018.ViewModel
          * ---------------------------------------------------------- */
         private bool CanExecuteInitializeMeterMethod(object parameter) { return canMeasure; }
         private bool _continueInitMeter = true;
+        private int scanX_Idx, scanY_Idx;
         private void ExecuteInitializeMeterMethod(object parameter)
         {
             ThreadPool.QueueUserWorkItem(
@@ -182,11 +183,18 @@ namespace Quintessence.Ibp2018.ViewModel
                     canStop = true;
                     while (_continueInitMeter)
                     {
-                        Current1 += 1;
-                        System.Threading.Thread.Sleep(1000);
-                        GpibResponse gr = _Ammeters[0].CreateIO488Object();
-                        Current1 += 1;
+                        try
+                        {
+                            Current1 += 1;
+                            //DataTable dt = CurrentTable1;
+                            DataRow r = CurrentTable1.Rows[scanY_Idx];
+                            r[scanX_Idx + 1] = Current1;
+
+                            Thread.Sleep(1000);
+                        }
+                        catch (Exception ex) { }
                     }
+
                 });
         }
 
@@ -221,9 +229,21 @@ namespace Quintessence.Ibp2018.ViewModel
          * ---------------------------------------------------------- */
         private void GenerateDemoData()
         {
-            canDemo = false;
+            bool _continueProcessing=true;
+            ThreadPool.QueueUserWorkItem(
+                o =>
+                {
+                    while (_continueProcessing)
+                    {
+                        Current1 += 1;
+                        Thread.Sleep(200);
+                    }
+                });
+
+            
+            //canDemo = false;
             // Current-1 data table
-            _CurrentTables[0].GenerateNewDemoData(0.02, 0.02, 0, 20, 0, 20);
+            _CurrentTables[0].GenerateNewDemoColumns(0.1, 0.1, 0, 20, 0, 20, true);
 
             // Binding columns name and header
             for (int i = 0; i < _CurrentTables[0].ColumnNames.Count; i++)
@@ -234,6 +254,7 @@ namespace Quintessence.Ibp2018.ViewModel
                 textColumn.Binding = binding;
                 ColumnCollection.Add(textColumn);
             }
+            _continueProcessing = false;
             canDemo = true;
         }
         private bool canDemo = true;

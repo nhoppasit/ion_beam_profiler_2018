@@ -44,15 +44,10 @@ namespace IBP2018
                 }
                 else if (ne.Action == NotifyCollectionChangedAction.Add)
                 {
-                    ThreadPool.QueueUserWorkItem(
-                        o =>
-                        {
-                            foreach (DataGridColumn column in ne.NewItems)
-                            {
-                                App.Current.Dispatcher.Invoke(new Action(() => dataGrid.Columns.Add(column)));
-                                //dataGrid.Columns.Add(column);
-                            }
-                        });
+                    foreach (DataGridColumn column in ne.NewItems)
+                    {
+                        dataGrid.Columns.Add(column);
+                    }
                 }
                 else if (ne.Action == NotifyCollectionChangedAction.Move)
                 {
