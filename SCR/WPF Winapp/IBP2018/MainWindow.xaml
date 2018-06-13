@@ -358,7 +358,7 @@
         </Ribbon>
 
         <!--Current File-->
-        <DataGrid Grid.Row="1" x:Name="dgvCurrent1" AutoGenerateColumns="False" ItemsSource="{Binding Datatable}" local:DataGridColumnsBehavior.BindableColumns="{Binding ColumnCollection}" />
+        <DataGrid Grid.Row="1" x:Name="dgvCurrent1" AutoGenerateColumns="False" ItemsSource="{Binding CurrentTable1}" local:DataGridColumnsBehavior.BindableColumns="{Binding ColumnCollection}" />
 
     </Grid>
     

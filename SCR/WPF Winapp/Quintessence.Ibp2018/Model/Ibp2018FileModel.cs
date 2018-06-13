@@ -95,19 +95,34 @@ namespace Quintessence.Ibp2018.Model
             }
         }
 
-        public void GenerateNewDemoData(int rowCount, int colCount, double xStep, double yStep)
+        public IList<string> ColumnNames;
+        public IList<string> ColumnHeaders;
+
+        public void GenerateNewDemoData(double xStep, double yStep, double xMin, double xMax, double yMin, double yMax)
         {
-            // Colums
+            // Number of columns
+            int colCount = (int)((xMax - xMin) / xStep) + 1;
+            int rowCount = (int)((yMax - yMin) / yStep) + 1;
+
+            // Colums definetion
+            ColumnNames = new List<string>();
+            ColumnHeaders = new List<string>();
             dataTable.Columns.Add("Y_Step", typeof(string));
+            ColumnNames.Add("Y_Step");
+            ColumnHeaders.Add("Y Step");
             for (int i = 0; i < colCount; i++)
-                dataTable.Columns.Add("X_" + (i * xStep).ToString("F2"), typeof(string));
+            {
+                dataTable.Columns.Add("X_" + i.ToString(), typeof(string));
+                ColumnNames.Add("X_" + i.ToString());
+                ColumnHeaders.Add("X=" + (i * xStep).ToString("F2"));
+            }
 
             // Data rows
             Gpib34401aInfo meter = new Gpib34401aInfo();
             for (int r = 0; r < rowCount; r++)
             {
                 DataRow dataRow = dataTable.NewRow();
-                dataRow[0] = (r*yStep).ToString("F2");
+                dataRow[0] = (r * yStep).ToString("F2");
                 for (int c = 1; c < colCount; c++)
                 {
                     meter.GenerateNewDemoCurrent();
@@ -115,7 +130,6 @@ namespace Quintessence.Ibp2018.Model
                 }
                 dataTable.Rows.Add(dataRow);
             }
-
         }
     }
 }

@@ -15,6 +15,7 @@ using System.Windows.Controls;
 using System.Data;
 using System.Windows.Media;
 using Quintessence.Ibp2018.Model;
+using System.Windows.Data;
 
 namespace Quintessence.Ibp2018.ViewModel
 {
@@ -101,7 +102,7 @@ namespace Quintessence.Ibp2018.ViewModel
                 //base.OnPropertyChanged<ObservableCollection<DataGridColumn>>(() => this.ColumnCollection);
             }
         }
-        
+
         /* ----------------------------------------------------------
          * File / Current-1 Properties
          * ---------------------------------------------------------- */
@@ -149,57 +150,22 @@ namespace Quintessence.Ibp2018.ViewModel
             ConfigureMeter = new RelayCommand(ExecuteConfigureMeterMethod, CanExecuteConfigureMeterMethod);
             Measure = new RelayCommand(ExecuteMeasureMethod, CanExecuteMeasureMethod);
 
-            // Current-1 table
-            _CurrentTables[0].GenerateNewDemoData(10, 10, 0.02, 0.02);
-            System.Windows.Data.Binding bindings = new System.Windows.Data.Binding("Name");
-            System.Windows.Data.Binding bindings1 = new System.Windows.Data.Binding("Phone");
-            System.Windows.Data.Binding bindings2 = new System.Windows.Data.Binding("Color");
-            DataGridTextColumn s = new DataGridTextColumn();
-            s.Header = "Name";
-            s.Binding = bindings;
-            DataGridTextColumn s1 = new DataGridTextColumn();
-            s1.Header = "Phone";
-            s1.Binding = bindings1;
-            DataGridTextColumn s2 = new DataGridTextColumn();
-            s2.Header = "Color";
-            s2.Binding = bindings2;
+            // Current-1 data table
+            _CurrentTables = new List<Ibp2018DataTableModel>();
+            _CurrentTables.Add(new Ibp2018DataTableModel());
+            _CurrentTables[0].GenerateNewDemoData(0.02, 0.02, 0, 0.1, 0, 0.1);
 
-            FrameworkElementFactory textblock = new FrameworkElementFactory(typeof(TextBlock));
-            textblock.Name = "text";
-            System.Windows.Data.Binding prodID = new System.Windows.Data.Binding("Name");
-            System.Windows.Data.Binding color = new System.Windows.Data.Binding("Color");
-            textblock.SetBinding(TextBlock.TextProperty, prodID);
-            textblock.SetValue(TextBlock.TextWrappingProperty, TextWrapping.Wrap);
-            //textblock.SetValue(TextBlock.BackgroundProperty, color);
-            textblock.SetValue(TextBlock.NameProperty, "textblock");
-            //FrameworkElementFactory border = new FrameworkElementFactory(typeof(Border));
-            //border.SetValue(Border.NameProperty, "border");
-            //border.AppendChild(textblock);
-            //DataTrigger t = new DataTrigger();
-            //t.Binding = new System.Windows.Data.Binding { Path = new PropertyPath("Name"), Converter = new EnableConverter(), ConverterParameter = "Phone" };
-            //t.Value = 1;
-            //t.Setters.Add(new Setter(TextBlock.BackgroundProperty, Brushes.LightGreen, textblock.Name));
-            //t.Setters.Add(new Setter(TextBlock.ToolTipProperty, bindings, textblock.Name));
-            //DataTrigger t1 = new DataTrigger();
-            //t1.Binding = new System.Windows.Data.Binding { Path = new PropertyPath("Name"), Converter = new EnableConverter(), ConverterParameter = "Phone" };
-            //t1.Value = 2;
-            //t1.Setters.Add(new Setter(TextBlock.BackgroundProperty, Brushes.LightYellow, textblock.Name));
-            //t1.Setters.Add(new Setter(TextBlock.ToolTipProperty, bindings, textblock.Name));
-
-            DataTemplate d = new DataTemplate();
-            d.VisualTree = textblock;
-            //d.Triggers.Add(t);
-            //d.Triggers.Add(t1);
-
-            DataGridTemplateColumn s3 = new DataGridTemplateColumn();
-            s3.Header = "Name 1";
-            s3.CellTemplate = d;
-            s3.Width = 140;
-
-            ColumnCollection.Add(s);
-            ColumnCollection.Add(s1);
-            ColumnCollection.Add(s2);
-            ColumnCollection.Add(s3);
+            // Binding columns
+            List<Binding> bindings = new List<Binding>();
+            List<DataGridTextColumn> textColumns = new List<DataGridTextColumn>();
+            for (int i = 0; i < _CurrentTables[0].ColumnNames.Count; i++)
+            {
+                bindings.Add(new Binding(_CurrentTables[0].ColumnNames[i]));
+                textColumns.Add(new DataGridTextColumn());
+                textColumns[i].Header = _CurrentTables[0].ColumnHeaders[i];
+                textColumns[i].Binding = bindings[i];
+                ColumnCollection.Add(textColumns[i]);
+            }
         }
 
         private bool CanExecuteInitializeMeterMethod(object parameter)
