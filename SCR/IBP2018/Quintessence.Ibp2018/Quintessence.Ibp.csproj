@@ -57,9 +57,6 @@
     <Compile Include="View\AboutBox1.Designer.cs">
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\WaitDialog.xaml.cs">
-      <DependentUpon>WaitDialog.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Quintessence.Meter\Quintessence.Meter.csproj">
@@ -74,12 +71,6 @@
       <Project>{5afb31cd-c63d-4f81-a151-4721bdbcb395}</Project>
       <Name>Quintessence.WpfCommands</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="View\WaitDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="View\AboutBox1.resx">

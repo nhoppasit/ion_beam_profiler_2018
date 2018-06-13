@@ -231,10 +231,8 @@ namespace Quintessence.Ibp2018.ViewModel
         bool _continueProcessing = true;
         private void GenerateDemoData()
         {
-            AboutBox1 dlg = new AboutBox1();
-            dlg.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            dlg.TopMost = true;
-            dlg.Show();
+            // Wait dialog can show in view 
+            // Wait for columns.count
 
             canDemo = false;
             // Current-1 data table
@@ -249,9 +247,7 @@ namespace Quintessence.Ibp2018.ViewModel
                 textColumn.Binding = binding;
                 ColumnCollection.Add(textColumn);
             }
-
-            dlg.Close();
-            dlg.Dispose();
+            
             canDemo = true;
         }
         private bool canDemo = true;

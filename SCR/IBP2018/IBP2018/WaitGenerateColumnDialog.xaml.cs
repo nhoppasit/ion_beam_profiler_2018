@@ -12,14 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Quintessence.Ibp.View
+namespace IBP2018
 {
     /// <summary>
-    /// Interaction logic for WaitDialog.xaml
+    /// Interaction logic for WaitGenerateColumnDialog.xaml
     /// </summary>
-    public partial class WaitDialog : Window
+    public partial class WaitGenerateColumnDialog : Window
     {
-        public WaitDialog()
+        public WaitGenerateColumnDialog()
         {
             InitializeComponent();
         }

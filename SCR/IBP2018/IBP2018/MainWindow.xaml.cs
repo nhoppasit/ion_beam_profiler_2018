@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Threading;
+using System.ComponentModel;
 
 namespace IBP2018
 {
@@ -29,7 +32,68 @@ namespace IBP2018
             SetStatesText();
 
             // "Version: " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
+            mnuDemoData.Click += MnuDemoData_Click;
         }
+
+        BackgroundWorker bw = new BackgroundWorker();
+
+        private void MnuDemoData_Click(object sender, RoutedEventArgs e)
+        {
+            WaitGenerateColumnDialog dlg = new WaitGenerateColumnDialog();
+            dlg.Title = "Wait";
+            dlg.Topmost = true;
+            bw.DoWork += (o, ea) =>
+            {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                bool _continue = true;
+                while (_continue)
+                {
+                    if (sw.ElapsedMilliseconds > 1000 * 20)
+                    {
+                        sw.Stop();
+                        _continue = false;
+                    }
+                    if (dgvCurrent1.Columns.Count >= 1000) _continue = false;
+                    Thread.Sleep(100);
+                }
+            };
+            bw.RunWorkerCompleted += (o, ea) =>
+            {
+                dlg.Close();
+            };
+            dlg.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
+            {
+                dlg.Show();
+                Thread.Sleep(100);
+            }));
+            bw.RunWorkerAsync();
+
+            //this.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
+            //{
+            //    WaitGenerateColumnDialog dlg = new WaitGenerateColumnDialog();
+            //    dlg.Topmost = true;                
+            //    dlg.Show();
+            //    Thread.Sleep(100);
+            //    Stopwatch sw = new Stopwatch();
+            //    sw.Start();
+            //    bool _continue = true;
+            //    while (_continue)
+            //    {
+            //        if (sw.ElapsedMilliseconds > 1000 * 20)
+            //        {
+            //            sw.Stop();
+            //            _continue = false;
+            //        }
+            //        if (dgvCurrent1.Columns.Count >= 1000) _continue = false;
+            //        Thread.Sleep(100);
+            //    }
+            //    dlg.Close();
+            //}));
+
+        }
+
 
         // เพิ่มค่า Step
         void InitializeRibbonComboboxMember()
@@ -75,7 +139,7 @@ namespace IBP2018
                  sb.Append(Environment.NewLine);
                  sb.Append("Y Range = ( "); sb.Append(cboYStart.SelectedItem.ToString()); sb.Append(", "); sb.Append(cboYEnd.SelectedItem.ToString()); sb.Append(" ) mm");
                  lbScannerSetting2.Content = sb.ToString();
-                                 
+
              });
         }
     }
