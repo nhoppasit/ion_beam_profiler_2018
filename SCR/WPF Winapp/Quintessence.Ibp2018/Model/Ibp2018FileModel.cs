@@ -122,11 +122,11 @@ namespace Quintessence.Ibp2018.Model
             for (int r = 0; r < rowCount; r++)
             {
                 DataRow dataRow = dataTable.NewRow();
-                dataRow[0] = (r * yStep).ToString("F2");
-                for (int c = 1; c < colCount; c++)
+                dataRow[0] = "Y=" + (r * yStep).ToString("F2");
+                for (int c = 0; c < colCount; c++)
                 {
                     meter.GenerateNewDemoCurrent();
-                    dataRow[c] = meter.Current.ToString("0.0000");
+                    dataRow[c + 1] = meter.Current.ToString("0.0000");
                 }
                 dataTable.Rows.Add(dataRow);
             }
