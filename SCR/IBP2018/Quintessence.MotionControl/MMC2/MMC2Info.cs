@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO.Ports;
+using System.Threading;
 
 namespace Quintessence.MotionControl.MMC2
 {
@@ -55,5 +57,56 @@ namespace Quintessence.MotionControl.MMC2
         private float _XFigtureMaximum; public float XFigtureMaximum { get { return _XFigtureMaximum; } set { _XFigtureMaximum = value; } }
         private float _YFigtureMaximum; public float YFigtureMaximum { get { return _YFigtureMaximum; } set { _YFigtureMaximum = value; } }
 
+        /* ----------------------------------------------------------  
+         * Initialize serial port
+         * ----------------------------------------------------------  */
+        public SerialPort Port = new SerialPort();
+        public PortResponse Connect()
+        {
+            try
+            {
+                if (Port == null)
+                {
+                    Port = new SerialPort();
+                    Port.PortName = _SerialPortName;
+                }
+                if (Port.IsOpen) Port.Close();
+                Port.PortName = _SerialPortName;
+                Port.BaudRate = 9600;
+                Port.DataBits = 8;
+                Port.StopBits = StopBits.One;
+                Port.Handshake = Handshake.None;
+                Port.Parity = Parity.None;
+                Port.Encoding = System.Text.Encoding.Default;
+                Port.ReadTimeout = 70;
+                Port.RtsEnable = false;
+                Port.DtrEnable = false;
+                Port.NewLine = "\n";
+                Port.Open();
+                Thread.Sleep(100);
+                PortResponse pr = new PortResponse("00", "Connected", null);
+                return pr;
+            }
+            catch (Exception ex)
+            {
+                PortResponse pr = new PortResponse("CE", "Connected " + _SerialPortName + " error. " + ex.Message, ex);
+                return pr;
+            }
+        }
+        public PortResponse Disconnect()
+        {
+            try
+            {
+                Port.Close();
+                Thread.Sleep(100);
+                PortResponse pr = new PortResponse("00", "Disconnected", null);
+                return pr;
+            }
+            catch (Exception ex)
+            {
+                PortResponse pr = new PortResponse("DE", "Disconnected " + _SerialPortName + " error. " + ex.Message, ex);
+                return pr;
+            }
+        }
     }
 }

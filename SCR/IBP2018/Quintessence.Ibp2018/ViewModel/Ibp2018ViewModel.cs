@@ -17,6 +17,7 @@ using System.Windows.Media;
 using Quintessence.Ibp2018.Model;
 using Quintessence.Ibp2018.View;
 using System.Windows.Data;
+using Quintessence.MotionControl;
 
 namespace Quintessence.Ibp2018.ViewModel
 {
@@ -40,8 +41,10 @@ namespace Quintessence.Ibp2018.ViewModel
          * ---------------------------------------------------------- */
         private IList<Gpib34401aInfo> _Ammeters;
         public IList<Gpib34401aInfo> Ammeters { get { return _Ammeters; } set { _Ammeters = value; } }
-        private IList<MMC2Info> _MMC2s;
-        public IList<MMC2Info> MMC2s { get { return _MMC2s; } set { _MMC2s = value; } }
+        private MMC2Info _XyMmc;
+        public MMC2Info XyMmc { get { return _XyMmc; } set { _XyMmc = value; } }
+        private MMC2Info _ZMmc;
+        public MMC2Info ZMmc { get { return _ZMmc; } set { _ZMmc = value; } }
         private IList<Ibp2018DataTableModel> _CurrentTables;
         public IList<Ibp2018DataTableModel> CurrentTables { get { return _CurrentTables; } set { _CurrentTables = value; } }
 
@@ -131,6 +134,9 @@ namespace Quintessence.Ibp2018.ViewModel
         public ICommand Measure { get; set; }
         public ICommand GenerateNewDemoData { get; set; }
 
+        // Serial port command
+        public ICommand ReconnectMMC2 { get; set; }
+
         /* ----------------------------------------------------------
          * CONSTRUCTOR
          * ---------------------------------------------------------- */
@@ -165,6 +171,9 @@ namespace Quintessence.Ibp2018.ViewModel
             ConfigureMeter = new RelayCommand(ExecuteConfigureMeterMethod, CanExecuteConfigureMeterMethod);
             Measure = new RelayCommand(ExecuteMeasureMethod, CanExecuteMeasureMethod);
             GenerateNewDemoData = new RelayCommand(ExecuteGenerateDemoDataMethod, CanExecuteGenerateDemoDataMethod);
+
+            // Serial port
+            ReconnectMMC2 = new RelayCommand();
         }
 
         /* ----------------------------------------------------------
@@ -228,7 +237,6 @@ namespace Quintessence.Ibp2018.ViewModel
         /* ----------------------------------------------------------
          * DEMO DATA
          * ---------------------------------------------------------- */
-        bool _continueProcessing = true;
         private void GenerateDemoData()
         {
             // Wait dialog can show in view 
@@ -247,11 +255,69 @@ namespace Quintessence.Ibp2018.ViewModel
                 textColumn.Binding = binding;
                 ColumnCollection.Add(textColumn);
             }
-            
+
             canDemo = true;
         }
         private bool canDemo = true;
         private bool CanExecuteGenerateDemoDataMethod(object parameter) { return canDemo; }
         public void ExecuteGenerateDemoDataMethod(object parameter) { GenerateDemoData(); }
+
+        // Reconnect xy mmc command
+        private object XyMmcLock = new object();
+        public bool XyMmcReconnecting = false;
+        public bool XyMmcConnected = false;
+        private bool canReconnectXyMmc = true;
+        private bool CanExecuteReconnectXyMmcMethod(object parameter) { return canReconnectXyMmc; }
+        private void ExecuteReconnectXyMmcMethod(object parameter)
+        {
+            canReconnectXyMmc = false;
+            lock (XyMmcLock)
+            {
+                try
+                {
+                    XyMmcReconnecting = true;
+                    XyMmcConnected = false;
+                    PortResponse pr = XyMmc.Connect();
+                    XyMmcConnected = true;
+                    XyMmcReconnecting = false;
+                }
+                catch (Exception ex)
+                {
+                    PortResponse pr = new PortResponse("RE", ex.Message, ex);
+                    XyMmcConnected = false;
+                    XyMmcReconnecting = false;
+                }
+            }
+            canReconnectXyMmc = true;
+        }
+
+        // Reconnect z mmc command
+        private object ZMmcLock = new object();
+        public bool ZMmcReconnecting = false;
+        public bool ZMmcConnected = false;
+        private bool canReconnectZMmc = true;
+        private bool CanExecuteReconnectZMmcMethod(object parameter) { return canReconnectZMmc; }
+        private void ExecuteReconnectZMmcMethod(object parameter)
+        {
+            canReconnectZMmc = false;
+            lock (ZMmcLock)
+            {
+                try
+                {
+                    ZMmcReconnecting = true;
+                    ZMmcConnected = false;
+                    PortResponse pr = ZMmc.Connect();
+                    ZMmcConnected = true;
+                    ZMmcReconnecting = false;
+                }
+                catch (Exception ex)
+                {
+                    PortResponse pr = new PortResponse("RE", ex.Message, ex);
+                    ZMmcConnected = false;
+                    ZMmcReconnecting = false;
+                }
+            }
+            canReconnectZMmc = true;
+        }
     }
 }
