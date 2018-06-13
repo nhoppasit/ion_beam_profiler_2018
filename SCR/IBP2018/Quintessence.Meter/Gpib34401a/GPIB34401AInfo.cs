@@ -23,8 +23,10 @@ namespace Quintessence.Meter.Gpib34401a
         /* ----------------------------------------------------------  
          * Gpib properties
          * ---------------------------------------------------------- */
-        private string _GpibInterfaceId; public string GpibInterfaceId { get { return _GpibInterfaceId; } }
-        private string _VisaAddress; public string VisaAddress { get { return _VisaAddress; } }
+        private string _GpibInterfaceId;
+        public string GpibInterfaceId { get { return _GpibInterfaceId; } }
+        private string _VisaAddress;
+        public string VisaAddress { get { return _VisaAddress; } }
         private int _GpibBoardNumber;
         public int GpibBoardNumber
         {
@@ -51,6 +53,8 @@ namespace Quintessence.Meter.Gpib34401a
                 OnPropertyChanged("VisaAddress");
             }
         }
+        private int _GpibTimeout = 7000;
+        public int GpibTimeout { get { return _GpibTimeout; } set { _GpibTimeout = value; OnPropertyChanged("GpibTimeout"); } }
 
         /* ----------------------------------------------------------  
          * GPIB interface
@@ -75,7 +79,7 @@ namespace Quintessence.Meter.Gpib34401a
                 return gr;
             }
         }
-        public GpibResponse InitializeMeter()
+        public GpibResponse InitializeMeterForCurrent()
         {
             // Verify IO 
             if (ioDmm == null)
@@ -84,10 +88,74 @@ namespace Quintessence.Meter.Gpib34401a
                 if (!gr.Code.Equals("00")) return gr;
             }
 
-            throw new NotImplementedException();
+            try
+            {
+                //create the resource manager and open a session with the instrument specified on txtAddress
+                ResourceManager grm = new ResourceManager();
+                ioDmm.IO = (IMessage)grm.Open(_VisaAddress, AccessMode.NO_LOCK, 2000, "");
+                ioDmm.IO.Timeout = 7000;
+                GpibResponse gr = new GpibResponse("00", "Initialize the instrument on " + _VisaAddress, null);
+                return gr;
+            }
+            catch (SystemException ex)
+            {
+                ioDmm.IO = null;
+                GpibResponse gr = new GpibResponse("IE", "Open failed on " + _VisaAddress + " " + ex.Source + "  " + ex.Message, ex);
+                return gr;
+            }
         }
-        public GpibResponse ConfigureMeter() { throw new NotImplementedException(); }
-        public GpibResponse Measure() { throw new NotImplementedException(); }
+        public GpibResponse ConfigureMeterForCurrent()
+        {
+            try
+            {
+                ioDmm.WriteString("*RST", true);//Reset the dmm                
+                ioDmm.WriteString("*CLS", true);//Clear the dmm registers                
+                ioDmm.WriteString("CALC:DBM:REF 50", true);//Set 50 ohm reference for dBm
+                ioDmm.WriteString("Conf:Volt:AC 1, 0.001", true);// Set dmm to 1 amp ac range                
+                ioDmm.WriteString(":Det:Band 200", true);// Select the 200 Hz (fast) ac filter                
+                ioDmm.WriteString("Trig:Coun 5", true);//dmm will accept 5 triggers                
+                ioDmm.WriteString("Trig:Sour IMM", true);//Trigger source is IMMediate                
+                ioDmm.WriteString("Calc:Func DBM", true);//Select dBm function                
+                ioDmm.WriteString("Calc:Stat ON", true);//Enable math and request operation complete                
+                ioDmm.WriteString("Read?", true);//Take readings; send to output buffer
+
+                // Get readings and parse into array of doubles
+                // Enter will wait until all readings are completed
+                //' print to Text box
+                double[] Readings = new double[5];
+                string sText = "";
+                Readings = (double[])ioDmm.ReadList(IEEEASCIIType.ASCIIType_R8, ",");
+                for (int iIndex = 0; iIndex < Readings.Length; iIndex++)
+                {
+                    sText = sText + Readings[iIndex].ToString() + " dBm" + "\r\n";
+                }
+                //Current = 0.00;
+                GpibResponse gr = new GpibResponse("00", "Readed", null);
+                return gr;
+            }
+            catch (SystemException ex)
+            {
+                GpibResponse gr = new GpibResponse("CE", "Configure command failed. " + ex.Source + "  " + ex.Message, ex);
+                return gr;
+            }
+        }
+        public GpibResponse MeasureCurrent()
+        {
+            try
+            {
+                ioDmm.WriteString("*RST", true);//Reset the dmm                
+                ioDmm.WriteString("*CLS", true);//Clear the dmm registers                
+                ioDmm.WriteString("Measure:Current:DC? 1A,0.001MA", true);// Set meter to 1 amp dc range, 0.001mA resolution
+                Current = (double)ioDmm.ReadNumber(IEEEASCIIType.ASCIIType_R4, true);
+                GpibResponse gr = new GpibResponse("00", Current.ToString(), null);
+                return gr;
+            }
+            catch (SystemException ex)
+            {
+                GpibResponse gr = new GpibResponse("ME", "Measure command failed. " + ex.Source + "  " + ex.Message, ex);
+                return gr;
+            }
+        }
 
         /* ----------------------------------------------------------  
          * Measured Value
