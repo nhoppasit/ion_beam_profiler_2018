@@ -372,21 +372,21 @@
                         <ColumnDefinition Width="200*"/>
                     </Grid.ColumnDefinitions>
 
-                    <DataGrid x:Name="dgvCurrent1" Grid.Column="0" AutoGenerateColumns="False" ItemsSource="{Binding CurrentTable1}" local:DataGridColumnsBehavior.BindableColumns="{Binding ColumnCollection}" />
-                    <GridSplitter Grid.Column="1" Background="DimGray"/>
+                    <DataGrid x:Name="dgvCurrent1" Grid.Column="0" AutoGenerateColumns="False" ItemsSource="{Binding CurrentTable1}" local:DataGridColumnsBehavior.BindableColumns="{Binding Current1ColumnCollection}" />
+                    <GridSplitter Grid.Column="1" Background="White" Width="5" HorizontalAlignment="Stretch"/>
 
                 </Grid>
             </TabItem>
             <TabItem Header="Current-2">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="400*"/>
-                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="5"/>
                         <ColumnDefinition Width="200*"/>
                     </Grid.ColumnDefinitions>
 
-                    <DataGrid x:Name="dgvCurrent2" AutoGenerateColumns="False" ItemsSource="{Binding CurrentTable2}" />
-                    <GridSplitter Grid.Column="1" Background="DimGray"/>
+                    <DataGrid x:Name="dgvCurrent2" AutoGenerateColumns="False" ItemsSource="{Binding CurrentTable2}" local:DataGridColumnsBehavior.BindableColumns="{Binding Current2ColumnCollection}" />
+                    <GridSplitter Grid.Column="1" Background="White" Width="5" HorizontalAlignment="Stretch"/>
                     
                 </Grid>
             </TabItem>

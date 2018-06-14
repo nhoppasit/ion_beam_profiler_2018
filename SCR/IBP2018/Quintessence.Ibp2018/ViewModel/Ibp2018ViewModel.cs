@@ -241,7 +241,7 @@ namespace Quintessence.Ibp2018.ViewModel
          * ColumnCollection designed for dynamic datagrid columns
          * ---------------------------------------------------------- */
         private ObservableCollection<DataGridColumn> _columnCollection = new ObservableCollection<DataGridColumn>();
-        public ObservableCollection<DataGridColumn> ColumnCollection
+        public ObservableCollection<DataGridColumn> Current1ColumnCollection
         {
             get
             {
@@ -423,13 +423,14 @@ namespace Quintessence.Ibp2018.ViewModel
             _CurrentTables[0].GenerateNewDemoColumns(_XyMmc.XScanStep, _XyMmc.YScanStep, _XyMmc.XScanStart, _XyMmc.XScanEnd, _XyMmc.YScanStart, _XyMmc.YScanEnd);
 
             // Binding columns name and header
+            Current1ColumnCollection.Clear();
             for (int i = 0; i < _CurrentTables[0].ColumnNames.Count; i++)
             {
                 Binding binding = new Binding(_CurrentTables[0].ColumnNames[i]);
                 DataGridTextColumn textColumn = new DataGridTextColumn();
                 textColumn.Header = _CurrentTables[0].ColumnHeaders[i];
                 textColumn.Binding = binding;
-                ColumnCollection.Add(textColumn);
+                Current1ColumnCollection.Add(textColumn);
             }
 
 

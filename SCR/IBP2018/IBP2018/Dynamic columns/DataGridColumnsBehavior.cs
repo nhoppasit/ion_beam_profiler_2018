@@ -38,10 +38,14 @@ namespace IBP2018
                 if (ne.Action == NotifyCollectionChangedAction.Reset)
                 {
                     dataGrid.Columns.Clear();
-                    foreach (DataGridColumn column in ne.NewItems)
+                    try
                     {
-                        dataGrid.Columns.Add(column);
+                        foreach (DataGridColumn column in ne.NewItems)
+                        {
+                            dataGrid.Columns.Add(column);
+                        }
                     }
+                    catch { }
                 }
                 else if (ne.Action == NotifyCollectionChangedAction.Add)
                 {
