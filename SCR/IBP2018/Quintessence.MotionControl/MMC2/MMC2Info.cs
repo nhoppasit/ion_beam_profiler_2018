@@ -60,10 +60,10 @@ namespace Quintessence.MotionControl.MMC2
         /* ----------------------------------------------------------  
          * Scan Area
          * ----------------------------------------------------------  */
-        private double _XScanMinimum; public double XScanMinimum { get { return _XScanMinimum; } set { _XScanMinimum = value; } }
-        private double _YScanMinimum; public double YScanMinimum { get { return _YScanMinimum; } set { _YScanMinimum = value; } }
-        private double _XScanMaximum; public double XScanMaximum { get { return _XScanMaximum; } set { _XScanMaximum = value; } }
-        private double _YScanMaximum; public double YScanMaximum { get { return _YScanMaximum; } set { _YScanMaximum = value; } }
+        private double _XScanMinimum; public double XScanStart { get { return _XScanMinimum; } set { _XScanMinimum = value; } }
+        private double _YScanMinimum; public double YScanStart { get { return _YScanMinimum; } set { _YScanMinimum = value; } }
+        private double _XScanMaximum; public double XScanEnd { get { return _XScanMaximum; } set { _XScanMaximum = value; } }
+        private double _YScanMaximum; public double YScanEnd { get { return _YScanMaximum; } set { _YScanMaximum = value; } }
 
         /* ----------------------------------------------------------  
          * Figture Range

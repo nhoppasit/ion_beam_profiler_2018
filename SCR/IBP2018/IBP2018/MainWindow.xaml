@@ -202,26 +202,26 @@
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="X Axis"/>
                         <RibbonComboBox Grid.Row="0" Grid.Column="1" SelectionBoxWidth="30" IsEditable="True">
-                            <RibbonGallery x:Name="cboXStart">
+                            <RibbonGallery x:Name="cboXStart" SelectedItem="{Binding XScanStart}">
                                 <RibbonGalleryCategory x:Name="catXStart"/>
                             </RibbonGallery>
                         </RibbonComboBox>
                         <Label Grid.Row="0" Grid.Column="2" Content="to"/>
                         <RibbonComboBox Grid.Row="0" Grid.Column="3" SelectionBoxWidth="30" IsEditable="True">
-                            <RibbonGallery x:Name="cboXEnd">
+                            <RibbonGallery x:Name="cboXEnd" SelectedItem="{Binding XScanEnd}">
                                 <RibbonGalleryCategory x:Name="catXEnd"/>
                             </RibbonGallery>
                         </RibbonComboBox>
                         <Label Grid.Row="0" Grid.Column="4" Content="mm"/>
                         <Label Grid.Row="1" Grid.Column="0" Content="Y Axis"/>
                         <RibbonComboBox Grid.Row="1" Grid.Column="1" SelectionBoxWidth="30" IsEditable="True">
-                            <RibbonGallery x:Name="cboYStart">
+                            <RibbonGallery x:Name="cboYStart" SelectedItem="{Binding YScanStart}">
                                 <RibbonGalleryCategory x:Name="catYStart"/>
                             </RibbonGallery>
                         </RibbonComboBox>
                         <Label Grid.Row="1" Grid.Column="2" Content="to"/>
                         <RibbonComboBox Grid.Row="1" Grid.Column="3" SelectionBoxWidth="30" IsEditable="True">
-                            <RibbonGallery x:Name="cboYEnd">
+                            <RibbonGallery x:Name="cboYEnd" SelectedItem="{Binding YScanEnd}">
                                 <RibbonGalleryCategory x:Name="catYEnd"/>
                             </RibbonGallery>
                         </RibbonComboBox>
@@ -241,10 +241,10 @@
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="Min"/>
-                        <RibbonTextBox Grid.Row="0"  Grid.Column="1" x:Name="txtXMin" KeyTip="MIX" Text="0" TextAlignment="Center" TextBoxWidth="25"/>
+                        <RibbonTextBox Grid.Row="0"  Grid.Column="1" x:Name="txtXMin" KeyTip="MIX" Text="{Binding XFigtureMinimum}" TextAlignment="Center" TextBoxWidth="25"/>
                         <Label Grid.Row="0"  Grid.Column="2" Content="mm"/>
                         <Label Grid.Row="1"  Grid.Column="0" Content="Max"/>
-                        <RibbonTextBox Grid.Row="1"  Grid.Column="1" x:Name="txtXMax" KeyTip="MAX" Text="23" TextAlignment="Center" TextBoxWidth="25"/>
+                        <RibbonTextBox Grid.Row="1"  Grid.Column="1" x:Name="txtXMax" KeyTip="MAX" Text="{Binding XFigtureMaximum}" TextAlignment="Center" TextBoxWidth="25"/>
                         <Label Grid.Row="1"  Grid.Column="2" Content="mm"/>
                     </Grid>
                 </RibbonGroup>
@@ -261,10 +261,10 @@
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="Min"/>
-                        <RibbonTextBox Grid.Row="0"  Grid.Column="1" x:Name="txtYMin" KeyTip="MIY" Text="0" TextAlignment="Center" TextBoxWidth="25"/>
+                        <RibbonTextBox Grid.Row="0"  Grid.Column="1" x:Name="txtYMin" KeyTip="MIY" Text="{Binding YFigtureMinimum}" TextAlignment="Center" TextBoxWidth="25"/>
                         <Label Grid.Row="0"  Grid.Column="2" Content="mm"/>
                         <Label Grid.Row="1"  Grid.Column="0" Content="Max"/>
-                        <RibbonTextBox Grid.Row="1"  Grid.Column="1" x:Name="txtYMax" KeyTip="MAY" Text="23" TextAlignment="Center" TextBoxWidth="25"/>
+                        <RibbonTextBox Grid.Row="1"  Grid.Column="1" x:Name="txtYMax" KeyTip="MAY" Text="{Binding YFigtureMaximum}" TextAlignment="Center" TextBoxWidth="25"/>
                         <Label Grid.Row="1"  Grid.Column="2" Content="mm"/>
                     </Grid>
                 </RibbonGroup>
@@ -281,10 +281,10 @@
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="Min"/>
-                        <RibbonTextBox Grid.Row="0"  Grid.Column="1" x:Name="txtZMin" KeyTip="MIZ" Text="0" TextAlignment="Center" TextBoxWidth="25"/>
+                        <RibbonTextBox Grid.Row="0"  Grid.Column="1" x:Name="txtZMin" KeyTip="MIZ" Text="{Binding ZFigtureMinimum}" TextAlignment="Center" TextBoxWidth="25"/>
                         <Label Grid.Row="0"  Grid.Column="2" Content="mm"/>
                         <Label Grid.Row="1"  Grid.Column="0" Content="Max"/>
-                        <RibbonTextBox Grid.Row="1"  Grid.Column="1" x:Name="txtZMax" KeyTip="MAZ" Text="90" TextAlignment="Center" TextBoxWidth="25"/>
+                        <RibbonTextBox Grid.Row="1"  Grid.Column="1" x:Name="txtZMax" KeyTip="MAZ" Text="{Binding ZFigtureMaximum}" TextAlignment="Center" TextBoxWidth="25"/>
                         <Label Grid.Row="1"  Grid.Column="2" Content="mm"/>
                     </Grid>
                 </RibbonGroup>
@@ -363,7 +363,34 @@
         </Ribbon>
 
         <!--Current File ต้องทำ 2 meter tab and 3d surface-->
-        <DataGrid Grid.Row="1" x:Name="dgvCurrent1" AutoGenerateColumns="False" ItemsSource="{Binding CurrentTable1}" local:DataGridColumnsBehavior.BindableColumns="{Binding ColumnCollection}" />
+        <TabControl Grid.Row="1">
+            <TabItem Header="Current-1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="400*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="200*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <DataGrid x:Name="dgvCurrent1" Grid.Column="0" AutoGenerateColumns="False" ItemsSource="{Binding CurrentTable1}" local:DataGridColumnsBehavior.BindableColumns="{Binding ColumnCollection}" />
+                    <GridSplitter Grid.Column="1" Background="DimGray"/>
+
+                </Grid>
+            </TabItem>
+            <TabItem Header="Current-2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="400*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="200*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <DataGrid x:Name="dgvCurrent2" AutoGenerateColumns="False" ItemsSource="{Binding CurrentTable2}" />
+                    <GridSplitter Grid.Column="1" Background="DimGray"/>
+                    
+                </Grid>
+            </TabItem>
+        </TabControl>
 
     </Grid>
 
