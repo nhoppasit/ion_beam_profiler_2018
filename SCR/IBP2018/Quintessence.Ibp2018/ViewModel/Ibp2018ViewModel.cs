@@ -267,8 +267,11 @@ namespace Quintessence.Ibp2018.ViewModel
         // Commands of xy and z mmc reconnect
         public ICommand ReconnectXyMmc { get; set; }
         public ICommand ReconnectZMmc { get; set; }
-        public ICommand QueryScanner { get; set; }
-        public ICommand UnqueryScanner { get; set; }
+        public ICommand QueryScannerCommand { get; set; }
+        public ICommand UnqueryScannerCommand { get; set; }
+
+        // New measurement
+        public ICommand NewMeasurementCommand { get; set; }
 
         /* ----------------------------------------------------------
          * CONSTRUCTOR
@@ -310,17 +313,54 @@ namespace Quintessence.Ibp2018.ViewModel
             ReconnectZMmc = new RelayCommand(ExecuteReconnectZMmcMethod, CanExecuteReconnectZMmcMethod);
 
             // Query and unquery scanner 
-            QueryScanner = new RelayCommand(ExecuteQueryScannerMethod, CanExecuteQueryScannerMethod);
-            UnqueryScanner = new RelayCommand(ExecuteUnqueryScannerMethod, CanExecuteUnqueryScannerMethod);
+            QueryScannerCommand = new RelayCommand(ExecuteQueryScannerMethod, CanExecuteQueryScannerMethod);
+            UnqueryScannerCommand = new RelayCommand(ExecuteUnqueryScannerMethod, CanExecuteUnqueryScannerMethod);
+
+            // New measurement
+            NewMeasurementCommand = new RelayCommand(ExecuteNewMeasurementMethod, CanExecuteNewMeasurementMethod);
+
         }
+
+        /* ----------------------------------------------------------
+         * New measurement command by button
+         * ---------------------------------------------------------- */
+        private void NewMeasurement()
+        {
+            // Wait dialog can show in UI
+            // AWait for ColumnsGenerating == false
+            canNewMeasurement = false;
+            ColumnsGenerating = true;
+
+            // Current-1 table columns definetion
+            _CurrentTables[0].GenerateNewDemoColumns(_XyMmc.XScanStep, _XyMmc.YScanStep, _XyMmc.XScanStart, _XyMmc.XScanEnd, _XyMmc.YScanStart, _XyMmc.YScanEnd);
+
+            // Current-1 table columns definetion
+
+            // Binding columns name and header
+            Current1ColumnCollection.Clear();
+            for (int i = 0; i < _CurrentTables[0].ColumnNames.Count; i++)
+            {
+                Binding binding = new Binding(_CurrentTables[0].ColumnNames[i]);
+                DataGridTextColumn textColumn = new DataGridTextColumn();
+                textColumn.Header = _CurrentTables[0].ColumnHeaders[i];
+                textColumn.Binding = binding;
+                Current1ColumnCollection.Add(textColumn);
+            }
+
+            ColumnsGenerating = false;
+            canNewMeasurement = true;
+        }
+        private bool canNewMeasurement = true;
+        public bool MustSavePreviousData = false;
+        private bool CanExecuteNewMeasurementMethod(object parameter) { return canNewMeasurement && !MustSavePreviousData; }
+        public void ExecuteNewMeasurementMethod(object parameter) { NewMeasurement(); }
 
         /* ----------------------------------------------------------
          * Query and unquery scanner
          * ---------------------------------------------------------- */
         private bool canQueryScanner = true;
         private bool _continueQueryScanner = true;
-        private bool CanExecuteQueryScannerMethod(object parameter) { return canQueryScanner; }
-        private void ExecuteQueryScannerMethod(object parameter)
+        private void QueryScanner()
         {
             ThreadPool.QueueUserWorkItem(
                 o =>
@@ -331,24 +371,32 @@ namespace Quintessence.Ibp2018.ViewModel
                     {
                         try
                         {
-                            XyMmc.QueryPosition(true);
-                            OnPropertyChanged("XLPosText");
-                            OnPropertyChanged("YLPosText");
+                            PortResponse pr = XyMmc.QueryPosition();
+                            // Verify
+                            if (pr.Code == PortResponse.SUCCESS)
+                            {
+                                OnPropertyChanged("XLPosText");
+                                OnPropertyChanged("YLPosText");
+                            }
+                            else
+                            {
+                                _continueQueryScanner = false;
+                                canQueryScanner = false;
+                                MessageBox.Show(pr.Message, "Query X-Y Scanner", MessageBoxButton.OK, MessageBoxImage.Information);
+                            }
                             ZMmc.QueryPosition(true);
                             OnPropertyChanged("ZLPosText");
                         }
                         catch (Exception ex) { }
                         Thread.Sleep(500);
                     }
-                    MessageBox.Show("Auto query is turned OFF.", "X-Y Scanner", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Auto query is turned OFF.", "Query X-Y Scanner", MessageBoxButton.OK, MessageBoxImage.Information);
                 });
         }
+        private bool CanExecuteQueryScannerMethod(object parameter) { return canQueryScanner; }
+        private void ExecuteQueryScannerMethod(object parameter) { QueryScanner(); }
         private bool CanExecuteUnqueryScannerMethod(object parameter) { return true; }
-        private void ExecuteUnqueryScannerMethod(object parameter)
-        {
-            _continueQueryScanner = false;
-            canQueryScanner = true;
-        }
+        private void ExecuteUnqueryScannerMethod(object parameter) { _continueQueryScanner = false; canQueryScanner = true; }
 
 
         /* ----------------------------------------------------------
@@ -501,14 +549,27 @@ namespace Quintessence.Ibp2018.ViewModel
                     ZMmcReconnecting = true;
                     ZMmcConnected = false;
                     PortResponse pr = ZMmc.Connect();
-                    ZMmcConnected = true;
-                    ZMmcReconnecting = false;
+                    if (pr.Code == PortResponse.SUCCESS)
+                    {
+                        ZMmcConnected = true;
+                        ZMmcReconnecting = false;
+                        MessageBox.Show("X-Y scanner mmc2 on " + ZMmc.SerialPortName + " reconnected.", "X-Y scanner", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        ZMmcConnected = true;
+                        ZMmcReconnecting = false;
+                        MessageBox.Show("Cannot reconnect X-Y scanner mmc2 on " + ZMmc.SerialPortName + ". " + pr.Message,
+                        "X-Y scanner", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    }
                 }
                 catch (Exception ex)
                 {
                     PortResponse pr = new PortResponse("RE", ex.Message, ex);
                     ZMmcConnected = false;
                     ZMmcReconnecting = false;
+                    MessageBox.Show("Cannot reconnect X-Y scanner mmc2 on " + ZMmc.SerialPortName + ". " + ex.Message,
+                        "X-Y scanner", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             }
             canReconnectZMmc = true;

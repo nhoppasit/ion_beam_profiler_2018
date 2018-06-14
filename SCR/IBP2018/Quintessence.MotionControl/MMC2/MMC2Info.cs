@@ -177,10 +177,10 @@ namespace Quintessence.MotionControl.MMC2
                     }
                     if (5 <= aStr.Length)
                     {
-                        if (aStr[4] == "R") _IsReady = true;
+                        if (aStr[4].Contains("R")) _IsReady = true;
                         else _IsReady = false;
                     }
-                    PortResponse pr = new PortResponse(PortResponse.SUCCESS, "", null);
+                    PortResponse pr = new PortResponse(PortResponse.SUCCESS, Incomming, null);
                     return pr;
                 }
             }

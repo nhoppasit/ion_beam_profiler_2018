@@ -42,13 +42,13 @@ namespace IBP2018
         private void ChkAutoQueryScanner_Unchecked(object sender, RoutedEventArgs e)
         {
             Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
-            vm.UnqueryScanner.Execute(new object());
+            vm.UnqueryScannerCommand.Execute(new object());
         }
 
         private void ChkAutoQueryScanner_Checked(object sender, RoutedEventArgs e)
         {
             Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
-            vm.QueryScanner.Execute(new object());
+            vm.QueryScannerCommand.Execute(new object());
         }
 
         BackgroundWorker bwDefineTableColumns = new BackgroundWorker();
