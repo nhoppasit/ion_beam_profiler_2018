@@ -26,7 +26,7 @@ namespace Quintessence.Meter.Gpib34401a
         private string _GpibInterfaceId;
         public string GpibInterfaceId { get { return _GpibInterfaceId; } }
         private string _VisaAddress;
-        public string VisaAddress { get { return _VisaAddress; } }
+        public string VisaAddress { get { return _VisaAddress; } set { _VisaAddress = value; } }
         private int _GpibBoardNumber;
         public int GpibBoardNumber
         {
@@ -110,13 +110,13 @@ namespace Quintessence.Meter.Gpib34401a
             {
                 ioDmm.WriteString("*RST", true);//Reset the dmm                
                 ioDmm.WriteString("*CLS", true);//Clear the dmm registers                
-                ioDmm.WriteString("CALC:DBM:REF 50", true);//Set 50 ohm reference for dBm
-                ioDmm.WriteString("Conf:Volt:AC 1, 0.001", true);// Set dmm to 1 amp ac range                
-                ioDmm.WriteString(":Det:Band 200", true);// Select the 200 Hz (fast) ac filter                
-                ioDmm.WriteString("Trig:Coun 5", true);//dmm will accept 5 triggers                
-                ioDmm.WriteString("Trig:Sour IMM", true);//Trigger source is IMMediate                
-                ioDmm.WriteString("Calc:Func DBM", true);//Select dBm function                
-                ioDmm.WriteString("Calc:Stat ON", true);//Enable math and request operation complete                
+                //ioDmm.WriteString("CALC:DBM:REF 50", true);//Set 50 ohm reference for dBm
+                ioDmm.WriteString("Conf:CURR:DC 1, 0.001", true);// Set dmm to 1 amp ac range                
+                //ioDmm.WriteString(":Det:Band 200", true);// Select the 200 Hz (fast) ac filter                
+                //ioDmm.WriteString("Trig:Coun 5", true);//dmm will accept 5 triggers                
+                //ioDmm.WriteString("Trig:Sour IMM", true);//Trigger source is IMMediate                
+                //ioDmm.WriteString("Calc:Func DBM", true);//Select dBm function                
+                //ioDmm.WriteString("Calc:Stat ON", true);//Enable math and request operation complete                
                 ioDmm.WriteString("Read?", true);//Take readings; send to output buffer
 
                 // Get readings and parse into array of doubles
@@ -127,7 +127,7 @@ namespace Quintessence.Meter.Gpib34401a
                 Readings = (double[])ioDmm.ReadList(IEEEASCIIType.ASCIIType_R8, ",");
                 for (int iIndex = 0; iIndex < Readings.Length; iIndex++)
                 {
-                    sText = sText + Readings[iIndex].ToString() + " dBm" + "\r\n";
+                    sText = sText + Readings[iIndex].ToString() + " A" + "\r\n";
                 }
                 //Current = 0.00;
                 GpibResponse gr = new GpibResponse("00", "Readed", null);

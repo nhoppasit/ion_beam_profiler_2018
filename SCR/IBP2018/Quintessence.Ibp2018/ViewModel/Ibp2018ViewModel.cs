@@ -57,6 +57,11 @@ namespace Quintessence.Ibp2018.ViewModel
         public string A1VisaAddressText
         {
             get { return _Ammeters[0].VisaAddress; }
+            set
+            {
+                _Ammeters[0].VisaAddress = value;
+                OnPropertyChanged("A1VisaAddressText");
+            }
         }
         public double Current1 { get { return _Ammeters[0].Current; } set { _Ammeters[0].Current = value; OnPropertyChanged("Current1Text"); } }
         public string Current1Text { get { return _Ammeters[0].Current.ToString(); } set { _Ammeters[0].Current = Convert.ToSingle(value); OnPropertyChanged("Current1Text"); } }
@@ -273,6 +278,9 @@ namespace Quintessence.Ibp2018.ViewModel
         // New measurement
         public ICommand NewMeasurementCommand { get; set; }
 
+        // Re-connect meters
+        public ICommand ReconnectMeter1Command { get; set; }
+
         // -------------------------------------------------------------------------------
         // CONSTRUCTOR
         // -------------------------------------------------------------------------------
@@ -318,7 +326,57 @@ namespace Quintessence.Ibp2018.ViewModel
 
             // New measurement
             NewMeasurementCommand = new RelayCommand(ExecuteNewMeasurementMethod, CanExecuteNewMeasurementMethod);
+
+            // Reconnect meter 1
+            ReconnectMeter1Command = new RelayCommand(ExecuteReconnectMeter1Method, CanExecuteReconnectMeter1Method);
         }
+
+        // Reconnect meter 1
+        private object Meter1Lock = new object();
+        public bool Meter1Reconnecting = false;
+        public bool Meter1Connected = false;
+        private bool canReconnectMeter1 = true;
+        private bool CanExecuteReconnectMeter1Method(object parameter) { return canReconnectMeter1; }
+        private void ExecuteReconnectMeter1Method(object parameter)
+        {
+            canReconnectMeter1 = false;
+            lock (Meter1Lock)
+            {
+                try
+                {
+                    Meter1Reconnecting = true;
+                    Meter1Connected = false;
+
+                    GpibResponse gr = _Ammeters[0].InitializeMeterForCurrent();
+                    gr = _Ammeters[0].ConfigureMeterForCurrent();
+                    gr = _Ammeters[0].MeasureCurrent();
+
+                    if (gr.Code == GpibResponse.SUCCESS)
+                    {
+                        Meter1Connected = true;
+                        Meter1Reconnecting = false;
+                        MessageBox.Show("Meter 1 on " + _Ammeters[0].VisaAddress + " reconnected.", "Connect meters", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        Meter1Connected = true;
+                        Meter1Reconnecting = false;
+                        MessageBox.Show("Cannot reconnect meter 1 on " + _Ammeters[0].VisaAddress + ". " + gr.Message,
+                        "Connect meters", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    }
+                }
+                catch (SystemException ex)
+                {
+                    GpibResponse gr = new GpibResponse("RE", ex.Message, ex);
+                    Meter1Connected = false;
+                    Meter1Reconnecting = false;
+                    MessageBox.Show("Cannot reconnect meter 1 on " + _Ammeters[0].VisaAddress + ". " + ex.Message,
+                        "Connect meters", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }
+            canReconnectMeter1 = true;
+        }
+
 
         // -------------------------------------------------------------------------------
         // CODE OF COMMNADS
@@ -400,7 +458,7 @@ namespace Quintessence.Ibp2018.ViewModel
                         catch (Exception ex) { }
                         Thread.Sleep(500);
                     }
-                    MessageBox.Show("Auto query is turned OFF.", "Query X-Y Scanner", MessageBoxButton.OK, MessageBoxImage.Information);
+                    //MessageBox.Show("Auto query is turned OFF.", "Query X-Y Scanner", MessageBoxButton.OK, MessageBoxImage.Information);
                 });
         }
         private bool CanExecuteQueryScannerMethod(object parameter) { return canQueryScanner; }
