@@ -26,6 +26,7 @@ namespace IBP2018
     /// </summary>
     public partial class MainWindow : RibbonWindow
     {
+        // CONSTRUCTOR
         public MainWindow()
         {
             InitializeComponent();
@@ -37,6 +38,66 @@ namespace IBP2018
             mnuDemoData.Click += MnuDemoData_Click;
             chkAutoQueryScanner.Checked += ChkAutoQueryScanner_Checked;
             chkAutoQueryScanner.Unchecked += ChkAutoQueryScanner_Unchecked;
+
+            mnuXJogNegative.PreviewMouseDown += MnuXJogNegative_PreviewMouseDown;
+            mnuXJogNegative.PreviewMouseUp += MnuXJogNegative_PreviewMouseUp;
+            // X Positive jog
+            bwXJog.WorkerReportsProgress = true;
+            bwXJog.DoWork += BwXJog_DoWork;
+            bwXJog.RunWorkerCompleted += BwXJog_RunWorkerCompleted;
+            mnuXJogPositive.PreviewMouseDown += MnuXJogPositive_PreviewMouseDown;
+            mnuXJogPositive.PreviewMouseUp += MnuXJogPositive_PreviewMouseUp;
+        }
+
+        private void BwXJog_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            canJog = false;
+        }
+
+        private void BwXJog_DoWork(object sender, DoWorkEventArgs e)
+        {
+            canJog = true;
+            while (canJog)
+            {
+                this.mainGrid.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
+                {
+                    Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
+                    vm.XJog(xJogValue);
+                }));
+                Thread.Sleep(100);
+            }
+        }
+
+        // Jog flag
+        private volatile bool canJog = true;
+        private int xJogValue = 50;
+        BackgroundWorker bwXJog = new BackgroundWorker();
+        private void MnuXJogPositive_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            canJog = false; //bwXJogPositive.CancelAsync();
+        }
+
+        private void MnuXJogPositive_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (bwXJog.IsBusy != true)
+            {
+                xJogValue = (int)(Convert.ToDouble(cboXStep.SelectedItem.ToString()) * 500);
+                bwXJog.RunWorkerAsync();
+            }
+        }
+
+        private void MnuXJogNegative_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            canJog = false; //bwXJogPositive.CancelAsync();
+        }
+
+        private void MnuXJogNegative_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (bwXJog.IsBusy != true)
+            {
+                xJogValue = -50;
+                bwXJog.RunWorkerAsync();
+            }
         }
 
         private void ChkAutoQueryScanner_Unchecked(object sender, RoutedEventArgs e)

@@ -273,9 +273,9 @@ namespace Quintessence.Ibp2018.ViewModel
         // New measurement
         public ICommand NewMeasurementCommand { get; set; }
 
-        /* ----------------------------------------------------------
-         * CONSTRUCTOR
-         * ---------------------------------------------------------- */
+        // -------------------------------------------------------------------------------
+        // CONSTRUCTOR
+        // -------------------------------------------------------------------------------
         public Ibp2018ViewModel()
         {
             // Create meters object
@@ -318,12 +318,12 @@ namespace Quintessence.Ibp2018.ViewModel
 
             // New measurement
             NewMeasurementCommand = new RelayCommand(ExecuteNewMeasurementMethod, CanExecuteNewMeasurementMethod);
-
         }
 
-        /* ----------------------------------------------------------
-         * New measurement command by button
-         * ---------------------------------------------------------- */
+        // -------------------------------------------------------------------------------
+        // CODE OF COMMNADS
+        // -------------------------------------------------------------------------------
+        // New measurement command by button
         private void NewMeasurement()
         {
             // Wait dialog can show in UI
@@ -355,9 +355,7 @@ namespace Quintessence.Ibp2018.ViewModel
         private bool CanExecuteNewMeasurementMethod(object parameter) { return canNewMeasurement && !MustSavePreviousData; }
         public void ExecuteNewMeasurementMethod(object parameter) { NewMeasurement(); }
 
-        /* ----------------------------------------------------------
-         * Query and unquery scanner
-         * ---------------------------------------------------------- */
+        // Query and unquery scanner
         private bool canQueryScanner = true;
         private bool _continueQueryScanner = true;
         private void QueryScanner()
@@ -383,9 +381,21 @@ namespace Quintessence.Ibp2018.ViewModel
                                 _continueQueryScanner = false;
                                 canQueryScanner = false;
                                 MessageBox.Show(pr.Message, "Query X-Y Scanner", MessageBoxButton.OK, MessageBoxImage.Information);
+                                break;
                             }
-                            ZMmc.QueryPosition(true);
-                            OnPropertyChanged("ZLPosText");
+                            PortResponse prZ = ZMmc.QueryPosition();
+                            // Verify
+                            if (pr.Code == PortResponse.SUCCESS)
+                            {
+                                OnPropertyChanged("ZLPosText");
+                            }
+                            else
+                            {
+                                _continueQueryScanner = false;
+                                canQueryScanner = false;
+                                MessageBox.Show(pr.Message, "Query Z axis", MessageBoxButton.OK, MessageBoxImage.Information);
+                                break;
+                            }
                         }
                         catch (Exception ex) { }
                         Thread.Sleep(500);
@@ -398,10 +408,7 @@ namespace Quintessence.Ibp2018.ViewModel
         private bool CanExecuteUnqueryScannerMethod(object parameter) { return true; }
         private void ExecuteUnqueryScannerMethod(object parameter) { _continueQueryScanner = false; canQueryScanner = true; }
 
-
-        /* ----------------------------------------------------------
-         * Initialize Meter
-         * ---------------------------------------------------------- */
+        // Initialize Meter
         private bool CanExecuteInitializeMeterMethod(object parameter) { return canMeasure; }
         private bool _continueInitMeter = true;
         private int scanX_Idx, scanY_Idx;
@@ -431,9 +438,7 @@ namespace Quintessence.Ibp2018.ViewModel
                 });
         }
 
-        /* ----------------------------------------------------------
-         * Configure meter
-         * ---------------------------------------------------------- */
+        // Configure meter
         private bool CanExecuteConfigureMeterMethod(object parameter) { return canPause; }
         private void ExecuteConfigureMeterMethod(object parameter)
         {
@@ -443,9 +448,7 @@ namespace Quintessence.Ibp2018.ViewModel
             canStop = true;
         }
 
-        /* ----------------------------------------------------------
-         * Measurement
-         * ---------------------------------------------------------- */
+        // Measurement
         private bool CanExecuteMeasureMethod(object parameter) { return canStop; }
         private void ExecuteMeasureMethod(object parameter)
         {
@@ -456,9 +459,7 @@ namespace Quintessence.Ibp2018.ViewModel
             canStop = false;
         }
 
-        /* ----------------------------------------------------------
-         * DEMO DATA
-         * ---------------------------------------------------------- */
+        // DEMO DATA
         private void GenerateDemoData()
         {
             // Wait dialog can show in view 
@@ -573,6 +574,13 @@ namespace Quintessence.Ibp2018.ViewModel
                 }
             }
             canReconnectZMmc = true;
+        }
+
+        // Jogging method        
+        public void XJog(int step)
+        {
+            _XyMmc.JogX(step);
+            OnPropertyChanged("XLPosText");
         }
     }
 }

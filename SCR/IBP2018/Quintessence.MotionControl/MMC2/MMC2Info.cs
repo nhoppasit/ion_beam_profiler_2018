@@ -193,5 +193,33 @@ namespace Quintessence.MotionControl.MMC2
                 return pr;
             }
         }
+
+        // Negative jog
+        public void JogX(int step)
+        {
+            try
+            {
+                string stepMessage = "M:XP" + step.ToString() + "\n";
+                string goMessage = "G:\n";
+                string Incomming = string.Empty;
+                PortResponse pr = QueryPosition();
+                if (pr.Code != PortResponse.SUCCESS) { return; }
+                double tAPos = 2 * step * MillimeterPerStep + ActualX;
+                if (XFigtureMinimum <= tAPos && tAPos <= XFigtureMaximum)
+                {
+                    Port.Write(stepMessage);
+                    Incomming = Port.ReadLine();
+                    Port.Write(goMessage);
+                    Incomming = Port.ReadLine();
+                }
+            }
+            catch (Exception ex)
+            {
+                _ActualXStep = _ActualYStep = 0;
+                _SensorX = _SensorY = "";
+                _IsReady = true;
+                PortResponse pr = new PortResponse(PortResponse.ERR_JOG, "Query on " + _SerialPortName + " error. " + ex.Message, ex);
+            }
+        }
     }
 }

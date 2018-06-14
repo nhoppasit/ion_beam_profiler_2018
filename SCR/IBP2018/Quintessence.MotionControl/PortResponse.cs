@@ -28,5 +28,6 @@ namespace Quintessence.MotionControl
         public const string ERR_READ = "RE";
 
         public const string ERR_QUERY = "QE";
+        public const string ERR_JOG = "JE";
     }
 }
