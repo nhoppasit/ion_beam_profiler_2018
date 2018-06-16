@@ -53,7 +53,6 @@ namespace Quintessence.Meter.Gpib34401a
             gpib34401AInfo = new Gpib34401aInfo();
             gpib34401AInfo.GpibBoardNumber = 0;
             gpib34401AInfo.GpibAddress = 26;
-            gpib34401AInfo.ReadIntervalMillisecond = 333;
 
             InitializeMeter = new Gpib34401aRelayCommand(ExecuteInitializeMeterMethod, CanExecuteInitializeMeterMethod);
             ConfigureMeter= new Gpib34401aRelayCommand(ExecuteConfigureMeterMethod, CanExecuteConfigureMeterMethod);

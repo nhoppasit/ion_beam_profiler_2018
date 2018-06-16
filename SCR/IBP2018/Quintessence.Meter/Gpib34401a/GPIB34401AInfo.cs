@@ -164,11 +164,6 @@ namespace Quintessence.Meter.Gpib34401a
         private double _Voltage; public double Voltage { get { return _Voltage; } set { _Voltage = value; OnPropertyChanged("Voltage"); } }
 
         /* ----------------------------------------------------------  
-         * Read Interval
-         * ----------------------------------------------------------  */
-        private int _ReadIntervalMillisecond; public int ReadIntervalMillisecond { get { return _ReadIntervalMillisecond; } set { _ReadIntervalMillisecond = value; OnPropertyChanged("ReadIntervalMillisecond"); } }
-
-        /* ----------------------------------------------------------  
          * Demo mode
          * There is no interface but can get random data 
          * for measureing demonstration

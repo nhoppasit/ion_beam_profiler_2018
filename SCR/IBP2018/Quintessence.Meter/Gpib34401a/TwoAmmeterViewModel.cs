@@ -71,15 +71,17 @@ namespace Quintessence.Meter.Gpib34401a
         public TwoAmmeterViewModel()
         {
             _Ammeters = new List<Gpib34401aInfo>();
+
+            // Meter 1
             Gpib34401aInfo a1 = new Gpib34401aInfo();
             a1.GpibBoardNumber = 0;
             a1.GpibAddress = 26;
-            a1.ReadIntervalMillisecond = 333;
             _Ammeters.Add(a1);
+
+            // Meter 2
             Gpib34401aInfo a2 = new Gpib34401aInfo();
             a2.GpibBoardNumber = 0;
             a2.GpibAddress = 27;
-            a2.ReadIntervalMillisecond = 333;
             _Ammeters.Add(a2);
 
             Current1 = "100.01";

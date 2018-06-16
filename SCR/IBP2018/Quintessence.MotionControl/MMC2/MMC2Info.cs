@@ -24,10 +24,10 @@ namespace Quintessence.MotionControl.MMC2
         /* ----------------------------------------------------------  
          * กายภาพของมอเตอร์ 5-phase
          * ----------------------------------------------------------  */
-        public const double MillimeterPerStep = 1f / 500.0;
-        public const double StepPerMillimeter = 500;
-        public const double StepPerDegree = 500 / 360;
-        public const double DegreePerStep = 360 / 500;
+        public const double MILLIMETERPERSTEP = 1f / 500.0;
+        public const double STEPPERMILLIMETER = 500;
+        public const double STEPPERDEGREE = 500 / 360;
+        public const double DEGREEPERSTEP = 360 / 500;
 
         /* ----------------------------------------------------------  
          * พอร์ต
@@ -38,9 +38,9 @@ namespace Quintessence.MotionControl.MMC2
          * ข้อมูลตำแหน่ง
          * ----------------------------------------------------------  */
         private int _ActualXStep; public int ActualXStep { get { return _ActualXStep; } }
-        public double ActualX { get { return (double)_ActualXStep * MillimeterPerStep; } }
+        public double ActualX { get { return (double)_ActualXStep * MILLIMETERPERSTEP; } }
         private int _ActualYStep; public int ActualYStep { get { return _ActualYStep; } }
-        public double ActualY { get { return (double)_ActualYStep * MillimeterPerStep; } }
+        public double ActualY { get { return (double)_ActualYStep * MILLIMETERPERSTEP; } }
         private string _SensorX; public string SensorX { get { return _SensorX; } }
         private string _SensorY; public string SensorY { get { return _SensorY; } }
         private bool _IsReady; public bool IsReady { get { return _IsReady; } }
@@ -54,8 +54,8 @@ namespace Quintessence.MotionControl.MMC2
         /* ----------------------------------------------------------  
          * Resolution
          * ----------------------------------------------------------  */
-        private double _XScanResolution; public double XScanStep { get { return _XScanResolution; } set { _XScanResolution = value; } }
-        private double _YScanResolution; public double YScanStep { get { return _YScanResolution; } set { _YScanResolution = value; } }
+        private double _XScanStep; public double XScanStep { get { return _XScanStep; } set { _XScanStep = value; } }
+        private double _YScanStep; public double YScanStep { get { return _YScanStep; } set { _YScanStep = value; } }
 
         /* ----------------------------------------------------------  
          * Scan Area
@@ -202,7 +202,7 @@ namespace Quintessence.MotionControl.MMC2
                 string Incomming = string.Empty;
                 PortResponse pr = QueryPosition();
                 if (pr.Code != PortResponse.SUCCESS) { return; }
-                double tAPos = 2 * step * MillimeterPerStep + ActualX;
+                double tAPos = 2 * step * MILLIMETERPERSTEP + ActualX;
                 if (XFigtureMinimum <= tAPos && tAPos <= XFigtureMaximum)
                 {
                     Port.Write(stepMessage);
@@ -228,7 +228,7 @@ namespace Quintessence.MotionControl.MMC2
                 string Incomming = string.Empty;
                 PortResponse pr = QueryPosition();
                 if (pr.Code != PortResponse.SUCCESS) { return; }
-                double tAPos = 2 * step * MillimeterPerStep + ActualY;
+                double tAPos = 2 * step * MILLIMETERPERSTEP + ActualY;
                 if (_YFigtureMinimum <= tAPos && tAPos <= _YFigtureMaximum)
                 {
                     Port.Write(stepMessage);

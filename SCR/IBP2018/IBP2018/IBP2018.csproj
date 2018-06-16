@@ -171,6 +171,10 @@
       <Project>{c6aeb9c6-bdee-4b08-be26-234eeae9a29d}</Project>
       <Name>Quintessence.Ibp2018</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Quintessence.MotionControl\Quintessence.MotionControl.csproj">
+      <Project>{a10bf690-adbe-4b31-8a36-3657427334a1}</Project>
+      <Name>Quintessence.MotionControl</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">

@@ -18,6 +18,7 @@ using System.Windows.Threading;
 using System.Threading;
 using System.ComponentModel;
 using Quintessence.Ibp2018.ViewModel;
+using Quintessence.MotionControl.MMC2;
 
 namespace IBP2018
 {
@@ -31,7 +32,6 @@ namespace IBP2018
         {
             InitializeComponent();
             InitializeRibbonComboboxMember();
-            SetStatesText();
 
             // "Version: " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
@@ -49,11 +49,13 @@ namespace IBP2018
             mnuXJogPositive.PreviewMouseUp += MnuXJogPositive_PreviewMouseUp;
         }
 
+        #region X Job background worker
+        BackgroundWorker bwXJog = new BackgroundWorker();
+        private volatile bool canJog = true;
         private void BwXJog_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             canJog = false;
         }
-
         private void BwXJog_DoWork(object sender, DoWorkEventArgs e)
         {
             canJog = true;
@@ -67,51 +69,50 @@ namespace IBP2018
                 Thread.Sleep(100);
             }
         }
+        #endregion
 
-        // Jog flag
-        private volatile bool canJog = true;
+        #region X Jog
         private int xJogValue = 50;
-        BackgroundWorker bwXJog = new BackgroundWorker();
         private void MnuXJogPositive_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
             canJog = false; //bwXJogPositive.CancelAsync();
         }
-
         private void MnuXJogPositive_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (bwXJog.IsBusy != true)
             {
-                xJogValue = (int)(Convert.ToDouble(cboXStep.SelectedItem.ToString()) * 500);
+                xJogValue = (int)(Convert.ToDouble(cboXStep.SelectedItem.ToString()) * MMC2Info.STEPPERMILLIMETER);
                 bwXJog.RunWorkerAsync();
             }
         }
-
         private void MnuXJogNegative_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
             canJog = false; //bwXJogPositive.CancelAsync();
         }
-
         private void MnuXJogNegative_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (bwXJog.IsBusy != true)
             {
-                xJogValue = -50;
+                xJogValue = -(int)(Convert.ToDouble(cboXStep.SelectedItem.ToString()) * MMC2Info.STEPPERMILLIMETER);
                 bwXJog.RunWorkerAsync();
             }
         }
+        #endregion
 
+        #region Auto query scanner
         private void ChkAutoQueryScanner_Unchecked(object sender, RoutedEventArgs e)
         {
             Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
             vm.UnqueryScannerCommand.Execute(new object());
         }
-
         private void ChkAutoQueryScanner_Checked(object sender, RoutedEventArgs e)
         {
             Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
             vm.QueryScannerCommand.Execute(new object());
         }
+        #endregion
 
+        #region New current table
         BackgroundWorker bwDefineTableColumns = new BackgroundWorker();
         private void MnuDemoData_Click(object sender, RoutedEventArgs e)
         {
@@ -160,7 +161,7 @@ namespace IBP2018
             }));
             bwDefineTableColumns.RunWorkerAsync();
         }
-
+        #endregion
 
         // เพิ่มค่า Step
         void InitializeRibbonComboboxMember()
@@ -189,25 +190,6 @@ namespace IBP2018
             for (int i = 1; i <= 10; i++)
                 catSensorInterval.Items.Add((i).ToString());
             cboSensorInterval.SelectedItem = catSensorInterval.Items[0].ToString();
-        }
-
-        void SetStatesText()
-        {
-            lbScannerSetting1.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)delegate
-             {
-                 StringBuilder sb = new StringBuilder();
-                 sb.Append("Step = ( "); sb.Append(cboXStep.SelectedItem.ToString()); sb.Append(", "); sb.Append(cboYStep.SelectedItem.ToString()); sb.Append(" ) mm");
-                 sb.Append(Environment.NewLine);
-                 sb.Append("X Range = ( "); sb.Append(cboXStart.SelectedItem.ToString()); sb.Append(", "); sb.Append(cboXEnd.SelectedItem.ToString()); sb.Append(" ) mm");
-                 lbScannerSetting1.Content = sb.ToString();
-
-                 sb.Clear();
-                 sb.Append("Sampling rate = "); sb.Append(cboSensorInterval.SelectedItem.ToString()); sb.Append(" sec/Point");
-                 sb.Append(Environment.NewLine);
-                 sb.Append("Y Range = ( "); sb.Append(cboYStart.SelectedItem.ToString()); sb.Append(", "); sb.Append(cboYEnd.SelectedItem.ToString()); sb.Append(" ) mm");
-                 lbScannerSetting2.Content = sb.ToString();
-
-             });
-        }
+        }        
     }
 }

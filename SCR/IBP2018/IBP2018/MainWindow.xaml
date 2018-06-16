@@ -32,15 +32,15 @@
             <RibbonTab Header="File" KeyTip="F">
                 <!--File-->
                 <RibbonGroup Header="File">
-                    <RibbonButton x:Name="mnuNew" Label="New" KeyTip="N" LargeImageSource="Images/241-3.ICO"/>
+                    <RibbonButton x:Name="mnuNew" Label="New" KeyTip="N" LargeImageSource="Images/241-3.ICO" Command="{Binding NewMeasurementCommand}"/>
                     <RibbonButton x:Name="mnuOpen" Label="Open" KeyTip="O" LargeImageSource="Images/opentext.ico"/>
                     <RibbonButton x:Name="mnuSave" Label="Save" KeyTip="O" LargeImageSource="Images/ICONDISK350-2.ICO"/>
                 </RibbonGroup>
                 <!--Scan control-->
                 <RibbonGroup Header="Scan">
-                    <RibbonButton x:Name="mnuRun" Label="Run" KeyTip="R" LargeImageSource="Images/FORWARD-1.ICO" Command="{Binding InitializeMeter}"/>
-                    <RibbonButton x:Name="mnuHold" Label="Pause" KeyTip="R" LargeImageSource="Images/PAUSE-1.ICO" Command="{Binding ConfigureMeter}"/>
-                    <RibbonButton x:Name="mnuStop" Label="Stop" KeyTip="R" LargeImageSource="Images/STOP-1.ICO" Command="{Binding Measure}"/>
+                    <RibbonButton x:Name="mnuRun" Label="Run" KeyTip="R" LargeImageSource="Images/FORWARD-1.ICO" Command="{Binding InitializeMeterCommand}"/>
+                    <RibbonButton x:Name="mnuHold" Label="Pause" KeyTip="R" LargeImageSource="Images/PAUSE-1.ICO" Command="{Binding ConfigureMeterCommand}"/>
+                    <RibbonButton x:Name="mnuStop" Label="Stop" KeyTip="R" LargeImageSource="Images/STOP-1.ICO" Command="{Binding MeasureCurrentCommand}"/>
                 </RibbonGroup>
                 <!--Logical Position-->
                 <RibbonGroup Header="Logical Position" KeyTip="L">
@@ -81,10 +81,43 @@
                 </RibbonGroup>
                 <!--X-Y Scanner setting-->
                 <RibbonGroup Header="X-Y Scanner setting">
-                    <StackPanel Orientation="Horizontal">
-                        <Label x:Name="lbScannerSetting1"/>
-                        <Label x:Name="lbScannerSetting2"/>
-                    </StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="50*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Step = ( "/>
+                                <Label Content="{Binding XScanStep}"/>
+                                <Label Content=", "/>
+                                <Label Content="{Binding YScanStep}"/>
+                                <Label Content=") mm"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="X Range = ( "/>
+                                <Label Content="{Binding XScanStart}"/>
+                                <Label Content=", "/>
+                                <Label Content="{Binding XScanEnd}"/>
+                                <Label Content=") mm"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Sensor interval = ( "/>
+                                <Label Content="{Binding XFigtureMinimum}"/>
+                                <Label Content=" sec/Point "/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Y Range = ( "/>
+                                <Label Content="{Binding YScanStart}"/>
+                                <Label Content=", "/>
+                                <Label Content="{Binding YScanEnd}"/>
+                                <Label Content=") mm"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>                    
                 </RibbonGroup>
                 <!--DMM-->
                 <RibbonGroup Header="Meter value">
@@ -300,11 +333,11 @@
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
                         <RibbonMenuButton Grid.Row="0" Grid.Column="0" Label="X-Y MMC">
-                            <RibbonMenuItem Header="Re-connect" KeyTip="RX" Command="{Binding ReconnectXyMmc}"/>
+                            <RibbonMenuItem Header="Re-connect" KeyTip="RX" Command="{Binding ReconnectXyMmcCommand}"/>
                         </RibbonMenuButton>
                         <RibbonTextBox Grid.Row="0" Grid.Column="1" x:Name="txtXYPortName" Text="{Binding XyMmcPortName}"  HorizontalContentAlignment="Center" TextBoxWidth="60"/>
                         <RibbonMenuButton Grid.Row="1" Grid.Column="0" Label="Z MMC" HorizontalContentAlignment="Right">
-                            <RibbonMenuItem Header="Re-connect" KeyTip="RZ" Command="{Binding ReconnectZMmc}"/>
+                            <RibbonMenuItem Header="Re-connect" KeyTip="RZ" Command="{Binding ReconnectZMmcCommand}"/>
                         </RibbonMenuButton>
                         <RibbonTextBox Grid.Row="1" Grid.Column="1" x:Name="txtZPortName" Text="{Binding ZMmcPortName}" HorizontalContentAlignment="Center" TextBoxWidth="60"/>
                     </Grid>
@@ -313,7 +346,7 @@
 
             <!--DMM-->
             <RibbonTab Header="Meter" KeyTip="M">
-                <!--Sampling rate-->
+                <!--Sensor interval-->
                 <RibbonGroup Header="Sensor interval">
                     <StackPanel Orientation="Vertical">
                         <RibbonComboBox Grid.Row="0" Grid.Column="1" SelectionBoxWidth="30" KeyTip="I">
@@ -343,7 +376,7 @@
                             <Label Content="Volt"/>
                         </StackPanel>
                         <RibbonCheckBox Label=" Auto read" SmallImageSource="Images/Refresh.png"/>
-                        <RibbonButton Label="Read" Command="{Binding Measure}"/>
+                        <RibbonButton Label="Read" Command="{Binding MeasureCurrentCommand}"/>
                     </StackPanel>
                 </RibbonGroup>
                 <!--PORT-->
@@ -357,7 +390,7 @@
                 </RibbonGroup>
                 <!--Demo-->
                 <RibbonGroup Header="Demo data">
-                    <RibbonButton x:Name="mnuDemoData" Label="Demo data" Command="{Binding GenerateNewDemoData}"/>
+                    <RibbonButton x:Name="mnuDemoData" Label="Demo data" Command="{Binding GenerateNewDemoDataCommand}"/>
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>

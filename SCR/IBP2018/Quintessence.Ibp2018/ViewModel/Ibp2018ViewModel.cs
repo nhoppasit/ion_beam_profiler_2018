@@ -84,6 +84,10 @@ namespace Quintessence.Ibp2018.ViewModel
         public double Current2 { get { return _Ammeters[1].Current; } set { _Ammeters[1].Current = value; OnPropertyChanged("Current2Text"); } }
         public string Current2Text { get { return _Ammeters[0].Current.ToString(); } set { _Ammeters[0].Current = Convert.ToSingle(value); OnPropertyChanged("Current1Text"); } }
 
+        // Sensor interval
+        private int _sensorInterval = 1;
+        public int SensorInterval { get { return _sensorInterval; } set { _sensorInterval = value; OnPropertyChanged("SensorInterval"); } }
+
         /* ----------------------------------------------------------
          * X-Y scanner and Z axis object
          * ---------------------------------------------------------- */
@@ -261,17 +265,16 @@ namespace Quintessence.Ibp2018.ViewModel
             }
         }
 
-        /* ----------------------------------------------------------
-         * Commands for binding to buttons
-         * ---------------------------------------------------------- */
-        public ICommand InitializeMeter { get; set; }
-        public ICommand ConfigureMeter { get; set; }
-        public ICommand Measure { get; set; }
-        public ICommand GenerateNewDemoData { get; set; }
+        #region Commands declaration
+        // Commands for binding to buttons
+        public ICommand InitializeMeterCommand { get; set; }
+        public ICommand ConfigureMeterCommand { get; set; }
+        public ICommand MeasureCurrentCommand { get; set; }
+        public ICommand GenerateNewDemoDataCommand { get; set; }
 
         // Commands of xy and z mmc reconnect
-        public ICommand ReconnectXyMmc { get; set; }
-        public ICommand ReconnectZMmc { get; set; }
+        public ICommand ReconnectXyMmcCommand { get; set; }
+        public ICommand ReconnectZMmcCommand { get; set; }
         public ICommand QueryScannerCommand { get; set; }
         public ICommand UnqueryScannerCommand { get; set; }
 
@@ -280,23 +283,24 @@ namespace Quintessence.Ibp2018.ViewModel
 
         // Re-connect meters
         public ICommand ReconnectMeter1Command { get; set; }
+        #endregion
 
-        // -------------------------------------------------------------------------------
-        // CONSTRUCTOR
-        // -------------------------------------------------------------------------------
+        // --------------------------------------- CONSTRUCTOR ------------------------------------------------
         public Ibp2018ViewModel()
         {
             // Create meters object
             _Ammeters = new List<Gpib34401aInfo>();
+
+            // Meter 1
             Gpib34401aInfo a1 = new Gpib34401aInfo();
             a1.GpibBoardNumber = 0;
             a1.GpibAddress = 26;
-            a1.ReadIntervalMillisecond = 333;
             _Ammeters.Add(a1);
+
+            // Meter 2
             Gpib34401aInfo a2 = new Gpib34401aInfo();
             a2.GpibBoardNumber = 0;
             a2.GpibAddress = 27;
-            a2.ReadIntervalMillisecond = 333;
             _Ammeters.Add(a2);
 
             // Create XYZ scanner object
@@ -311,14 +315,14 @@ namespace Quintessence.Ibp2018.ViewModel
             _CurrentTables.Add(new Ibp2018DataTableModel());
 
             // Create commands
-            InitializeMeter = new RelayCommand(ExecuteInitializeMeterMethod, CanExecuteInitializeMeterMethod);
-            ConfigureMeter = new RelayCommand(ExecuteConfigureMeterMethod, CanExecuteConfigureMeterMethod);
-            Measure = new RelayCommand(ExecuteMeasureMethod, CanExecuteMeasureMethod);
-            GenerateNewDemoData = new RelayCommand(ExecuteGenerateDemoDataMethod, CanExecuteGenerateDemoDataMethod);
+            InitializeMeterCommand = new RelayCommand(ExecuteInitializeMeterMethod, CanExecuteInitializeMeterMethod);
+            ConfigureMeterCommand = new RelayCommand(ExecuteConfigureMeterMethod, CanExecuteConfigureMeterMethod);
+            MeasureCurrentCommand = new RelayCommand(ExecuteMeasureMethod, CanExecuteMeasureMethod);
+            GenerateNewDemoDataCommand = new RelayCommand(ExecuteGenerateDemoDataMethod, CanExecuteGenerateDemoDataMethod);
 
             // Serial port of xy and z mmc
-            ReconnectXyMmc = new RelayCommand(ExecuteReconnectXyMmcMethod, CanExecuteReconnectXyMmcMethod);
-            ReconnectZMmc = new RelayCommand(ExecuteReconnectZMmcMethod, CanExecuteReconnectZMmcMethod);
+            ReconnectXyMmcCommand = new RelayCommand(ExecuteReconnectXyMmcMethod, CanExecuteReconnectXyMmcMethod);
+            ReconnectZMmcCommand = new RelayCommand(ExecuteReconnectZMmcMethod, CanExecuteReconnectZMmcMethod);
 
             // Query and unquery scanner 
             QueryScannerCommand = new RelayCommand(ExecuteQueryScannerMethod, CanExecuteQueryScannerMethod);
@@ -550,6 +554,7 @@ namespace Quintessence.Ibp2018.ViewModel
         private bool CanExecuteGenerateDemoDataMethod(object parameter) { return canDemo; }
         public void ExecuteGenerateDemoDataMethod(object parameter) { GenerateDemoData(); }
 
+        #region Connect scanner
         // Reconnect xy mmc command
         private object XyMmcLock = new object();
         public bool XyMmcReconnecting = false;
@@ -633,12 +638,15 @@ namespace Quintessence.Ibp2018.ViewModel
             }
             canReconnectZMmc = true;
         }
+        #endregion
 
+        #region Jog method
         // Jogging method        
         public void XJog(int step)
         {
             _XyMmc.JogX(step);
             OnPropertyChanged("XLPosText");
         }
+        #endregion
     }
 }
