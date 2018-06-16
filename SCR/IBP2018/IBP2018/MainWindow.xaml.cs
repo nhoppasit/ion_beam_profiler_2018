@@ -27,7 +27,7 @@ namespace IBP2018
     /// </summary>
     public partial class MainWindow : RibbonWindow
     {
-        // CONSTRUCTOR
+        // ------------------------------- CONSTRUCTOR ---------------------------------
         public MainWindow()
         {
             InitializeComponent();
@@ -47,6 +47,35 @@ namespace IBP2018
             bwXJog.RunWorkerCompleted += BwXJog_RunWorkerCompleted;
             mnuXJogPositive.PreviewMouseDown += MnuXJogPositive_PreviewMouseDown;
             mnuXJogPositive.PreviewMouseUp += MnuXJogPositive_PreviewMouseUp;
+        }
+
+        // Initialize combobox
+        void InitializeRibbonComboboxMember()
+        {
+            for (int i = 1; i <= 25; i++)
+            {
+                // Mininum resolution of 0.02 millimeters in X and Y axis
+                catXStep.Items.Add((i * 0.02).ToString("F2"));
+                catYStep.Items.Add((i * 0.02).ToString("F2"));
+            }
+            cboXStep.SelectedItem = catXStep.Items[0].ToString();
+            cboYStep.SelectedItem = catYStep.Items[0].ToString();
+
+            for (int i = 0; i <= 20; i += 5)
+            {
+                catXStart.Items.Add((i).ToString());
+                catXEnd.Items.Add((i).ToString());
+                catYStart.Items.Add((i).ToString());
+                catYEnd.Items.Add((i).ToString());
+            }
+            cboXStart.SelectedItem = catXStart.Items[0].ToString();
+            cboXEnd.SelectedItem = catXEnd.Items[3].ToString();
+            cboYStart.SelectedItem = catYStart.Items[0].ToString();
+            cboYEnd.SelectedItem = catYEnd.Items[3].ToString();
+
+            for (int i = 1; i <= 10; i++)
+                catSensorInterval.Items.Add((i).ToString());
+            cboSensorInterval.SelectedItem = catSensorInterval.Items[0].ToString();
         }
 
         #region X Job background worker
@@ -163,33 +192,5 @@ namespace IBP2018
         }
         #endregion
 
-        // เพิ่มค่า Step
-        void InitializeRibbonComboboxMember()
-        {
-            for (int i = 1; i <= 25; i++)
-            {
-                // Mininum resolution of 0.02 millimeters in X and Y axis
-                catXStep.Items.Add((i * 0.02).ToString("F2"));
-                catYStep.Items.Add((i * 0.02).ToString("F2"));
-            }
-            cboXStep.SelectedItem = catXStep.Items[0].ToString();
-            cboYStep.SelectedItem = catYStep.Items[0].ToString();
-
-            for (int i = 0; i <= 20; i += 5)
-            {
-                catXStart.Items.Add((i).ToString());
-                catXEnd.Items.Add((i).ToString());
-                catYStart.Items.Add((i).ToString());
-                catYEnd.Items.Add((i).ToString());
-            }
-            cboXStart.SelectedItem = catXStart.Items[0].ToString();
-            cboXEnd.SelectedItem = catXEnd.Items[3].ToString();
-            cboYStart.SelectedItem = catYStart.Items[0].ToString();
-            cboYEnd.SelectedItem = catYEnd.Items[3].ToString();
-
-            for (int i = 1; i <= 10; i++)
-                catSensorInterval.Items.Add((i).ToString());
-            cboSensorInterval.SelectedItem = catSensorInterval.Items[0].ToString();
-        }        
     }
 }

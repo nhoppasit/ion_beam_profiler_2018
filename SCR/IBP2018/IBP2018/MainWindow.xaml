@@ -105,8 +105,8 @@
                         </StackPanel>
                         <StackPanel Grid.Column="2" Orientation="Vertical">
                             <StackPanel Orientation="Horizontal">
-                                <Label Content="Sensor interval = ( "/>
-                                <Label Content="{Binding XFigtureMinimum}"/>
+                                <Label Content="Sensor interval = "/>
+                                <Label Content="{Binding SensorInterval}"/>
                                 <Label Content=" sec/Point "/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
@@ -117,7 +117,7 @@
                                 <Label Content=") mm"/>
                             </StackPanel>
                         </StackPanel>
-                    </Grid>                    
+                    </Grid>
                 </RibbonGroup>
                 <!--DMM-->
                 <RibbonGroup Header="Meter value">
@@ -136,6 +136,9 @@
 
             <!--XY scan-->
             <RibbonTab Header="X-Y Scanner" KeyTip="X">
+                <RibbonGroup>
+                    <Image Source="Images/mmc2.png" Margin="0,10,0,0"/>
+                </RibbonGroup>
                 <!--X Jogging-->
                 <RibbonGroup Header="X Jog" KeyTip="X">
                     <RibbonButton x:Name="mnuXJogNegative" Label="X-" KeyTip="XN" LargeImageSource="Images/progman.exe_143.ico"/>
@@ -346,28 +349,30 @@
 
             <!--DMM-->
             <RibbonTab Header="Meter" KeyTip="M">
+                <RibbonGroup>
+                    <Image Source="Images/34401a.png" Margin="0,10,0,0"/>
+                </RibbonGroup>
                 <!--Sensor interval-->
                 <RibbonGroup Header="Sensor interval">
                     <StackPanel Orientation="Vertical">
-                        <RibbonComboBox Grid.Row="0" Grid.Column="1" SelectionBoxWidth="30" KeyTip="I">
-                            <RibbonGallery x:Name="cboSensorInterval">
-                                <RibbonGalleryCategory x:Name="catSensorInterval"/>
-                            </RibbonGallery>
-                        </RibbonComboBox>
-                        <Label Grid.Row="0" Grid.Column="2" Content="sec/Point"/>
+                        <StackPanel Orientation="Horizontal">
+                            <RibbonComboBox Grid.Row="0" Grid.Column="1" SelectionBoxWidth="30" KeyTip="I">
+                                <RibbonGallery x:Name="cboSensorInterval" SelectedItem="{Binding SensorInterval}">
+                                    <RibbonGalleryCategory x:Name="catSensorInterval"/>
+                                </RibbonGallery>
+                            </RibbonComboBox>
+                            <Label Grid.Row="0" Grid.Column="2" Content="sec/Point"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <RibbonComboBox Grid.Row="0" Grid.Column="1" SelectionBoxWidth="30" KeyTip="N">
+                                <RibbonGallery x:Name="cboAveragingNumber">
+                                    <RibbonGalleryCategory x:Name="catAveragingNumber"/>
+                                </RibbonGallery>
+                            </RibbonComboBox>
+                            <Label Grid.Row="0" Grid.Column="2" Content="Times"/>
+                        </StackPanel>
                     </StackPanel>
-                </RibbonGroup>
-                <!--Sampling Averaging Number-->
-                <RibbonGroup Header="Averaging Number">
-                    <StackPanel Orientation="Vertical">
-                        <RibbonComboBox Grid.Row="0" Grid.Column="1" SelectionBoxWidth="30" KeyTip="N">
-                            <RibbonGallery x:Name="cboAveragingNumber">
-                                <RibbonGalleryCategory x:Name="catAveragingNumber"/>
-                            </RibbonGallery>
-                        </RibbonComboBox>
-                        <Label Grid.Row="0" Grid.Column="2" Content="Times"/>
-                    </StackPanel>
-                </RibbonGroup>
+                </RibbonGroup>                
                 <!--Measure-->
                 <RibbonGroup Header="Measure">
                     <StackPanel Orientation="Vertical">

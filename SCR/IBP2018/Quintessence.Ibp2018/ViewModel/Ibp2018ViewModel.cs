@@ -303,11 +303,21 @@ namespace Quintessence.Ibp2018.ViewModel
             a2.GpibAddress = 27;
             _Ammeters.Add(a2);
 
-            // Create XYZ scanner object
+            // Create XY scanner object
             _XyMmc = new MMC2Info();
             _XyMmc.SerialPortName = "COM1";
+            _XyMmc.XFigtureMinimum = -10;
+            _XyMmc.XFigtureMaximum = 10;
+            _XyMmc.YFigtureMinimum = -10;
+            _XyMmc.YFigtureMaximum = 10;
+
+            // Create Z axis object
             _ZMmc = new MMC2Info();
             _ZMmc.SerialPortName = "COM2";
+            _ZMmc.XFigtureMinimum = -10;
+            _ZMmc.XFigtureMaximum = 10;
+            _ZMmc.YFigtureMinimum = -10;
+            _ZMmc.YFigtureMaximum= 10;
 
             // Create data tables object
             _CurrentTables = new List<Ibp2018DataTableModel>();

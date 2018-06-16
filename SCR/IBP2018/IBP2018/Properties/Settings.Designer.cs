@@ -22,5 +22,53 @@ namespace IBP2018.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("COM4")]
+        public string XyMmcPortName {
+            get {
+                return ((string)(this["XyMmcPortName"]));
+            }
+            set {
+                this["XyMmcPortName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("COM5")]
+        public string ZMmcPortName {
+            get {
+                return ((string)(this["ZMmcPortName"]));
+            }
+            set {
+                this["ZMmcPortName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("GPIB0::26::INSTR")]
+        public string Ammeter1VisaAddress {
+            get {
+                return ((string)(this["Ammeter1VisaAddress"]));
+            }
+            set {
+                this["Ammeter1VisaAddress"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("GPIB0::27::INSTR")]
+        public string Ammeter2VisaAddress {
+            get {
+                return ((string)(this["Ammeter2VisaAddress"]));
+            }
+            set {
+                this["Ammeter2VisaAddress"] = value;
+            }
+        }
     }
 }
