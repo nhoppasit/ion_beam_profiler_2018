@@ -10,7 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
-namespace IBP2018
+namespace IBP2018.Behavior
 {
     public class DataGridColumnsBehavior
     {

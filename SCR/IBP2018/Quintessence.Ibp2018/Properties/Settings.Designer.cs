@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace IBP2018.Properties {
+namespace Quintessence.Ibp2018.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -20,6 +20,30 @@ namespace IBP2018.Properties {
         public static Settings Default {
             get {
                 return defaultInstance;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("28")]
+        public int Ammeter1GpibAddress {
+            get {
+                return ((int)(this["Ammeter1GpibAddress"]));
+            }
+            set {
+                this["Ammeter1GpibAddress"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("27")]
+        public int Ammeter2GpibAddress {
+            get {
+                return ((int)(this["Ammeter2GpibAddress"]));
+            }
+            set {
+                this["Ammeter2GpibAddress"] = value;
             }
         }
     }

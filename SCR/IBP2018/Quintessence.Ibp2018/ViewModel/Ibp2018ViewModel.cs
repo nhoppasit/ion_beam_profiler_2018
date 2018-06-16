@@ -345,6 +345,13 @@ namespace Quintessence.Ibp2018.ViewModel
             ReconnectMeter1Command = new RelayCommand(ExecuteReconnectMeter1Method, CanExecuteReconnectMeter1Method);
         }
 
+        // Reload settings
+        void ReloadSettings()
+        {         
+            A1GpibAddress = Properties.Settings.Default.Ammeter1GpibAddress;
+            A2GpibAddress = Properties.Settings.Default.Ammeter2GpibAddress;
+        }
+
         // Reconnect meter 1
         private object Meter1Lock = new object();
         public bool Meter1Reconnecting = false;

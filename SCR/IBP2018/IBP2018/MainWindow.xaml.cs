@@ -19,6 +19,7 @@ using System.Threading;
 using System.ComponentModel;
 using Quintessence.Ibp2018.ViewModel;
 using Quintessence.MotionControl.MMC2;
+using System.Reflection;
 
 namespace IBP2018
 {
@@ -30,25 +31,39 @@ namespace IBP2018
         // ------------------------------- CONSTRUCTOR ---------------------------------
         public MainWindow()
         {
+            // Initialize
             InitializeComponent();
+
+            // Combobox
             InitializeRibbonComboboxMember();
 
-            // "Version: " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            // Version
+            this.Title = "Ion Beam Profiler Version: " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
+            // Demo
             mnuDemoData.Click += MnuDemoData_Click;
+
+            // Auto query
             chkAutoQueryScanner.Checked += ChkAutoQueryScanner_Checked;
             chkAutoQueryScanner.Unchecked += ChkAutoQueryScanner_Unchecked;
 
-            mnuXJogNegative.PreviewMouseDown += MnuXJogNegative_PreviewMouseDown;
-            mnuXJogNegative.PreviewMouseUp += MnuXJogNegative_PreviewMouseUp;
-            // X Positive jog
+            // X jog background worker
             bwXJog.WorkerReportsProgress = true;
             bwXJog.DoWork += BwXJog_DoWork;
             bwXJog.RunWorkerCompleted += BwXJog_RunWorkerCompleted;
+
+            // X negative jog
+            mnuXJogNegative.PreviewMouseDown += MnuXJogNegative_PreviewMouseDown;
+            mnuXJogNegative.PreviewMouseUp += MnuXJogNegative_PreviewMouseUp;
+
+            // X positive jog
             mnuXJogPositive.PreviewMouseDown += MnuXJogPositive_PreviewMouseDown;
             mnuXJogPositive.PreviewMouseUp += MnuXJogPositive_PreviewMouseUp;
+
+
         }
 
+        #region Initialize application
         // Initialize combobox
         void InitializeRibbonComboboxMember()
         {
@@ -76,7 +91,8 @@ namespace IBP2018
             for (int i = 1; i <= 10; i++)
                 catSensorInterval.Items.Add((i).ToString());
             cboSensorInterval.SelectedItem = catSensorInterval.Items[0].ToString();
-        }
+        }        
+        #endregion
 
         #region X Job background worker
         BackgroundWorker bwXJog = new BackgroundWorker();

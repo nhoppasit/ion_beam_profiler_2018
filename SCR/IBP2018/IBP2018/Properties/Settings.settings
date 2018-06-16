@@ -1,18 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="IBP2018.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
   <Profiles />
-  <Settings>
-    <Setting Name="XyMmcPortName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">COM4</Value>
-    </Setting>
-    <Setting Name="ZMmcPortName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">COM5</Value>
-    </Setting>
-    <Setting Name="Ammeter1VisaAddress" Type="System.String" Scope="User">
-      <Value Profile="(Default)">GPIB0::26::INSTR</Value>
-    </Setting>
-    <Setting Name="Ammeter2VisaAddress" Type="System.String" Scope="User">
-      <Value Profile="(Default)">GPIB0::27::INSTR</Value>
-    </Setting>
-  </Settings>
+  <Settings />
 </SettingsFile>

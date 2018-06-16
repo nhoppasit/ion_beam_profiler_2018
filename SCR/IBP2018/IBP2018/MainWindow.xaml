@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IBP2018"    
               xmlns:ibp2018vm="clr-namespace:Quintessence.Ibp2018.ViewModel;assembly=Quintessence.Ibp2018"
+              xmlns:b="clr-namespace:IBP2018.Behavior"
         mc:Ignorable="d"
         Title="Ion Beam Profiler 2018" Height="450" Width="1000" Icon="Images/Science Network Neighborhood.ico" WindowState="Maximized">
 
@@ -386,11 +387,19 @@
                 </RibbonGroup>
                 <!--PORT-->
                 <RibbonGroup Header="PORT">
-                    <StackPanel Orientation="Horizontal">
-                        <RibbonMenuButton Label="DMM">
-                            <RibbonMenuItem Header="Re-connect" Command="{Binding ReconnectMeter1Command}"/>
-                        </RibbonMenuButton>
-                        <RibbonTextBox x:Name="txtDMMPortName" Text="{Binding A1VisaAddressText}" HorizontalContentAlignment="Center" TextBoxWidth="60"/>
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <RibbonMenuButton Label="Meter-1">
+                                <RibbonMenuItem Header="Re-connect" Command="{Binding ReconnectMeter1Command}"/>
+                            </RibbonMenuButton>
+                            <RibbonTextBox x:Name="txtAmmeter1Address" Text="{Binding A1GpibAddress}" b:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="RibbonTextBox.Text" HorizontalContentAlignment="Center" TextBoxWidth="30"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <RibbonMenuButton Label="Meter-2">
+                                <RibbonMenuItem Header="Re-connect" Command="{Binding ReconnectMeter1Command}"/>
+                            </RibbonMenuButton>
+                            <RibbonTextBox x:Name="txtAmmeter2Address" Text="{Binding A2GpibAddress}" b:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="RibbonTextBox.Text" HorizontalContentAlignment="Center" TextBoxWidth="30"/>
+                        </StackPanel>
                     </StackPanel>
                 </RibbonGroup>
                 <!--Demo-->
@@ -410,7 +419,7 @@
                         <ColumnDefinition Width="200*"/>
                     </Grid.ColumnDefinitions>
 
-                    <DataGrid x:Name="dgvCurrent1" Grid.Column="0" AutoGenerateColumns="False" ItemsSource="{Binding CurrentTable1}" local:DataGridColumnsBehavior.BindableColumns="{Binding Current1ColumnCollection}" />
+                    <DataGrid x:Name="dgvCurrent1" Grid.Column="0" AutoGenerateColumns="False" ItemsSource="{Binding CurrentTable1}" b:DataGridColumnsBehavior.BindableColumns="{Binding Current1ColumnCollection}" />
                     <GridSplitter Grid.Column="1" Background="White" Width="5" HorizontalAlignment="Stretch"/>
 
                 </Grid>
@@ -423,7 +432,7 @@
                         <ColumnDefinition Width="200*"/>
                     </Grid.ColumnDefinitions>
 
-                    <DataGrid x:Name="dgvCurrent2" Grid.Column="0" AutoGenerateColumns="False" ItemsSource="{Binding CurrentTable2}" local:DataGridColumnsBehavior.BindableColumns="{Binding Current2ColumnCollection}" />
+                    <DataGrid x:Name="dgvCurrent2" Grid.Column="0" AutoGenerateColumns="False" ItemsSource="{Binding CurrentTable2}" b:DataGridColumnsBehavior.BindableColumns="{Binding Current2ColumnCollection}" />
                     <GridSplitter Grid.Column="1" Background="White" Width="5" HorizontalAlignment="Stretch"/>
 
                 </Grid>
