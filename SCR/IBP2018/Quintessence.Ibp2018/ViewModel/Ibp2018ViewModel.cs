@@ -50,6 +50,7 @@ namespace Quintessence.Ibp2018.ViewModel
             set
             {
                 _Ammeters[0].GpibAddress = value;
+                Properties.Settings.Default.Ammeter1GpibAddress = value; Properties.Settings.Default.Save();
                 OnPropertyChanged("A1GpibAddress");
                 OnPropertyChanged("A1VisaAddress");
             }
@@ -76,6 +77,7 @@ namespace Quintessence.Ibp2018.ViewModel
             set
             {
                 _Ammeters[1].GpibAddress = value;
+                Properties.Settings.Default.Ammeter1GpibAddress = value; Properties.Settings.Default.Save();
                 OnPropertyChanged("A2GpibAddress");
                 OnPropertyChanged("A2VisaAddress");
             }
@@ -317,7 +319,7 @@ namespace Quintessence.Ibp2018.ViewModel
             _ZMmc.XFigtureMinimum = -10;
             _ZMmc.XFigtureMaximum = 10;
             _ZMmc.YFigtureMinimum = -10;
-            _ZMmc.YFigtureMaximum= 10;
+            _ZMmc.YFigtureMaximum = 10;
 
             // Create data tables object
             _CurrentTables = new List<Ibp2018DataTableModel>();
@@ -341,13 +343,18 @@ namespace Quintessence.Ibp2018.ViewModel
             // New measurement
             NewMeasurementCommand = new RelayCommand(ExecuteNewMeasurementMethod, CanExecuteNewMeasurementMethod);
 
+            #region Reconnect meters
             // Reconnect meter 1
             ReconnectMeter1Command = new RelayCommand(ExecuteReconnectMeter1Method, CanExecuteReconnectMeter1Method);
+            #endregion
+
+            // Reload settings
+            ReloadSettings();
         }
 
         // Reload settings
         void ReloadSettings()
-        {         
+        {
             A1GpibAddress = Properties.Settings.Default.Ammeter1GpibAddress;
             A2GpibAddress = Properties.Settings.Default.Ammeter2GpibAddress;
         }

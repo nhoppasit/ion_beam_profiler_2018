@@ -62,6 +62,9 @@
   <PropertyGroup>
     <SignManifests>true</SignManifests>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Science Network Neighborhood.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -194,6 +197,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\mmc2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Science Network Neighborhood.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
