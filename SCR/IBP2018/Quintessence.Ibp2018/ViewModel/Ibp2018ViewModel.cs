@@ -77,7 +77,7 @@ namespace Quintessence.Ibp2018.ViewModel
             set
             {
                 _Ammeters[1].GpibAddress = value;
-                Properties.Settings.Default.Ammeter1GpibAddress = value; Properties.Settings.Default.Save();
+                Properties.Settings.Default.Ammeter2GpibAddress = value; Properties.Settings.Default.Save();
                 OnPropertyChanged("A2GpibAddress");
                 OnPropertyChanged("A2VisaAddress");
             }
