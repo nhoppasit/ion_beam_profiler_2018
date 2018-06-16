@@ -10,8 +10,10 @@ namespace Quintessence.Meter
         public GpibResponse(string code, string message, SystemException e)
         {
             this.Code = code;
-            this.Message = message;
+            if (!code.Equals(SUCCESS)) this.Message = "[" + code + "] " + message;
+            else this.Message = message;
             this.ex = e;
+            System.Diagnostics.Trace.WriteLine(this.Message);
         }
 
         public const string SUCCESS = "00";
@@ -21,6 +23,6 @@ namespace Quintessence.Meter
         public const string ERR_CLOSE = "CE";
         public const string ERR_WRITE = "WE";
         public const string ERR_READ = "RE";
-
+        public const string ERR_MEAS = "ME";
     }
 }

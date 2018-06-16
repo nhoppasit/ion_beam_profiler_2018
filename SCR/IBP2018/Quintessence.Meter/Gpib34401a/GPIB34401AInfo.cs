@@ -147,12 +147,12 @@ namespace Quintessence.Meter.Gpib34401a
                 ioDmm.WriteString("*CLS", true);//Clear the dmm registers                
                 ioDmm.WriteString("Measure:Current:DC? 1A,0.001MA", true);// Set meter to 1 amp dc range, 0.001mA resolution
                 Current = (double)ioDmm.ReadNumber(IEEEASCIIType.ASCIIType_R4, true);
-                GpibResponse gr = new GpibResponse("00", Current.ToString(), null);
+                GpibResponse gr = new GpibResponse(GpibResponse.SUCCESS, Current.ToString(), null);
                 return gr;
             }
             catch (SystemException ex)
             {
-                GpibResponse gr = new GpibResponse("ME", "Measure command failed. " + ex.Source + "  " + ex.Message, ex);
+                GpibResponse gr = new GpibResponse(GpibResponse.ERR_MEAS, "Measure current query failed. " + ex.Source + "  " + ex.Message, ex);
                 return gr;
             }
         }

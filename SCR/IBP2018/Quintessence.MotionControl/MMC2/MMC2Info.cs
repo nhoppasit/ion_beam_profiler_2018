@@ -127,9 +127,7 @@ namespace Quintessence.MotionControl.MMC2
             }
         }
 
-        /* ----------------------------------------------------------  
-         * Read current position and sensors
-         * ----------------------------------------------------------  */
+        // Read current position and sensors
         public PortResponse QueryPosition(bool demo = false)
         {
             try
@@ -194,7 +192,7 @@ namespace Quintessence.MotionControl.MMC2
             }
         }
 
-        // Negative jog
+        // X jog
         public void JogX(int step)
         {
             try
@@ -211,14 +209,39 @@ namespace Quintessence.MotionControl.MMC2
                     Incomming = Port.ReadLine();
                     Port.Write(goMessage);
                     Incomming = Port.ReadLine();
+                    for (int i = 0; i < 3; i++) if (!IsReady) QueryPosition(); else break;
                 }
             }
             catch (Exception ex)
             {
-                _ActualXStep = _ActualYStep = 0;
-                _SensorX = _SensorY = "";
-                _IsReady = true;
-                PortResponse pr = new PortResponse(PortResponse.ERR_JOG, "Query on " + _SerialPortName + " error. " + ex.Message, ex);
+                PortResponse pr = new PortResponse(PortResponse.ERR_JOG, "Jog X on " + _SerialPortName + " error. " + ex.Message, ex);
+            }
+        }
+
+        // Y jog
+        public void JogY(int step)
+        {
+            try
+            {
+                string stepMessage = "M:YP" + step.ToString() + "\n";
+                string goMessage = "G:\n";
+                string Incomming = string.Empty;
+                PortResponse pr = QueryPosition();
+                if (pr.Code != PortResponse.SUCCESS) { return; }
+                double tAPos = 2 * step * MillimeterPerStep + ActualY;
+                if (_YFigtureMinimum <= tAPos && tAPos <= _YFigtureMaximum)
+                {
+                    Port.Write(stepMessage);
+                    Incomming = Port.ReadLine();
+                    Port.Write(goMessage);
+                    Incomming = Port.ReadLine();
+                    QueryPosition();
+                    for (int i = 0; i < 3; i++) if (!IsReady) QueryPosition(); else break;
+                }
+            }
+            catch (Exception ex)
+            {
+                PortResponse pr = new PortResponse(PortResponse.ERR_JOG, "Jog Y on " + _SerialPortName + " error. " + ex.Message, ex);
             }
         }
     }
