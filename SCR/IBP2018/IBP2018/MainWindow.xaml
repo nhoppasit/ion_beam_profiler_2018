@@ -346,6 +346,13 @@
                         <RibbonTextBox Grid.Row="1" Grid.Column="1" x:Name="txtZPortName" Text="{Binding ZMmcPortName}" HorizontalContentAlignment="Center" TextBoxWidth="60"/>
                     </Grid>
                 </RibbonGroup>
+                <!--Scanner demo mode-->
+                <RibbonGroup Header="DEMO mode">
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="Simulate query without ports."/>
+                        <RibbonCheckBox IsChecked="{Binding IsScannerDemo}"/>
+                    </StackPanel>                    
+                </RibbonGroup>
             </RibbonTab>
 
             <!--DMM-->
@@ -402,9 +409,12 @@
                         </StackPanel>
                     </StackPanel>
                 </RibbonGroup>
-                <!--Demo-->
-                <RibbonGroup Header="Demo data">
-                    <RibbonButton x:Name="mnuDemoData" Label="Demo data" Command="{Binding GenerateNewDemoDataCommand}"/>
+                <!--Meters demo mode-->
+                <RibbonGroup Header="DEMO mode">
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="Simulate query without GPIB."/>
+                        <RibbonCheckBox IsChecked="{Binding IsMetersDemo}"/>
+                    </StackPanel>
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>

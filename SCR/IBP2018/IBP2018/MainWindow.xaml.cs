@@ -40,9 +40,6 @@ namespace IBP2018
             // Version
             this.Title = "Ion Beam Profiler Version: " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-            // Demo
-            mnuDemoData.Click += MnuDemoData_Click;
-
             // Auto query
             chkAutoQueryScanner.Checked += ChkAutoQueryScanner_Checked;
             chkAutoQueryScanner.Unchecked += ChkAutoQueryScanner_Unchecked;
@@ -155,58 +152,6 @@ namespace IBP2018
             Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
             vm.QueryScannerCommand.Execute(new object());
         }
-        #endregion
-
-        #region New current table
-        BackgroundWorker bwDefineTableColumns = new BackgroundWorker();
-        private void MnuDemoData_Click(object sender, RoutedEventArgs e)
-        {
-            Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
-            WaitDialog dlg = new WaitDialog();
-            dlg.Title = "Wait";
-            dlg.Topmost = true;
-            bwDefineTableColumns.DoWork += (o, ea) =>
-            {
-                Thread.Sleep(100);
-                dlg.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
-                {
-                    try
-                    {
-                        dlg.Visibility = Visibility.Visible;
-                        dlg.Show();
-                    }
-                    catch { }
-                    Thread.Sleep(100);
-                }));
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                bool _continue = true;
-                while (_continue)
-                {
-                    // Timeout
-                    if (sw.ElapsedMilliseconds > 1000 * 10)
-                    {
-                        sw.Stop();
-                        _continue = false;
-                    }
-                    // Break by columns count
-                    if (!vm.ColumnsGenerating) _continue = false;
-                    Thread.Sleep(100);
-                }
-            };
-            bwDefineTableColumns.RunWorkerCompleted += (o, ea) =>
-            {
-                dlg.Close();
-            };
-            dlg.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
-            {
-                dlg.Visibility = Visibility.Visible;
-                dlg.Show();
-                Thread.Sleep(100);
-            }));
-            bwDefineTableColumns.RunWorkerAsync();
-        }
-        #endregion
-
+        #endregion               
     }
 }

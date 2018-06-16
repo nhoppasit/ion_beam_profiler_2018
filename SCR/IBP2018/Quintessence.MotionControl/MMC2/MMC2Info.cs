@@ -34,6 +34,8 @@ namespace Quintessence.MotionControl.MMC2
          * ----------------------------------------------------------  */
         private string _SerialPortName; public string SerialPortName { get { return _SerialPortName; } set { _SerialPortName = value; } }
 
+        private bool _IsDemo = false; public bool IsDemo { get { return _IsDemo; } set { _IsDemo = value; } }
+
         /* ----------------------------------------------------------  
          * ข้อมูลตำแหน่ง
          * ----------------------------------------------------------  */

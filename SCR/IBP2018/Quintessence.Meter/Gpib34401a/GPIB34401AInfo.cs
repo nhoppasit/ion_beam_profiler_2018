@@ -55,6 +55,7 @@ namespace Quintessence.Meter.Gpib34401a
         }
         private int _GpibTimeout = 7000;
         public int GpibTimeout { get { return _GpibTimeout; } set { _GpibTimeout = value; OnPropertyChanged("GpibTimeout"); } }
+        private bool _IsDemo = false; public bool IsDemo { get { return _IsDemo; } set { _IsDemo = value; OnPropertyChanged("IsDemo"); } }
 
         /* ----------------------------------------------------------  
          * GPIB interface

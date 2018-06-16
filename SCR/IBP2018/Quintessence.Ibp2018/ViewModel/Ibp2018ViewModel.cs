@@ -38,18 +38,17 @@ namespace Quintessence.Ibp2018.ViewModel
          *  - Two Ammeter, Gpib
          *  - Two MMC2, Serial port
          * ---------------------------------------------------------- */
-        private IList<Gpib34401aInfo> _Ammeters;
-        public IList<Gpib34401aInfo> Ammeters { get { return _Ammeters; } set { _Ammeters = value; } }
-
         /* ----------------------------------------------------------
          * Ammeter-1 Properties
          * ---------------------------------------------------------- */
+        private Gpib34401aInfo _Ammeter1;
+        public Gpib34401aInfo Ammeter1 { get { return _Ammeter1; } set { _Ammeter1 = value; } }
         public int A1GpibAddress
         {
-            get { return _Ammeters[0].GpibAddress; }
+            get { return _Ammeter1.GpibAddress; }
             set
             {
-                _Ammeters[0].GpibAddress = value;
+                _Ammeter1.GpibAddress = value;
                 Properties.Settings.Default.Ammeter1GpibAddress = value; Properties.Settings.Default.Save();
                 OnPropertyChanged("A1GpibAddress");
                 OnPropertyChanged("A1VisaAddress");
@@ -57,38 +56,44 @@ namespace Quintessence.Ibp2018.ViewModel
         }
         public string A1VisaAddressText
         {
-            get { return _Ammeters[0].VisaAddress; }
+            get { return _Ammeter1.VisaAddress; }
             set
             {
-                _Ammeters[0].VisaAddress = value;
+                _Ammeter1.VisaAddress = value;
                 OnPropertyChanged("A1VisaAddressText");
             }
         }
-        public double Current1 { get { return _Ammeters[0].Current; } set { _Ammeters[0].Current = value; OnPropertyChanged("Current1Text"); } }
-        public string Current1Text { get { return _Ammeters[0].Current.ToString(); } set { _Ammeters[0].Current = Convert.ToSingle(value); OnPropertyChanged("Current1Text"); } }
+        public double Current1 { get { return _Ammeter1.Current; } set { _Ammeter1.Current = value; OnPropertyChanged("Current1Text"); } }
+        public string Current1Text { get { return _Ammeter1.Current.ToString(); } set { _Ammeter1.Current = Convert.ToSingle(value); OnPropertyChanged("Current1Text"); } }
         private bool canMeasure = true, canPause = false, canStop = false;
 
         /* ----------------------------------------------------------
          * Ammeter-2 Properties
          * ---------------------------------------------------------- */
+        private Gpib34401aInfo _Ammeter2;
+        public Gpib34401aInfo Ammeter2 { get { return _Ammeter2; } set { _Ammeter2 = value; } }
         public int A2GpibAddress
         {
-            get { return _Ammeters[1].GpibAddress; }
+            get { return _Ammeter2.GpibAddress; }
             set
             {
-                _Ammeters[1].GpibAddress = value;
+                _Ammeter2.GpibAddress = value;
                 Properties.Settings.Default.Ammeter2GpibAddress = value; Properties.Settings.Default.Save();
                 OnPropertyChanged("A2GpibAddress");
                 OnPropertyChanged("A2VisaAddress");
             }
         }
-        public string A2VisaAddressText { get { return _Ammeters[1].VisaAddress; } }
-        public double Current2 { get { return _Ammeters[1].Current; } set { _Ammeters[1].Current = value; OnPropertyChanged("Current2Text"); } }
-        public string Current2Text { get { return _Ammeters[0].Current.ToString(); } set { _Ammeters[0].Current = Convert.ToSingle(value); OnPropertyChanged("Current1Text"); } }
+        public string A2VisaAddressText { get { return _Ammeter2.VisaAddress; } }
+        public double Current2 { get { return _Ammeter2.Current; } set { _Ammeter2.Current = value; OnPropertyChanged("Current2Text"); } }
+        public string Current2Text { get { return _Ammeter2.Current.ToString(); } set { _Ammeter2.Current = Convert.ToSingle(value); OnPropertyChanged("Current1Text"); } }
 
         // Sensor interval
         private int _sensorInterval = 1;
         public int SensorInterval { get { return _sensorInterval; } set { _sensorInterval = value; OnPropertyChanged("SensorInterval"); } }
+
+        // Meter demo mode
+        private bool _IsMetersDemo = false;
+        public bool IsMetersDemo { get { return _IsMetersDemo; } set { _IsMetersDemo = _Ammeter1.IsDemo = _Ammeter2.IsDemo = value; OnPropertyChanged("IsMetersDemo"); } }
 
         /* ----------------------------------------------------------
          * X-Y scanner and Z axis object
@@ -223,6 +228,10 @@ namespace Quintessence.Ibp2018.ViewModel
             }
         }
 
+        // Demo mode of scanner
+        private bool _IsScannerDemo = false;
+        public bool IsScannerDemo { get { return _IsScannerDemo; } set { _IsScannerDemo = _XyMmc.IsDemo = _ZMmc.IsDemo = value; OnPropertyChanged("IsScannerDemo"); } }
+
         /* ----------------------------------------------------------
          * Current tables
          * ---------------------------------------------------------- */
@@ -291,40 +300,49 @@ namespace Quintessence.Ibp2018.ViewModel
         public Ibp2018ViewModel()
         {
             // Create meters object
-            _Ammeters = new List<Gpib34401aInfo>();
+            _Ammeter1 = new Gpib34401aInfo();
+            _Ammeter2 = new Gpib34401aInfo();
 
             // Meter 1
-            Gpib34401aInfo a1 = new Gpib34401aInfo();
-            a1.GpibBoardNumber = 0;
-            a1.GpibAddress = 26;
-            _Ammeters.Add(a1);
+            Gpib34401aInfo a1 = new Gpib34401aInfo
+            {
+                GpibBoardNumber = 0,
+                GpibAddress = 26
+            };
 
             // Meter 2
-            Gpib34401aInfo a2 = new Gpib34401aInfo();
-            a2.GpibBoardNumber = 0;
-            a2.GpibAddress = 27;
-            _Ammeters.Add(a2);
+            Gpib34401aInfo a2 = new Gpib34401aInfo
+            {
+                GpibBoardNumber = 0,
+                GpibAddress = 27
+            };
 
             // Create XY scanner object
-            _XyMmc = new MMC2Info();
-            _XyMmc.SerialPortName = "COM1";
-            _XyMmc.XFigtureMinimum = -10;
-            _XyMmc.XFigtureMaximum = 10;
-            _XyMmc.YFigtureMinimum = -10;
-            _XyMmc.YFigtureMaximum = 10;
+            _XyMmc = new MMC2Info
+            {
+                SerialPortName = "COM1",
+                XFigtureMinimum = -10,
+                XFigtureMaximum = 10,
+                YFigtureMinimum = -10,
+                YFigtureMaximum = 10
+            };
 
             // Create Z axis object
-            _ZMmc = new MMC2Info();
-            _ZMmc.SerialPortName = "COM2";
-            _ZMmc.XFigtureMinimum = -10;
-            _ZMmc.XFigtureMaximum = 10;
-            _ZMmc.YFigtureMinimum = -10;
-            _ZMmc.YFigtureMaximum = 10;
+            _ZMmc = new MMC2Info
+            {
+                SerialPortName = "COM2",
+                XFigtureMinimum = -10,
+                XFigtureMaximum = 10,
+                YFigtureMinimum = -10,
+                YFigtureMaximum = 10
+            };
 
             // Create data tables object
-            _CurrentTables = new List<Ibp2018DataTableModel>();
-            _CurrentTables.Add(new Ibp2018DataTableModel());
-            _CurrentTables.Add(new Ibp2018DataTableModel());
+            _CurrentTables = new List<Ibp2018DataTableModel>
+            {
+                new Ibp2018DataTableModel(),
+                new Ibp2018DataTableModel()
+            };
 
             // Create commands
             InitializeMeterCommand = new RelayCommand(ExecuteInitializeMeterMethod, CanExecuteInitializeMeterMethod);
@@ -375,22 +393,22 @@ namespace Quintessence.Ibp2018.ViewModel
                     Meter1Reconnecting = true;
                     Meter1Connected = false;
 
-                    GpibResponse gr = _Ammeters[0].InitializeMeterForCurrent();
-                    gr = _Ammeters[0].ConfigureMeterForCurrent();
-                    gr = _Ammeters[0].MeasureCurrent();
+                    GpibResponse gr = _Ammeter1.InitializeMeterForCurrent();
+                    gr = _Ammeter1.ConfigureMeterForCurrent();
+                    gr = _Ammeter1.MeasureCurrent();
 
                     if (gr.Code == GpibResponse.SUCCESS)
                     {
                         Meter1Connected = true;
                         Meter1Reconnecting = false;
-                        MessageBox.Show("Meter 1 on " + _Ammeters[0].VisaAddress + " reconnected.", "Connect meters", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show("Meter 1 on " + _Ammeter1.VisaAddress + " reconnected.", "Connect meters", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     else
                     {
                         Meter1Connected = true;
                         Meter1Reconnecting = false;
-                        MessageBox.Show("Cannot reconnect meter 1 on " + _Ammeters[0].VisaAddress + ". " + gr.Message,
-                        "Connect meters", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        MessageBox.Show("Cannot reconnect meter 1 on " + _Ammeter1.VisaAddress + ". " + gr.Message,
+                            "Connect meters", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     }
                 }
                 catch (SystemException ex)
@@ -398,7 +416,7 @@ namespace Quintessence.Ibp2018.ViewModel
                     GpibResponse gr = new GpibResponse("RE", ex.Message, ex);
                     Meter1Connected = false;
                     Meter1Reconnecting = false;
-                    MessageBox.Show("Cannot reconnect meter 1 on " + _Ammeters[0].VisaAddress + ". " + ex.Message,
+                    MessageBox.Show("Cannot reconnect meter 1 on " + _Ammeter1.VisaAddress + ". " + ex.Message,
                         "Connect meters", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             }
@@ -427,9 +445,11 @@ namespace Quintessence.Ibp2018.ViewModel
             for (int i = 0; i < _CurrentTables[0].ColumnNames.Count; i++)
             {
                 Binding binding = new Binding(_CurrentTables[0].ColumnNames[i]);
-                DataGridTextColumn textColumn = new DataGridTextColumn();
-                textColumn.Header = _CurrentTables[0].ColumnHeaders[i];
-                textColumn.Binding = binding;
+                DataGridTextColumn textColumn = new DataGridTextColumn
+                {
+                    Header = _CurrentTables[0].ColumnHeaders[i],
+                    Binding = binding
+                };
                 Current1ColumnCollection.Add(textColumn);
             }
 
