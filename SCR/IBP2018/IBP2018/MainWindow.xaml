@@ -74,9 +74,14 @@
                                 <ColumnDefinition Width="auto"/>
                                 <ColumnDefinition Width="auto"/>
                             </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0" Content="Z"/>
-                            <RibbonTextBox Grid.Column="1" x:Name="txtZLPos2" IsReadOnly="True" Text="{Binding ZLPosText, Mode=OneWay}" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" IsTabStop="False" IsEnabled="False"/>
-                            <Label Grid.Column="3" Content="mm"/>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="0" Grid.Column="0" Content="Z"/>
+                            <RibbonTextBox Grid.Row="0" Grid.Column="1" x:Name="txtZLPos2" IsReadOnly="True" Text="{Binding ZLPosText, Mode=OneWay}" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" IsTabStop="False" IsEnabled="False"/>
+                            <Label Grid.Row="0" Grid.Column="3" Content="mm"/>
+                            <RibbonButton Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" SmallImageSource="Images/Refresh.png" Label="Query" HorizontalAlignment="Center" Command="{Binding QueryScannerCommand}"/>
                         </Grid>
                     </Grid>
                 </RibbonGroup>
@@ -192,7 +197,7 @@
                         </RibbonMenuButton>
                         <RibbonTextBox Grid.Row="0" Grid.Column="5" x:Name="txtZLPos1" Text="{Binding ZLPosText, Mode=OneWay}" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" VerticalAlignment="Center"/>
                         <Label Grid.Row="0" Grid.Column="6" Content="mm" VerticalAlignment="Center"/>
-                        <RibbonCheckBox x:Name="chkAutoQueryScanner" Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="3" Label=" Auto query" SmallImageSource="Images/Refresh.png"/>
+                        <RibbonButton Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="3" SmallImageSource="Images/Refresh.png" Label="Query" HorizontalAlignment="Center" Command="{Binding QueryScannerCommand}"/>
                     </Grid>
                 </RibbonGroup>
                 <!--Resolution-->

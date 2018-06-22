@@ -477,26 +477,46 @@ namespace Quintessence.Ibp2018.ViewModel
                 }
                 else
                 {
-                    // Do nothing
-                    //canQueryScanner = false;
-                    //MessageBox.Show(pr.Message, "Query X-Y Scanner", MessageBoxButton.OK, MessageBoxImage.Information);                           
+                    MessageBox.Show(pr1.Message, "Query X-Y Scanner", MessageBoxButton.OK, MessageBoxImage.Information);
+                    if (MessageBox.Show("Do you want to re-connect X-Y scanner MMC2 driver on " + XyMmcPortName + "?", "Re-connect X-Y scanner MMC2 driver", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    {
+                        ReconnectXyMmcCommand.Execute(new object());
+                    }
+                    else
+                    {
+                        // Do nothing
+                    }
+                    canQueryScanner = true;
+                    return;
                 }
-                PortResponse prZ = ZMmc.QueryPosition();
+                PortResponse pr2 = ZMmc.QueryPosition();
                 // Verify
-                if (pr1.Code == PortResponse.SUCCESS)
+                if (pr2.Code == PortResponse.SUCCESS)
                 {
                     OnPropertyChanged("ZLPosText");
                 }
                 else
                 {
-                    // Do nothing
-                    // canQueryScanner = false;
-                    //MessageBox.Show(pr.Message, "Query Z axis", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(pr2.Message, "Query Z axis", MessageBoxButton.OK, MessageBoxImage.Information);
+                    if (MessageBox.Show("Do you want to re-connect Z axis MMC2 driver on " + ZMmcPortName + "?", "Re-connect Z axis MMC2 driver", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    {
+                        ReconnectZMmcCommand.Execute(new object());
+                    }
+                    else
+                    {
+                        // Do nothing
+                    }
+                    canQueryScanner = true;
+                    return;
                 }
             }
-            catch (Exception ex) { PortResponse pr = new PortResponse(PortResponse.ERR_QUERY, ex.Message, ex); }
-            //MessageBox.Show("Auto query is turned OFF.", "Query X-Y Scanner", MessageBoxButton.OK, MessageBoxImage.Information);
-            canQueryScanner = true;
+            catch (Exception ex)
+            {
+                PortResponse pr = new PortResponse(PortResponse.ERR_QUERY, ex.Message, ex);
+                MessageBox.Show("Query MMC2 error! " + ex.Message, "Query X-Y Scanner", MessageBoxButton.OK, MessageBoxImage.Information);
+                canQueryScanner = true;
+                return;
+            }
         }
         private bool CanExecuteQueryScannerMethod(object parameter) { return canQueryScanner; }
         private void ExecuteQueryScannerMethod(object parameter) { QueryScanner(); }
