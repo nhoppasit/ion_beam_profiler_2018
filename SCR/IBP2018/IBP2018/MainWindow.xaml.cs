@@ -142,7 +142,19 @@ namespace IBP2018
                 {
                     Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
                     PortResponse pr = vm.XJog(xJogValue);
-                    if (pr.Code != PortResponse.SUCCESS && pr.Code != PortResponse.DEMO) { MessageBox.Show(pr.Message, "X Jog", MessageBoxButton.OK, MessageBoxImage.Asterisk); canJog = false; }
+                    if (pr.Code != PortResponse.SUCCESS && pr.Code != PortResponse.DEMO)
+                    {
+                        MessageBox.Show(pr.Message, "X Jog", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+                        canJog = false;
+                        if (MessageBox.Show("Do you want to re-connect X-Y scanner MMC2 driver on " + vm.XyMmcPortName + "?", "Re-connect X-Y scanner MMC2 driver", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                        {
+                            vm.ReconnectXyMmcCommand.Execute(new object());
+                        }
+                        else
+                        {
+                            // Do nothing
+                        }
+                    }
                 }));
                 Thread.Sleep(100);
             }
@@ -190,7 +202,19 @@ namespace IBP2018
                 {
                     Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
                     PortResponse pr = vm.YJog(yJogValue);
-                    if (pr.Code != PortResponse.SUCCESS && pr.Code != PortResponse.DEMO) { MessageBox.Show(pr.Message, "Y Jog", MessageBoxButton.OK, MessageBoxImage.Asterisk); canJog = false; }
+                    if (pr.Code != PortResponse.SUCCESS && pr.Code != PortResponse.DEMO)
+                    {
+                        MessageBox.Show(pr.Message, "Y Jog", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+                        canJog = false;
+                        if (MessageBox.Show("Do you want to re-connect X-Y scanner MMC2 driver on " + vm.XyMmcPortName + "?", "Re-connect X-Y scanner MMC2 driver", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                        {
+                            vm.ReconnectXyMmcCommand.Execute(new object());
+                        }
+                        else
+                        {
+                            // Do nothing
+                        }
+                    }
                 }));
                 Thread.Sleep(100);
             }
@@ -238,7 +262,19 @@ namespace IBP2018
                 {
                     Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
                     PortResponse pr = vm.ZJog(zJogValue);
-                    if (pr.Code != PortResponse.SUCCESS && pr.Code != PortResponse.DEMO) { MessageBox.Show(pr.Message, "Z Jog", MessageBoxButton.OK, MessageBoxImage.Asterisk); canJog = false; }
+                    if (pr.Code != PortResponse.SUCCESS && pr.Code != PortResponse.DEMO)
+                    {
+                        MessageBox.Show(pr.Message, "Z Jog", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+                        canJog = false;
+                        if (MessageBox.Show("Do you want to re-connect Z axis MMC2 driver on " + vm.ZMmcPortName + "?", "Re-connect Z axis MMC2 driver", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                        {
+                            vm.ReconnectZMmcCommand.Execute(new object());
+                        }
+                        else
+                        {
+                            // Do nothing
+                        }
+                    }
                 }));
                 Thread.Sleep(100);
             }
