@@ -674,11 +674,24 @@ namespace Quintessence.Ibp2018.ViewModel
         #endregion
 
         #region Jog method
-        // Jogging method        
+        // X Jogging method        
         public void XJog(int step)
         {
             _XyMmc.JogX(step);
             OnPropertyChanged("XLPosText");
+        }
+        // Y Jogging method        
+        public void YJog(int step)
+        {
+            _XyMmc.JogY(step);
+            OnPropertyChanged("YLPosText");
+        }
+        // Y Jogging method        
+        public void ZJog(int step)
+        {
+            _ZMmc.JogX(step);
+            //_ZMmc.JogY(step);
+            OnPropertyChanged("ZLPosText");
         }
         #endregion
     }

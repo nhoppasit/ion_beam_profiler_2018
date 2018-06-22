@@ -40,10 +40,9 @@ namespace IBP2018
             // Version
             this.Title = "Ion Beam Profiler Version: " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-            // Auto query
-            chkAutoQueryScanner.Checked += ChkAutoQueryScanner_Checked;
-            chkAutoQueryScanner.Unchecked += ChkAutoQueryScanner_Unchecked;
+            #region JOGGING
 
+            #region X
             // X jog background worker
             bwXJog.WorkerReportsProgress = true;
             bwXJog.DoWork += BwXJog_DoWork;
@@ -56,7 +55,42 @@ namespace IBP2018
             // X positive jog
             mnuXJogPositive.PreviewMouseDown += MnuXJogPositive_PreviewMouseDown;
             mnuXJogPositive.PreviewMouseUp += MnuXJogPositive_PreviewMouseUp;
+            #endregion
 
+            #region Y
+            // Y Jog background worker
+            bwYJog.WorkerReportsProgress = true;
+            bwYJog.DoWork += BwYJog_DoWork;
+            bwYJog.RunWorkerCompleted += BwYJog_RunWorkerCompleted;
+
+            // Y negative jog
+            mnuYJogNegative.PreviewMouseDown += MnuYJogNegative_PreviewMouseDown;
+            mnuYJogNegative.PreviewMouseUp += MnuYJogNegative_PreviewMouseUp;
+
+            // Y positive jog
+            mnuYJogPositive.PreviewMouseDown += MnuYJogPositive_PreviewMouseDown;
+            mnuYJogPositive.PreviewMouseUp += MnuYJogPositive_PreviewMouseUp;
+
+            #endregion
+
+            #region Z
+
+            // Z Jog background worker
+            bwZJog.WorkerReportsProgress = true;
+            bwZJog.DoWork += BwZJog_DoWork;
+            bwZJog.RunWorkerCompleted += BwZJog_RunWorkerCompleted;
+
+            // Y negative jog
+            mnuZJogNegative.PreviewMouseDown += MnuZJogNegative_PreviewMouseDown;
+            mnuZJogNegative.PreviewMouseUp += MnuZJogNegative_PreviewMouseUp;
+
+            // Y positive jog
+            mnuZJogPositive.PreviewMouseDown += MnuZJogPositive_PreviewMouseDown;
+            mnuZJogPositive.PreviewMouseUp += MnuZJogPositive_PreviewMouseUp;
+
+            #endregion
+
+            #endregion
 
         }
 
@@ -97,10 +131,7 @@ namespace IBP2018
 
         #region X Jog background worker
         BackgroundWorker bwXJog = new BackgroundWorker();
-        private void BwXJog_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            canJog = false;
-        }
+        private void BwXJog_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) { canJog = false; }
         private void BwXJog_DoWork(object sender, DoWorkEventArgs e)
         {
             canJog = true;
@@ -147,10 +178,7 @@ namespace IBP2018
 
         #region Y Jog background worker
         BackgroundWorker bwYJog = new BackgroundWorker();
-        private void BwYJog_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            canJog = false;
-        }
+        private void BwYJog_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) { canJog = false; }
         private void BwYJog_DoWork(object sender, DoWorkEventArgs e)
         {
             canJog = true;
@@ -159,7 +187,7 @@ namespace IBP2018
                 this.mainGrid.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
                 {
                     Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
-                    vm.YJog(xJogValue);
+                    vm.YJog(yJogValue);
                 }));
                 Thread.Sleep(100);
             }
@@ -187,7 +215,7 @@ namespace IBP2018
         {
             if (bwYJog.IsBusy != true)
             {
-                yJogValue = -(int)(Convert.ToDouble(cboXStep.SelectedItem.ToString()) * MMC2Info.STEPPERMILLIMETER);
+                yJogValue = -(int)(Convert.ToDouble(cboYStep.SelectedItem.ToString()) * MMC2Info.STEPPERMILLIMETER);
                 bwYJog.RunWorkerAsync();
             }
         }
@@ -197,10 +225,7 @@ namespace IBP2018
 
         #region Z Jog background worker
         BackgroundWorker bwZJog = new BackgroundWorker();
-        private void BwZJog_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            canJog = false;
-        }
+        private void BwZJog_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) { canJog = false; }
         private void BwZJog_DoWork(object sender, DoWorkEventArgs e)
         {
             canJog = true;
@@ -209,7 +234,7 @@ namespace IBP2018
                 this.mainGrid.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
                 {
                     Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
-                    vm.ZJog(xJogValue);
+                    vm.ZJog(zJogValue);
                 }));
                 Thread.Sleep(100);
             }
@@ -244,17 +269,5 @@ namespace IBP2018
         #endregion
 
 
-        #region Auto query scanner
-        private void ChkAutoQueryScanner_Unchecked(object sender, RoutedEventArgs e)
-        {
-            Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
-            vm.UnqueryScannerCommand.Execute(new object());
-        }
-        private void ChkAutoQueryScanner_Checked(object sender, RoutedEventArgs e)
-        {
-            Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
-            vm.QueryScannerCommand.Execute(new object());
-        }
-        #endregion               
     }
 }
