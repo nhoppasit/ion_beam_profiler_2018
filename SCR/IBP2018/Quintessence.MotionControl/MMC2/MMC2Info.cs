@@ -353,8 +353,8 @@ namespace Quintessence.MotionControl.MMC2
             }
         }
 
-        // Zero reference of X axis
-        public PortResponse ZeroX()
+        // Goto Zero reference of X axis
+        public PortResponse GotoZeroX()
         {
             try
             {
@@ -386,8 +386,8 @@ namespace Quintessence.MotionControl.MMC2
             }
         }
 
-        // Zero reference of Y axis
-        public PortResponse ZeroY()
+        // Goto Zero reference of Y axis
+        public PortResponse GotoZeroY()
         {
             try
             {
@@ -418,5 +418,78 @@ namespace Quintessence.MotionControl.MMC2
                 return pr;
             }
         }
+
+        /// <summary>
+        /// Set as zero reference of X axis
+        /// </summary>
+        /// <returns>Port Response class</returns>
+        public PortResponse SetZeroX()
+        {
+            try
+            {
+                if (_IsDemo)
+                {
+                    ActualY = 0;
+                    _SensorX = "K";
+                    _SensorY = "K";
+                    _IsReady = true;
+                    PortResponse pr0 = new PortResponse(PortResponse.DEMO, "Demo mode.", null);
+                    return pr0;
+                }
+
+                // Communication                
+                string stepMessage = "P:14P0\n";
+                PortResponse pr = new PortResponse("00", stepMessage, null);
+                string Incomming = string.Empty;
+                Port.DiscardOutBuffer();
+                Port.DiscardInBuffer();
+                Port.Write(stepMessage);
+                Incomming = Port.ReadLine();
+                for (int i = 0; i < 3; i++) if (!IsReady) { pr = QueryPosition(); Thread.Sleep(70); } else break;
+                return pr;
+            }
+            catch (Exception ex)
+            {
+                PortResponse pr = new PortResponse(PortResponse.ERR_REFZ, "Set as zero reference of X on " + _SerialPortName + " error. " + ex.Message, ex);
+                return pr;
+            }
+        }
+
+        /// <summary>
+        /// Set as zero reference of X axis 
+        /// </summary>
+        /// <returns>Port Response class</returns>
+        public PortResponse SetZeroY()
+        {
+            try
+            {
+                if (_IsDemo)
+                {
+                    ActualY = 0;
+                    _SensorX = "K";
+                    _SensorY = "K";
+                    _IsReady = true;
+                    PortResponse pr0 = new PortResponse(PortResponse.DEMO, "Demo mode.", null);
+                    return pr0;
+                }
+
+                // Communication                
+                string stepMessage = "P:15P0\n";
+                PortResponse pr = new PortResponse("00", stepMessage, null);
+                string Incomming = string.Empty;
+                Port.DiscardOutBuffer();
+                Port.DiscardInBuffer();
+                Port.Write(stepMessage);
+                Incomming = Port.ReadLine();
+                for (int i = 0; i < 3; i++) if (!IsReady) { pr = QueryPosition(); Thread.Sleep(70); } else break;
+                return pr;
+            }
+            catch (Exception ex)
+            {
+                PortResponse pr = new PortResponse(PortResponse.ERR_REFZ, "Set as zero reference of Y on " + _SerialPortName + " error. " + ex.Message, ex);
+                return pr;
+            }
+        }
+
     }
 }

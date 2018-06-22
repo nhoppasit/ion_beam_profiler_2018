@@ -31,5 +31,6 @@ namespace Quintessence.MotionControl
         public const string ERR_JOG = "JE";
         public const string ERR_ABS = "AE";
         public const string ERR_ZERO = "ZE";
+        public const string ERR_REFZ = "RE";
     }
 }
