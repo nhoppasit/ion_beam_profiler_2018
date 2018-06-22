@@ -136,11 +136,6 @@ namespace Quintessence.MotionControl.MMC2
             {
                 if (_IsDemo)
                 {
-                    _ActualXStep += 10;
-                    _ActualYStep += 10;
-                    _SensorX = "K";
-                    _SensorY = "K";
-                    _IsReady = true;
                     PortResponse pr = new PortResponse(PortResponse.DEMO, "Demo mode.", null);
                     return pr;
                 }
@@ -199,6 +194,16 @@ namespace Quintessence.MotionControl.MMC2
         {
             try
             {
+                if (_IsDemo)
+                {
+                    _ActualXStep += step;
+                    _SensorX = "K";
+                    _SensorY = "K";
+                    _IsReady = true;
+                    PortResponse pr0 = new PortResponse(PortResponse.DEMO, "Demo mode.", null);
+                    return pr0;
+                }
+
                 string stepMessage = "M:XP" + step.ToString() + "\n";
                 string goMessage = "G:\n";
                 string Incomming = string.Empty;
@@ -227,6 +232,16 @@ namespace Quintessence.MotionControl.MMC2
         {
             try
             {
+                if (_IsDemo)
+                {
+                    _ActualYStep += step;
+                    _SensorX = "K";
+                    _SensorY = "K";
+                    _IsReady = true;
+                    PortResponse pr0 = new PortResponse(PortResponse.DEMO, "Demo mode.", null);
+                    return pr0;
+                }
+
                 string stepMessage = "M:YP" + step.ToString() + "\n";
                 string goMessage = "G:\n";
                 string Incomming = string.Empty;
