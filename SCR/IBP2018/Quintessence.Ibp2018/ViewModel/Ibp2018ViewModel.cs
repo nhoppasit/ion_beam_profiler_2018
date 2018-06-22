@@ -101,8 +101,8 @@ namespace Quintessence.Ibp2018.ViewModel
         private MMC2Info _XyMmc;
         public MMC2Info XyMmc { get { return _XyMmc; } set { _XyMmc = value; } }
         public string XyMmcPortName { get { return _XyMmc.SerialPortName; } set { _XyMmc.SerialPortName = value; OnPropertyChanged("XyMmcPortName"); } }
-        public string XLPosText { get { return _XyMmc.ActualX.ToString("F2"); } }
-        public string YLPosText { get { return _XyMmc.ActualY.ToString("F2"); } }
+        public string XLPosText { get { return _XyMmc.ActualX.ToString("F2"); } set { _XyMmc.ActualX = Convert.ToDouble(value); OnPropertyChanged("XLPosText"); } }
+        public string YLPosText { get { return _XyMmc.ActualY.ToString("F2"); } set { _XyMmc.ActualY = Convert.ToDouble(value); OnPropertyChanged("YLPosText"); } }
         public string XScanStep
         {
             get { return _XyMmc.XScanStep.ToString(); }
@@ -206,7 +206,7 @@ namespace Quintessence.Ibp2018.ViewModel
         private MMC2Info _ZMmc;
         public MMC2Info ZMmc { get { return _ZMmc; } set { _ZMmc = value; } }
         public string ZMmcPortName { get { return _ZMmc.SerialPortName; } set { _ZMmc.SerialPortName = value; OnPropertyChanged("ZMmcPortName"); } }
-        public string ZLPosText { get { return _ZMmc.ActualX.ToString("F2"); } }
+        public string ZLPosText { get { return _ZMmc.ActualX.ToString("F2"); } set { _ZMmc.ActualX = Convert.ToDouble(value); OnPropertyChanged("ZLPosText"); } }
         public string ZFigtureMinimum
         {
             get { return _ZMmc.XFigtureMinimum.ToString(); }
@@ -370,12 +370,16 @@ namespace Quintessence.Ibp2018.ViewModel
             ReloadSettings();
         }
 
-        // Reload settings
+        // Reload settings from ROM
         void ReloadSettings()
         {
             A1GpibAddress = Properties.Settings.Default.Ammeter1GpibAddress;
             A2GpibAddress = Properties.Settings.Default.Ammeter2GpibAddress;
+            XyMmcPortName = Properties.Settings.Default.XyMmcPortName;
+            ZMmcPortName = Properties.Settings.Default.ZMmcPortName;
         }
+
+        #region Command definetino
 
         // Reconnect meter 1
         private object Meter1Lock = new object();
@@ -423,10 +427,6 @@ namespace Quintessence.Ibp2018.ViewModel
             canReconnectMeter1 = true;
         }
 
-
-        // -------------------------------------------------------------------------------
-        // CODE OF COMMNADS
-        // -------------------------------------------------------------------------------
         // New measurement command by button
         private void NewMeasurement()
         {
@@ -607,7 +607,6 @@ namespace Quintessence.Ibp2018.ViewModel
         private bool CanExecuteGenerateDemoDataMethod(object parameter) { return canDemo; }
         public void ExecuteGenerateDemoDataMethod(object parameter) { GenerateDemoData(); }
 
-        #region Connect scanner
         // Reconnect xy mmc command
         private object XyMmcLock = new object();
         public bool XyMmcReconnecting = false;
@@ -691,6 +690,15 @@ namespace Quintessence.Ibp2018.ViewModel
             }
             canReconnectZMmc = true;
         }
+
+        // X goto zero command
+
+        // Y goto zero command
+
+        // X set zero command
+
+        // Y set zero command
+
         #endregion
 
         #region Jog method

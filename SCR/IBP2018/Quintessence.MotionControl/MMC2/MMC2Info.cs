@@ -40,9 +40,9 @@ namespace Quintessence.MotionControl.MMC2
          * ข้อมูลตำแหน่ง
          * ----------------------------------------------------------  */
         private int _ActualXStep; public int ActualXStep { get { return _ActualXStep; } }
-        public double ActualX { get { return (double)_ActualXStep * MILLIMETERPERSTEP; } }
+        public double ActualX { get { return (double)_ActualXStep * MILLIMETERPERSTEP; } set { _ActualXStep = (int)(value * STEPPERMILLIMETER); } }
         private int _ActualYStep; public int ActualYStep { get { return _ActualYStep; } }
-        public double ActualY { get { return (double)_ActualYStep * MILLIMETERPERSTEP; } }
+        public double ActualY { get { return (double)_ActualYStep * MILLIMETERPERSTEP; } set { _ActualYStep = (int)(value * STEPPERMILLIMETER); } }
         private string _SensorX; public string SensorX { get { return _SensorX; } }
         private string _SensorY; public string SensorY { get { return _SensorY; } }
         private bool _IsReady; public bool IsReady { get { return _IsReady; } }
@@ -140,6 +140,8 @@ namespace Quintessence.MotionControl.MMC2
                     return pr;
                 }
 
+                Port.DiscardOutBuffer();
+                Port.DiscardInBuffer();
                 Port.Write("Q:\n");
                 string Incomming = string.Empty;
                 Incomming = Port.ReadLine();
@@ -204,20 +206,26 @@ namespace Quintessence.MotionControl.MMC2
                     return pr0;
                 }
 
-                string stepMessage = "M:XP" + step.ToString() + "\n";
-                string goMessage = "G:\n";
-                string Incomming = string.Empty;
+                // Validateion
                 PortResponse pr = QueryPosition();
                 if (pr.Code != PortResponse.SUCCESS) { return pr; }
-                double tAPos = 2 * step * MILLIMETERPERSTEP + ActualX;
-                if (XFigtureMinimum <= tAPos && tAPos <= XFigtureMaximum)
-                {
-                    Port.Write(stepMessage);
-                    Incomming = Port.ReadLine();
-                    Port.Write(goMessage);
-                    Incomming = Port.ReadLine();
-                    for (int i = 0; i < 3; i++) if (!IsReady) QueryPosition(); else break;
-                }
+                double tAPos = step * MILLIMETERPERSTEP + ActualX;
+                if (tAPos < XFigtureMinimum) step = (int)((XFigtureMinimum - ActualX) * STEPPERMILLIMETER);
+                if (XFigtureMaximum < tAPos) step = (int)((XFigtureMaximum - ActualX) * STEPPERMILLIMETER);
+
+                // Communication
+                string stepMessage = "M:XP" + step.ToString() + "\n";
+                string goMessage = "G:\n";
+                pr = new PortResponse("00", stepMessage, null);
+                pr = new PortResponse("00", goMessage, null);
+                string Incomming = string.Empty;
+                Port.DiscardOutBuffer();
+                Port.DiscardInBuffer();
+                Port.Write(stepMessage);
+                Incomming = Port.ReadLine();
+                Port.Write(goMessage);
+                Incomming = Port.ReadLine();
+                for (int i = 0; i < 3; i++) if (!IsReady) { pr = QueryPosition(); Thread.Sleep(70); } else break;
                 return pr;
             }
             catch (Exception ex)
@@ -242,26 +250,171 @@ namespace Quintessence.MotionControl.MMC2
                     return pr0;
                 }
 
-                string stepMessage = "M:YP" + step.ToString() + "\n";
-                string goMessage = "G:\n";
-                string Incomming = string.Empty;
+                // Validateion
                 PortResponse pr = QueryPosition();
                 if (pr.Code != PortResponse.SUCCESS) { return pr; }
-                double tAPos = 2 * step * MILLIMETERPERSTEP + ActualY;
-                if (_YFigtureMinimum <= tAPos && tAPos <= _YFigtureMaximum)
-                {
-                    Port.Write(stepMessage);
-                    Incomming = Port.ReadLine();
-                    Port.Write(goMessage);
-                    Incomming = Port.ReadLine();
-                    QueryPosition();
-                    for (int i = 0; i < 3; i++) if (!IsReady) QueryPosition(); else break;
-                }
+                double tAPos = step * MILLIMETERPERSTEP + ActualX;
+                if (tAPos < YFigtureMinimum) step = (int)((YFigtureMinimum - ActualY) * STEPPERMILLIMETER);
+                if (YFigtureMaximum < tAPos) step = (int)((YFigtureMaximum - ActualY) * STEPPERMILLIMETER);
+
+                // Communication
+                string stepMessage = "M:YP" + step.ToString() + "\n";
+                string goMessage = "G:\n";
+                pr = new PortResponse("00", stepMessage, null);
+                pr = new PortResponse("00", goMessage, null);
+                string Incomming = string.Empty;
+                Port.DiscardOutBuffer();
+                Port.DiscardInBuffer();
+                Port.Write(stepMessage);
+                Incomming = Port.ReadLine();
+                Port.Write(goMessage);
+                Incomming = Port.ReadLine();
+                for (int i = 0; i < 3; i++) if (!IsReady) { pr = QueryPosition(); Thread.Sleep(70); } else break;
                 return pr;
             }
             catch (Exception ex)
             {
                 PortResponse pr = new PortResponse(PortResponse.ERR_JOG, "Jog Y on " + _SerialPortName + " error. " + ex.Message, ex);
+                return pr;
+            }
+        }
+
+        // Absolute move of X axis
+        public PortResponse AbsoluteMoveX()
+        {
+            try
+            {
+                if (_IsDemo)
+                {
+                    _SensorX = "K";
+                    _SensorY = "K";
+                    _IsReady = true;
+                    PortResponse pr0 = new PortResponse(PortResponse.DEMO, "Demo mode.", null);
+                    return pr0;
+                }
+
+                // Validateion with member
+                int step = (int)(ActualX * STEPPERMILLIMETER);
+                if (ActualX < XFigtureMinimum) step = (int)((XFigtureMinimum) * STEPPERMILLIMETER);
+                if (XFigtureMaximum < ActualX) step = (int)((XFigtureMaximum) * STEPPERMILLIMETER);
+
+                // Communication                
+                string stepMessage = "A:XP" + step.ToString() + "\n";
+                PortResponse pr = new PortResponse("00", stepMessage, null);
+                string Incomming = string.Empty;
+                Port.DiscardOutBuffer();
+                Port.DiscardInBuffer();
+                Port.Write(stepMessage);
+                Incomming = Port.ReadLine();
+                for (int i = 0; i < 3; i++) if (!IsReady) { pr = QueryPosition(); Thread.Sleep(70); } else break;
+                return pr;
+            }
+            catch (Exception ex)
+            {
+                PortResponse pr = new PortResponse(PortResponse.ERR_ABS, "Absolute move of X on " + _SerialPortName + " error. " + ex.Message, ex);
+                return pr;
+            }
+        }
+
+        // Absolute move of Y axis
+        public PortResponse AbsoluteMoveY()
+        {
+            try
+            {
+                if (_IsDemo)
+                {
+                    _SensorX = "K";
+                    _SensorY = "K";
+                    _IsReady = true;
+                    PortResponse pr0 = new PortResponse(PortResponse.DEMO, "Demo mode.", null);
+                    return pr0;
+                }
+
+                // Validateion with member
+                int step = (int)(ActualY * STEPPERMILLIMETER);
+                if (ActualY < YFigtureMinimum) step = (int)((YFigtureMinimum) * STEPPERMILLIMETER);
+                if (YFigtureMaximum < ActualY) step = (int)((YFigtureMaximum) * STEPPERMILLIMETER);
+
+                // Communication                
+                string stepMessage = "A:YP" + step.ToString() + "\n";
+                PortResponse pr = new PortResponse("00", stepMessage, null);
+                string Incomming = string.Empty;
+                Port.DiscardOutBuffer();
+                Port.DiscardInBuffer();
+                Port.Write(stepMessage);
+                Incomming = Port.ReadLine();
+                for (int i = 0; i < 3; i++) if (!IsReady) { pr = QueryPosition(); Thread.Sleep(70); } else break;
+                return pr;
+            }
+            catch (Exception ex)
+            {
+                PortResponse pr = new PortResponse(PortResponse.ERR_ABS, "Absolute move of Y on " + _SerialPortName + " error. " + ex.Message, ex);
+                return pr;
+            }
+        }
+
+        // Zero reference of X axis
+        public PortResponse ZeroX()
+        {
+            try
+            {
+                if (_IsDemo)
+                {
+                    ActualX = 0;
+                    _SensorX = "K";
+                    _SensorY = "K";
+                    _IsReady = true;
+                    PortResponse pr0 = new PortResponse(PortResponse.DEMO, "Demo mode.", null);
+                    return pr0;
+                }
+
+                // Communication                
+                string stepMessage = "A:XP0\n";
+                PortResponse pr = new PortResponse("00", stepMessage, null);
+                string Incomming = string.Empty;
+                Port.DiscardOutBuffer();
+                Port.DiscardInBuffer();
+                Port.Write(stepMessage);
+                Incomming = Port.ReadLine();
+                for (int i = 0; i < 3; i++) if (!IsReady) { pr = QueryPosition(); Thread.Sleep(70); } else break;
+                return pr;
+            }
+            catch (Exception ex)
+            {
+                PortResponse pr = new PortResponse(PortResponse.ERR_ZERO, "Zero reference of X on " + _SerialPortName + " error. " + ex.Message, ex);
+                return pr;
+            }
+        }
+
+        // Zero reference of Y axis
+        public PortResponse ZeroY()
+        {
+            try
+            {
+                if (_IsDemo)
+                {
+                    ActualY = 0;
+                    _SensorX = "K";
+                    _SensorY = "K";
+                    _IsReady = true;
+                    PortResponse pr0 = new PortResponse(PortResponse.DEMO, "Demo mode.", null);
+                    return pr0;
+                }
+
+                // Communication                
+                string stepMessage = "A:YP0\n";
+                PortResponse pr = new PortResponse("00", stepMessage, null);
+                string Incomming = string.Empty;
+                Port.DiscardOutBuffer();
+                Port.DiscardInBuffer();
+                Port.Write(stepMessage);
+                Incomming = Port.ReadLine();
+                for (int i = 0; i < 3; i++) if (!IsReady) { pr = QueryPosition(); Thread.Sleep(70); } else break;
+                return pr;
+            }
+            catch (Exception ex)
+            {
+                PortResponse pr = new PortResponse(PortResponse.ERR_ZERO, "Zero reference of Y on " + _SerialPortName + " error. " + ex.Message, ex);
                 return pr;
             }
         }

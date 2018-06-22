@@ -46,5 +46,29 @@ namespace Quintessence.Ibp2018.Properties {
                 this["Ammeter2GpibAddress"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("COM4")]
+        public string XyMmcPortName {
+            get {
+                return ((string)(this["XyMmcPortName"]));
+            }
+            set {
+                this["XyMmcPortName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("COM5")]
+        public string ZMmcPortName {
+            get {
+                return ((string)(this["ZMmcPortName"]));
+            }
+            set {
+                this["ZMmcPortName"] = value;
+            }
+        }
     }
 }

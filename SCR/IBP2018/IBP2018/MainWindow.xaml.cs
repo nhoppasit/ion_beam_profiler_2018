@@ -95,8 +95,9 @@ namespace IBP2018
 
         }
 
-        #region Initialize application
-        // Initialize combobox
+        /// <summary>
+        /// Define combobox items
+        /// </summary>
         void InitializeRibbonComboboxMember()
         {
             for (int i = 1; i <= 25; i++)
@@ -124,11 +125,13 @@ namespace IBP2018
                 catSensorInterval.Items.Add((i).ToString());
             cboSensorInterval.SelectedItem = catSensorInterval.Items[0].ToString();
         }
-        #endregion
 
+        /// <summary>
+        /// Jogging flag
+        /// </summary>
         private volatile bool canJog = true;
 
-        #region X Jog
+        #region X Jog by button's mouse down and up
 
         #region X Jog background worker
         BackgroundWorker bwXJog = new BackgroundWorker();
@@ -188,7 +191,7 @@ namespace IBP2018
         }
         #endregion
 
-        #region Y Jog
+        #region Y Jog by button's mouse down and up 
 
         #region Y Jog background worker
         BackgroundWorker bwYJog = new BackgroundWorker();
@@ -248,7 +251,7 @@ namespace IBP2018
         }
         #endregion
 
-        #region Z Jog
+        #region Z Jog by button's mouse down and up
 
         #region Z Jog background worker
         BackgroundWorker bwZJog = new BackgroundWorker();

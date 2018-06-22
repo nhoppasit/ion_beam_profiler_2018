@@ -16,7 +16,7 @@ namespace Quintessence.MotionControl
             if (!code.Equals(SUCCESS)) this.Message = "[" + code + "] " + message;
             else this.Message = message;
             this.ex = e;
-            System.Diagnostics.Trace.WriteLine(this.Message);
+            System.Diagnostics.Trace.WriteLine(">>> " + DateTime.Now.ToString("MMMM dd, yyyy H:mm:ss.fff") + " : " + this.Message);
         }
 
         public const string SUCCESS = "00";
@@ -29,5 +29,7 @@ namespace Quintessence.MotionControl
 
         public const string ERR_QUERY = "QE";
         public const string ERR_JOG = "JE";
+        public const string ERR_ABS = "AE";
+        public const string ERR_ZERO = "ZE";
     }
 }
