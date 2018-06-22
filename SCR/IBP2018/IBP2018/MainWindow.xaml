@@ -62,10 +62,10 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Row="0" Grid.Column="0" Content="X"/>
-                            <RibbonTextBox Grid.Row="0" Grid.Column="1" x:Name="txtXLPos2" IsReadOnly="True" Text="{Binding XLPosText, Mode=OneWay}" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" IsTabStop="False" IsEnabled="False"/>
+                            <RibbonTextBox Grid.Row="0" Grid.Column="1" x:Name="txtXLPos2" IsReadOnly="False" Text="{Binding XLPosText}" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" IsTabStop="False" IsEnabled="False"/>
                             <Label Grid.Row="0" Grid.Column="3" Content="mm"/>
                             <Label Grid.Row="1" Grid.Column="0" Content="Y" />
-                            <RibbonTextBox Grid.Row="1" Grid.Column="1" x:Name="txtYLPos2" IsReadOnly="True" Text="{Binding YLPosText, Mode=OneWay}" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" IsTabStop="False" IsEnabled="False"/>
+                            <RibbonTextBox Grid.Row="1" Grid.Column="1" x:Name="txtYLPos2" IsReadOnly="False" Text="{Binding YLPosText}" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" IsTabStop="False" IsEnabled="False"/>
                             <Label Grid.Row="1" Grid.Column="3" Content="mm"/>
                         </Grid>
                         <Grid Grid.Column="2">
@@ -79,7 +79,7 @@
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
                             <Label Grid.Row="0" Grid.Column="0" Content="Z"/>
-                            <RibbonTextBox Grid.Row="0" Grid.Column="1" x:Name="txtZLPos2" IsReadOnly="True" Text="{Binding ZLPosText, Mode=OneWay}" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" IsTabStop="False" IsEnabled="False"/>
+                            <RibbonTextBox Grid.Row="0" Grid.Column="1" x:Name="txtZLPos2" IsReadOnly="False" Text="{Binding ZLPosText}" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" IsTabStop="False" IsEnabled="False"/>
                             <Label Grid.Row="0" Grid.Column="3" Content="mm"/>
                             <RibbonButton Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" SmallImageSource="Images/Refresh.png" Label="Query" HorizontalAlignment="Center" Command="{Binding QueryScannerCommand}"/>
                         </Grid>
@@ -181,21 +181,21 @@
                             <RibbonMenuItem Header="Goto Zero"/>
                             <RibbonMenuItem Header="Set as Zero"/>
                         </RibbonMenuButton>
-                        <RibbonTextBox Grid.Row="0" Grid.Column="1" x:Name="txtXLPos1" Text="{Binding XLPosText, Mode=OneWay}" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" VerticalAlignment="Center"/>
+                        <RibbonTextBox Grid.Row="0" Grid.Column="1" x:Name="txtXLPos1" Text="{Binding XLPosText}" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" VerticalAlignment="Center"/>
                         <Label Grid.Row="0" Grid.Column="2" Content="mm"/>
                         <!--Y position-->
                         <RibbonMenuButton Grid.Row="1" Grid.Column="0" Label="Y">
                             <RibbonMenuItem Header="Goto Zero"/>
                             <RibbonMenuItem Header="Set as Zero"/>
                         </RibbonMenuButton>
-                        <RibbonTextBox Grid.Row="1" Grid.Column="1" x:Name="txtYLPos1" Text="{Binding YLPosText, Mode=OneWay}" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" VerticalAlignment="Center"/>
+                        <RibbonTextBox Grid.Row="1" Grid.Column="1" x:Name="txtYLPos1" Text="{Binding YLPosText}" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" VerticalAlignment="Center"/>
                         <Label Grid.Row="1" Grid.Column="2" Content="mm" VerticalAlignment="Center"/>
                         <!--Z position-->
                         <RibbonMenuButton Grid.Row="0" Grid.Column="4" Label="Z">
                             <RibbonMenuItem Header="Goto Zero"/>
                             <RibbonMenuItem Header="Set as Zero"/>
                         </RibbonMenuButton>
-                        <RibbonTextBox Grid.Row="0" Grid.Column="5" x:Name="txtZLPos1" Text="{Binding ZLPosText, Mode=OneWay}" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" VerticalAlignment="Center"/>
+                        <RibbonTextBox Grid.Row="0" Grid.Column="5" x:Name="txtZLPos1" Text="{Binding ZLPosText}" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" VerticalAlignment="Center"/>
                         <Label Grid.Row="0" Grid.Column="6" Content="mm" VerticalAlignment="Center"/>
                         <RibbonButton Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="3" SmallImageSource="Images/Refresh.png" Label="Query" HorizontalAlignment="Center" Command="{Binding QueryScannerCommand}"/>
                     </Grid>
