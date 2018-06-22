@@ -18,6 +18,7 @@ using System.Windows.Threading;
 using System.Threading;
 using System.ComponentModel;
 using Quintessence.Ibp2018.ViewModel;
+using Quintessence.MotionControl;
 using Quintessence.MotionControl.MMC2;
 using System.Reflection;
 
@@ -140,7 +141,8 @@ namespace IBP2018
                 this.mainGrid.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
                 {
                     Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
-                    vm.XJog(xJogValue);
+                    PortResponse pr = vm.XJog(xJogValue);
+                    if (pr.Code != PortResponse.SUCCESS && pr.Code != PortResponse.DEMO) { MessageBox.Show(pr.Message, "X Jog", MessageBoxButton.OK, MessageBoxImage.Asterisk); canJog = false; }
                 }));
                 Thread.Sleep(100);
             }
@@ -187,7 +189,8 @@ namespace IBP2018
                 this.mainGrid.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
                 {
                     Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
-                    vm.YJog(yJogValue);
+                    PortResponse pr = vm.YJog(yJogValue);
+                    if (pr.Code != PortResponse.SUCCESS && pr.Code != PortResponse.DEMO) { MessageBox.Show(pr.Message, "Y Jog", MessageBoxButton.OK, MessageBoxImage.Asterisk); canJog = false; }
                 }));
                 Thread.Sleep(100);
             }
@@ -234,7 +237,8 @@ namespace IBP2018
                 this.mainGrid.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
                 {
                     Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
-                    vm.ZJog(zJogValue);
+                    PortResponse pr = vm.ZJog(zJogValue);
+                    if (pr.Code != PortResponse.SUCCESS && pr.Code != PortResponse.DEMO) { MessageBox.Show(pr.Message, "Z Jog", MessageBoxButton.OK, MessageBoxImage.Asterisk); canJog = false; }
                 }));
                 Thread.Sleep(100);
             }

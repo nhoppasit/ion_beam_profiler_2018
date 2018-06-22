@@ -675,23 +675,26 @@ namespace Quintessence.Ibp2018.ViewModel
 
         #region Jog method
         // X Jogging method        
-        public void XJog(int step)
+        public PortResponse XJog(int step)
         {
-            _XyMmc.JogX(step);
+            PortResponse pr = _XyMmc.JogX(step);
             OnPropertyChanged("XLPosText");
+            return pr;
         }
         // Y Jogging method        
-        public void YJog(int step)
+        public PortResponse YJog(int step)
         {
-            _XyMmc.JogY(step);
+            PortResponse pr = _XyMmc.JogY(step);
             OnPropertyChanged("YLPosText");
+            return pr;
         }
         // Y Jogging method        
-        public void ZJog(int step)
+        public PortResponse ZJog(int step)
         {
-            _ZMmc.JogX(step);
+            PortResponse pr = _ZMmc.JogX(step);
             //_ZMmc.JogY(step);
             OnPropertyChanged("ZLPosText");
+            return pr;
         }
         #endregion
     }

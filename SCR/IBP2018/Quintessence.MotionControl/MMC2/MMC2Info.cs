@@ -195,7 +195,7 @@ namespace Quintessence.MotionControl.MMC2
         }
 
         // X jog
-        public void JogX(int step)
+        public PortResponse JogX(int step)
         {
             try
             {
@@ -203,7 +203,7 @@ namespace Quintessence.MotionControl.MMC2
                 string goMessage = "G:\n";
                 string Incomming = string.Empty;
                 PortResponse pr = QueryPosition();
-                if (pr.Code != PortResponse.SUCCESS) { return; }
+                if (pr.Code != PortResponse.SUCCESS) { return pr; }
                 double tAPos = 2 * step * MILLIMETERPERSTEP + ActualX;
                 if (XFigtureMinimum <= tAPos && tAPos <= XFigtureMaximum)
                 {
@@ -213,15 +213,17 @@ namespace Quintessence.MotionControl.MMC2
                     Incomming = Port.ReadLine();
                     for (int i = 0; i < 3; i++) if (!IsReady) QueryPosition(); else break;
                 }
+                return pr;
             }
             catch (Exception ex)
             {
                 PortResponse pr = new PortResponse(PortResponse.ERR_JOG, "Jog X on " + _SerialPortName + " error. " + ex.Message, ex);
+                return pr;
             }
         }
 
         // Y jog
-        public void JogY(int step)
+        public PortResponse JogY(int step)
         {
             try
             {
@@ -229,7 +231,7 @@ namespace Quintessence.MotionControl.MMC2
                 string goMessage = "G:\n";
                 string Incomming = string.Empty;
                 PortResponse pr = QueryPosition();
-                if (pr.Code != PortResponse.SUCCESS) { return; }
+                if (pr.Code != PortResponse.SUCCESS) { return pr; }
                 double tAPos = 2 * step * MILLIMETERPERSTEP + ActualY;
                 if (_YFigtureMinimum <= tAPos && tAPos <= _YFigtureMaximum)
                 {
@@ -240,10 +242,12 @@ namespace Quintessence.MotionControl.MMC2
                     QueryPosition();
                     for (int i = 0; i < 3; i++) if (!IsReady) QueryPosition(); else break;
                 }
+                return pr;
             }
             catch (Exception ex)
             {
                 PortResponse pr = new PortResponse(PortResponse.ERR_JOG, "Jog Y on " + _SerialPortName + " error. " + ex.Message, ex);
+                return pr;
             }
         }
     }
