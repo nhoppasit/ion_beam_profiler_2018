@@ -463,56 +463,45 @@ namespace Quintessence.Ibp2018.ViewModel
 
         // Query and unquery scanner
         private bool canQueryScanner = true;
-        private bool _continueQueryScanner = true;
         private void QueryScanner()
         {
-            ThreadPool.QueueUserWorkItem(
-                o =>
+            canQueryScanner = false;
+            try
+            {
+                PortResponse pr1 = XyMmc.QueryPosition();
+                // Verify
+                if (pr1.Code == PortResponse.SUCCESS)
                 {
-                    canQueryScanner = true;
-                    _continueQueryScanner = true;
-                    while (_continueQueryScanner)
-                    {
-                        try
-                        {
-                            PortResponse pr = XyMmc.QueryPosition();
-                            // Verify
-                            if (pr.Code == PortResponse.SUCCESS)
-                            {
-                                OnPropertyChanged("XLPosText");
-                                OnPropertyChanged("YLPosText");
-                            }
-                            else
-                            {
-                                _continueQueryScanner = false;
-                                canQueryScanner = false;
-                                MessageBox.Show(pr.Message, "Query X-Y Scanner", MessageBoxButton.OK, MessageBoxImage.Information);
-                                break;
-                            }
-                            PortResponse prZ = ZMmc.QueryPosition();
-                            // Verify
-                            if (pr.Code == PortResponse.SUCCESS)
-                            {
-                                OnPropertyChanged("ZLPosText");
-                            }
-                            else
-                            {
-                                _continueQueryScanner = false;
-                                canQueryScanner = false;
-                                MessageBox.Show(pr.Message, "Query Z axis", MessageBoxButton.OK, MessageBoxImage.Information);
-                                break;
-                            }
-                        }
-                        catch (Exception ex) { }
-                        Thread.Sleep(500);
-                    }
-                    //MessageBox.Show("Auto query is turned OFF.", "Query X-Y Scanner", MessageBoxButton.OK, MessageBoxImage.Information);
-                });
+                    OnPropertyChanged("XLPosText");
+                    OnPropertyChanged("YLPosText");
+                }
+                else
+                {
+                    // Do nothing
+                    //canQueryScanner = false;
+                    //MessageBox.Show(pr.Message, "Query X-Y Scanner", MessageBoxButton.OK, MessageBoxImage.Information);                           
+                }
+                PortResponse prZ = ZMmc.QueryPosition();
+                // Verify
+                if (pr1.Code == PortResponse.SUCCESS)
+                {
+                    OnPropertyChanged("ZLPosText");
+                }
+                else
+                {
+                    // Do nothing
+                    // canQueryScanner = false;
+                    //MessageBox.Show(pr.Message, "Query Z axis", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex) { PortResponse pr = new PortResponse(PortResponse.ERR_QUERY, ex.Message, ex); }
+            //MessageBox.Show("Auto query is turned OFF.", "Query X-Y Scanner", MessageBoxButton.OK, MessageBoxImage.Information);
+            canQueryScanner = true;
         }
         private bool CanExecuteQueryScannerMethod(object parameter) { return canQueryScanner; }
         private void ExecuteQueryScannerMethod(object parameter) { QueryScanner(); }
         private bool CanExecuteUnqueryScannerMethod(object parameter) { return true; }
-        private void ExecuteUnqueryScannerMethod(object parameter) { _continueQueryScanner = false; canQueryScanner = true; }
+        private void ExecuteUnqueryScannerMethod(object parameter) { canQueryScanner = true; }
 
         // Initialize Meter
         private bool CanExecuteInitializeMeterMethod(object parameter) { return canMeasure; }

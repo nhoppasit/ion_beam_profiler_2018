@@ -130,11 +130,11 @@ namespace Quintessence.MotionControl.MMC2
         }
 
         // Read current position and sensors
-        public PortResponse QueryPosition(bool demo = false)
+        public PortResponse QueryPosition()
         {
             try
             {
-                if (demo)
+                if (_IsDemo)
                 {
                     _ActualXStep += 10;
                     _ActualYStep += 10;

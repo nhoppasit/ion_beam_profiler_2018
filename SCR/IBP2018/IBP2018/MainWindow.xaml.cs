@@ -88,12 +88,15 @@ namespace IBP2018
             for (int i = 1; i <= 10; i++)
                 catSensorInterval.Items.Add((i).ToString());
             cboSensorInterval.SelectedItem = catSensorInterval.Items[0].ToString();
-        }        
+        }
         #endregion
 
-        #region X Job background worker
-        BackgroundWorker bwXJog = new BackgroundWorker();
         private volatile bool canJog = true;
+
+        #region X Jog
+
+        #region X Jog background worker
+        BackgroundWorker bwXJog = new BackgroundWorker();
         private void BwXJog_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             canJog = false;
@@ -113,7 +116,6 @@ namespace IBP2018
         }
         #endregion
 
-        #region X Jog
         private int xJogValue = 50;
         private void MnuXJogPositive_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
@@ -140,6 +142,107 @@ namespace IBP2018
             }
         }
         #endregion
+
+        #region Y Jog
+
+        #region Y Jog background worker
+        BackgroundWorker bwYJog = new BackgroundWorker();
+        private void BwYJog_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            canJog = false;
+        }
+        private void BwYJog_DoWork(object sender, DoWorkEventArgs e)
+        {
+            canJog = true;
+            while (canJog)
+            {
+                this.mainGrid.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
+                {
+                    Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
+                    vm.YJog(xJogValue);
+                }));
+                Thread.Sleep(100);
+            }
+        }
+        #endregion
+
+        private int yJogValue = 50;
+        private void MnuYJogPositive_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            canJog = false; //bwYJogPositive.CancelAsync();
+        }
+        private void MnuYJogPositive_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (bwYJog.IsBusy != true)
+            {
+                yJogValue = (int)(Convert.ToDouble(cboXStep.SelectedItem.ToString()) * MMC2Info.STEPPERMILLIMETER);
+                bwYJog.RunWorkerAsync();
+            }
+        }
+        private void MnuYJogNegative_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            canJog = false; //bwYJogPositive.CancelAsync();
+        }
+        private void MnuYJogNegative_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (bwYJog.IsBusy != true)
+            {
+                yJogValue = -(int)(Convert.ToDouble(cboXStep.SelectedItem.ToString()) * MMC2Info.STEPPERMILLIMETER);
+                bwYJog.RunWorkerAsync();
+            }
+        }
+        #endregion
+
+        #region Z Jog
+
+        #region Z Jog background worker
+        BackgroundWorker bwZJog = new BackgroundWorker();
+        private void BwZJog_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            canJog = false;
+        }
+        private void BwZJog_DoWork(object sender, DoWorkEventArgs e)
+        {
+            canJog = true;
+            while (canJog)
+            {
+                this.mainGrid.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
+                {
+                    Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
+                    vm.ZJog(xJogValue);
+                }));
+                Thread.Sleep(100);
+            }
+        }
+        #endregion
+
+        private int zJogValue = 50;
+        private void MnuZJogPositive_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            canJog = false; //bwZJogPositive.CancelAsync();
+        }
+        private void MnuZJogPositive_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (bwZJog.IsBusy != true)
+            {
+                zJogValue = (int)(Convert.ToDouble(cboXStep.SelectedItem.ToString()) * MMC2Info.STEPPERMILLIMETER);
+                bwZJog.RunWorkerAsync();
+            }
+        }
+        private void MnuZJogNegative_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            canJog = false; //bwZJogPositive.CancelAsync();
+        }
+        private void MnuZJogNegative_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (bwZJog.IsBusy != true)
+            {
+                zJogValue = -(int)(Convert.ToDouble(cboXStep.SelectedItem.ToString()) * MMC2Info.STEPPERMILLIMETER);
+                bwZJog.RunWorkerAsync();
+            }
+        }
+        #endregion
+
 
         #region Auto query scanner
         private void ChkAutoQueryScanner_Unchecked(object sender, RoutedEventArgs e)
