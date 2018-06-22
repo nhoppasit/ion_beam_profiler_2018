@@ -62,10 +62,10 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Row="0" Grid.Column="0" Content="X"/>
-                            <RibbonTextBox Grid.Row="0" Grid.Column="1" x:Name="txtXLPos2" IsReadOnly="False" Text="{Binding XLPosText}" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" IsTabStop="False" IsEnabled="False"/>
+                            <RibbonTextBox Grid.Row="0" Grid.Column="1" x:Name="txtXLPos2" IsReadOnly="True" Text="{Binding XLPosText}" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" IsTabStop="False" IsEnabled="False"/>
                             <Label Grid.Row="0" Grid.Column="3" Content="mm"/>
                             <Label Grid.Row="1" Grid.Column="0" Content="Y" />
-                            <RibbonTextBox Grid.Row="1" Grid.Column="1" x:Name="txtYLPos2" IsReadOnly="False" Text="{Binding YLPosText}" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" IsTabStop="False" IsEnabled="False"/>
+                            <RibbonTextBox Grid.Row="1" Grid.Column="1" x:Name="txtYLPos2" IsReadOnly="True" Text="{Binding YLPosText}" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" IsTabStop="False" IsEnabled="False"/>
                             <Label Grid.Row="1" Grid.Column="3" Content="mm"/>
                         </Grid>
                         <Grid Grid.Column="2">
@@ -181,21 +181,21 @@
                             <RibbonMenuItem Header="Goto Zero"/>
                             <RibbonMenuItem Header="Set as Zero"/>
                         </RibbonMenuButton>
-                        <RibbonTextBox Grid.Row="0" Grid.Column="1" x:Name="txtXLPos1" Text="{Binding XLPosText}" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" VerticalAlignment="Center"/>
+                        <RibbonTextBox Grid.Row="0" Grid.Column="1" x:Name="txtXLPos1" Text="{Binding XLPosText}" b:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="RibbonTextBox.Text"  TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" VerticalAlignment="Center"/>
                         <Label Grid.Row="0" Grid.Column="2" Content="mm"/>
                         <!--Y position-->
                         <RibbonMenuButton Grid.Row="1" Grid.Column="0" Label="Y">
                             <RibbonMenuItem Header="Goto Zero"/>
                             <RibbonMenuItem Header="Set as Zero"/>
                         </RibbonMenuButton>
-                        <RibbonTextBox Grid.Row="1" Grid.Column="1" x:Name="txtYLPos1" Text="{Binding YLPosText}" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" VerticalAlignment="Center"/>
+                        <RibbonTextBox Grid.Row="1" Grid.Column="1" x:Name="txtYLPos1" Text="{Binding YLPosText}" b:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="RibbonTextBox.Text"  TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" VerticalAlignment="Center"/>
                         <Label Grid.Row="1" Grid.Column="2" Content="mm" VerticalAlignment="Center"/>
                         <!--Z position-->
                         <RibbonMenuButton Grid.Row="0" Grid.Column="4" Label="Z">
                             <RibbonMenuItem Header="Goto Zero"/>
                             <RibbonMenuItem Header="Set as Zero"/>
                         </RibbonMenuButton>
-                        <RibbonTextBox Grid.Row="0" Grid.Column="5" x:Name="txtZLPos1" Text="{Binding ZLPosText}" TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" VerticalAlignment="Center"/>
+                        <RibbonTextBox Grid.Row="0" Grid.Column="5" x:Name="txtZLPos1" Text="{Binding ZLPosText}" b:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="RibbonTextBox.Text"  TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" VerticalAlignment="Center"/>
                         <Label Grid.Row="0" Grid.Column="6" Content="mm" VerticalAlignment="Center"/>
                         <RibbonButton Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="3" SmallImageSource="Images/Refresh.png" Label="Query" HorizontalAlignment="Center" Command="{Binding QueryScannerCommand}"/>
                     </Grid>
@@ -283,10 +283,10 @@
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="Min"/>
-                        <RibbonTextBox Grid.Row="0"  Grid.Column="1" x:Name="txtXMin" KeyTip="MIX" Text="{Binding XFigtureMinimum}" TextAlignment="Center" TextBoxWidth="25"/>
+                        <RibbonTextBox Grid.Row="0"  Grid.Column="1" x:Name="txtXMin" KeyTip="MIX" Text="{Binding XFigtureMinimum}" b:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="RibbonTextBox.Text"  TextAlignment="Center" TextBoxWidth="25"/>
                         <Label Grid.Row="0"  Grid.Column="2" Content="mm"/>
                         <Label Grid.Row="1"  Grid.Column="0" Content="Max"/>
-                        <RibbonTextBox Grid.Row="1"  Grid.Column="1" x:Name="txtXMax" KeyTip="MAX" Text="{Binding XFigtureMaximum}" TextAlignment="Center" TextBoxWidth="25"/>
+                        <RibbonTextBox Grid.Row="1"  Grid.Column="1" x:Name="txtXMax" KeyTip="MAX" Text="{Binding XFigtureMaximum}" b:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="RibbonTextBox.Text"  TextAlignment="Center" TextBoxWidth="25"/>
                         <Label Grid.Row="1"  Grid.Column="2" Content="mm"/>
                     </Grid>
                 </RibbonGroup>
@@ -303,10 +303,10 @@
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="Min"/>
-                        <RibbonTextBox Grid.Row="0"  Grid.Column="1" x:Name="txtYMin" KeyTip="MIY" Text="{Binding YFigtureMinimum}" TextAlignment="Center" TextBoxWidth="25"/>
+                        <RibbonTextBox Grid.Row="0"  Grid.Column="1" x:Name="txtYMin" KeyTip="MIY" Text="{Binding YFigtureMinimum}" b:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="RibbonTextBox.Text"  TextAlignment="Center" TextBoxWidth="25"/>
                         <Label Grid.Row="0"  Grid.Column="2" Content="mm"/>
                         <Label Grid.Row="1"  Grid.Column="0" Content="Max"/>
-                        <RibbonTextBox Grid.Row="1"  Grid.Column="1" x:Name="txtYMax" KeyTip="MAY" Text="{Binding YFigtureMaximum}" TextAlignment="Center" TextBoxWidth="25"/>
+                        <RibbonTextBox Grid.Row="1"  Grid.Column="1" x:Name="txtYMax" KeyTip="MAY" Text="{Binding YFigtureMaximum}" b:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="RibbonTextBox.Text"  TextAlignment="Center" TextBoxWidth="25"/>
                         <Label Grid.Row="1"  Grid.Column="2" Content="mm"/>
                     </Grid>
                 </RibbonGroup>
@@ -323,10 +323,10 @@
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="Min"/>
-                        <RibbonTextBox Grid.Row="0"  Grid.Column="1" x:Name="txtZMin" KeyTip="MIZ" Text="{Binding ZFigtureMinimum}" TextAlignment="Center" TextBoxWidth="25"/>
+                        <RibbonTextBox Grid.Row="0"  Grid.Column="1" x:Name="txtZMin" KeyTip="MIZ" Text="{Binding ZFigtureMinimum}" b:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="RibbonTextBox.Text"  TextAlignment="Center" TextBoxWidth="25"/>
                         <Label Grid.Row="0"  Grid.Column="2" Content="mm"/>
                         <Label Grid.Row="1"  Grid.Column="0" Content="Max"/>
-                        <RibbonTextBox Grid.Row="1"  Grid.Column="1" x:Name="txtZMax" KeyTip="MAZ" Text="{Binding ZFigtureMaximum}" TextAlignment="Center" TextBoxWidth="25"/>
+                        <RibbonTextBox Grid.Row="1"  Grid.Column="1" x:Name="txtZMax" KeyTip="MAZ" Text="{Binding ZFigtureMaximum}" b:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="RibbonTextBox.Text"  TextAlignment="Center" TextBoxWidth="25"/>
                         <Label Grid.Row="1"  Grid.Column="2" Content="mm"/>
                     </Grid>
                 </RibbonGroup>
@@ -344,11 +344,11 @@
                         <RibbonMenuButton Grid.Row="0" Grid.Column="0" Label="X-Y MMC">
                             <RibbonMenuItem Header="Re-connect" KeyTip="RX" Command="{Binding ReconnectXyMmcCommand}"/>
                         </RibbonMenuButton>
-                        <RibbonTextBox Grid.Row="0" Grid.Column="1" x:Name="txtXYPortName" Text="{Binding XyMmcPortName}"  HorizontalContentAlignment="Center" TextBoxWidth="60"/>
+                        <RibbonTextBox Grid.Row="0" Grid.Column="1" x:Name="txtXYPortName" Text="{Binding XyMmcPortName}" b:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="RibbonTextBox.Text"  HorizontalContentAlignment="Center" TextBoxWidth="60"/>
                         <RibbonMenuButton Grid.Row="1" Grid.Column="0" Label="Z MMC" HorizontalContentAlignment="Right">
                             <RibbonMenuItem Header="Re-connect" KeyTip="RZ" Command="{Binding ReconnectZMmcCommand}"/>
                         </RibbonMenuButton>
-                        <RibbonTextBox Grid.Row="1" Grid.Column="1" x:Name="txtZPortName" Text="{Binding ZMmcPortName}" HorizontalContentAlignment="Center" TextBoxWidth="60"/>
+                        <RibbonTextBox Grid.Row="1" Grid.Column="1" x:Name="txtZPortName" Text="{Binding ZMmcPortName}" b:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="RibbonTextBox.Text"  HorizontalContentAlignment="Center" TextBoxWidth="60"/>
                     </Grid>
                 </RibbonGroup>
                 <!--Scanner demo mode-->
