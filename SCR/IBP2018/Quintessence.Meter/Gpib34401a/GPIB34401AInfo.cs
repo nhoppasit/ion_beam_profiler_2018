@@ -23,7 +23,7 @@ namespace Quintessence.Meter.Gpib34401a
         /* ----------------------------------------------------------  
          * Gpib properties
          * ---------------------------------------------------------- */
-        private string _GpibInterfaceId;
+        private string _GpibInterfaceId = "GPIB0";
         public string GpibInterfaceId { get { return _GpibInterfaceId; } }
         private string _VisaAddress;
         public string VisaAddress { get { return _VisaAddress; } set { _VisaAddress = value; } }

@@ -178,8 +178,8 @@
                         </Grid.ColumnDefinitions>
                         <!--X position-->
                         <RibbonMenuButton Grid.Row="0" Grid.Column="0" Label="X">
-                            <RibbonMenuItem Header="Goto Zero"/>
-                            <RibbonMenuItem Header="Set as Zero"/>
+                            <RibbonMenuItem Header="Goto Zero" Command="{Binding GotoXZeroCommand}"/>
+                            <RibbonMenuItem Header="Set as Zero" Command="{Binding SetXZeroCommand}"/>
                         </RibbonMenuButton>
                         <RibbonTextBox Grid.Row="0" Grid.Column="1" x:Name="txtXLPos1" Text="{Binding XLPosText}" b:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="RibbonTextBox.Text"  TextBoxWidth="50" TextAlignment="Center" Background="Black" Foreground="Lime" VerticalAlignment="Center"/>
                         <Label Grid.Row="0" Grid.Column="2" Content="mm"/>
@@ -408,7 +408,7 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <RibbonMenuButton Label="Meter-2">
-                                <RibbonMenuItem Header="Re-connect" Command="{Binding ReconnectMeter1Command}"/>
+                                <RibbonMenuItem Header="Re-connect" Command="{Binding ReconnectMeter2Command}"/>
                             </RibbonMenuButton>
                             <RibbonTextBox x:Name="txtAmmeter2Address" Text="{Binding A2GpibAddress}" b:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="RibbonTextBox.Text" HorizontalContentAlignment="Center" TextBoxWidth="30"/>
                         </StackPanel>

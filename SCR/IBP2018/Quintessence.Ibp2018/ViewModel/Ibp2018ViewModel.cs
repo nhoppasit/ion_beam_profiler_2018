@@ -65,7 +65,6 @@ namespace Quintessence.Ibp2018.ViewModel
         }
         public double Current1 { get { return _Ammeter1.Current; } set { _Ammeter1.Current = value; OnPropertyChanged("Current1Text"); } }
         public string Current1Text { get { return _Ammeter1.Current.ToString(); } set { _Ammeter1.Current = Convert.ToSingle(value); OnPropertyChanged("Current1Text"); } }
-        private bool canMeasure = true, canPause = false, canStop = false;
 
         /* ----------------------------------------------------------
          * Ammeter-2 Properties
@@ -278,22 +277,12 @@ namespace Quintessence.Ibp2018.ViewModel
 
         #region Commands declaration
         // Commands for binding to buttons
-        public ICommand InitializeMeterCommand { get; set; }
-        public ICommand ConfigureMeterCommand { get; set; }
-        public ICommand MeasureCurrentCommand { get; set; }
-        public ICommand GenerateNewDemoDataCommand { get; set; }
 
         // Commands of xy and z mmc reconnect
-        public ICommand ReconnectXyMmcCommand { get; set; }
-        public ICommand ReconnectZMmcCommand { get; set; }
-        public ICommand QueryScannerCommand { get; set; }
-        public ICommand UnqueryScannerCommand { get; set; }
 
         // New measurement
-        public ICommand NewMeasurementCommand { get; set; }
 
         // Re-connect meters
-        public ICommand ReconnectMeter1Command { get; set; }
         #endregion
 
         // --------------------------------------- CONSTRUCTOR ------------------------------------------------
@@ -364,13 +353,16 @@ namespace Quintessence.Ibp2018.ViewModel
             #region Reconnect meters
             // Reconnect meter 1
             ReconnectMeter1Command = new RelayCommand(ExecuteReconnectMeter1Method, CanExecuteReconnectMeter1Method);
+            ReconnectMeter2Command = new RelayCommand(ExecuteReconnectMeter2Method, CanExecuteReconnectMeter2Method);
             #endregion
 
             // Reload settings
             ReloadSettings();
         }
 
-        // Reload settings from ROM
+        /// <summary>
+        /// Reload settings from ROM
+        /// </summary>
         void ReloadSettings()
         {
             A1GpibAddress = Properties.Settings.Default.Ammeter1GpibAddress;
@@ -382,6 +374,7 @@ namespace Quintessence.Ibp2018.ViewModel
         #region Command definetino
 
         // Reconnect meter 1
+        public ICommand ReconnectMeter1Command { get; set; }
         private object Meter1Lock = new object();
         public bool Meter1Reconnecting = false;
         public bool Meter1Connected = false;
@@ -427,7 +420,55 @@ namespace Quintessence.Ibp2018.ViewModel
             canReconnectMeter1 = true;
         }
 
+        // Reconnect meter 2
+        public ICommand ReconnectMeter2Command { get; set; }
+        private object Meter2Lock = new object();
+        public bool Meter2Reconnecting = false;
+        public bool Meter2Connected = false;
+        private bool canReconnectMeter2 = true;
+        private bool CanExecuteReconnectMeter2Method(object parameter) { return canReconnectMeter2; }
+        private void ExecuteReconnectMeter2Method(object parameter)
+        {
+            canReconnectMeter2 = false;
+            lock (Meter2Lock)
+            {
+                try
+                {
+                    Meter2Reconnecting = true;
+                    Meter2Connected = false;
+
+                    GpibResponse gr = _Ammeter2.InitializeMeterForCurrent();
+                    gr = _Ammeter2.ConfigureMeterForCurrent();
+                    gr = _Ammeter2.MeasureCurrent();
+
+                    if (gr.Code == GpibResponse.SUCCESS)
+                    {
+                        Meter2Connected = true;
+                        Meter2Reconnecting = false;
+                        MessageBox.Show("Meter 2 on " + _Ammeter2.VisaAddress + " reconnected.", "Connect meters", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        Meter2Connected = true;
+                        Meter2Reconnecting = false;
+                        MessageBox.Show("Cannot reconnect meter 2 on " + _Ammeter2.VisaAddress + ". " + gr.Message,
+                            "Connect meters", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    }
+                }
+                catch (SystemException ex)
+                {
+                    GpibResponse gr = new GpibResponse("RE", ex.Message, ex);
+                    Meter2Connected = false;
+                    Meter2Reconnecting = false;
+                    MessageBox.Show("Cannot reconnect meter 1 on " + _Ammeter2.VisaAddress + ". " + ex.Message,
+                        "Connect meters", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }
+            canReconnectMeter2 = true;
+        }
+
         // New measurement command by button
+        public ICommand NewMeasurementCommand { get; set; }
         private void NewMeasurement()
         {
             // Wait dialog can show in UI
@@ -462,6 +503,8 @@ namespace Quintessence.Ibp2018.ViewModel
         public void ExecuteNewMeasurementMethod(object parameter) { NewMeasurement(); }
 
         // Query and unquery scanner
+        public ICommand QueryScannerCommand { get; set; }
+        public ICommand UnqueryScannerCommand { get; set; }
         private bool canQueryScanner = true;
         private void QueryScanner()
         {
@@ -523,10 +566,13 @@ namespace Quintessence.Ibp2018.ViewModel
         private bool CanExecuteUnqueryScannerMethod(object parameter) { return true; }
         private void ExecuteUnqueryScannerMethod(object parameter) { canQueryScanner = true; }
 
-        // Initialize Meter
-        private bool CanExecuteInitializeMeterMethod(object parameter) { return canMeasure; }
+        /// <summary>
+        /// Initialize dmm 34401a command
+        /// </summary>
+        public ICommand InitializeMeterCommand { get; set; }
+        private bool canMeasure = true, canPause = false, canStop = false;
         private bool _continueInitMeter = true;
-        private int scanX_Idx, scanY_Idx;
+        private bool CanExecuteInitializeMeterMethod(object parameter) { return canMeasure; }
         private void ExecuteInitializeMeterMethod(object parameter)
         {
             ThreadPool.QueueUserWorkItem(
@@ -544,8 +590,8 @@ namespace Quintessence.Ibp2018.ViewModel
                             Thread.Sleep(1000);
 
                             //DataTable dt = CurrentTable1;
-                            DataRow r = CurrentTable1.Rows[scanY_Idx];
-                            r[scanX_Idx + 1] = Current1;
+                            //DataRow r = CurrentTable1.Rows[scanY_Idx];
+                            //r[scanX_Idx + 1] = Current1;
 
                         }
                         catch (Exception ex) { }
@@ -554,6 +600,7 @@ namespace Quintessence.Ibp2018.ViewModel
         }
 
         // Configure meter
+        public ICommand ConfigureMeterCommand { get; set; }
         private bool CanExecuteConfigureMeterMethod(object parameter) { return canPause; }
         private void ExecuteConfigureMeterMethod(object parameter)
         {
@@ -564,6 +611,7 @@ namespace Quintessence.Ibp2018.ViewModel
         }
 
         // Measurement
+        public ICommand MeasureCurrentCommand { get; set; }
         private bool CanExecuteMeasureMethod(object parameter) { return canStop; }
         private void ExecuteMeasureMethod(object parameter)
         {
@@ -575,6 +623,7 @@ namespace Quintessence.Ibp2018.ViewModel
         }
 
         // DEMO DATA
+        public ICommand GenerateNewDemoDataCommand { get; set; }
         private void GenerateDemoData()
         {
             // Wait dialog can show in view 
@@ -608,6 +657,7 @@ namespace Quintessence.Ibp2018.ViewModel
         public void ExecuteGenerateDemoDataMethod(object parameter) { GenerateDemoData(); }
 
         // Reconnect xy mmc command
+        public ICommand ReconnectXyMmcCommand { get; set; }
         private object XyMmcLock = new object();
         public bool XyMmcReconnecting = false;
         public bool XyMmcConnected = false;
@@ -650,6 +700,7 @@ namespace Quintessence.Ibp2018.ViewModel
         }
 
         // Reconnect z mmc command
+        public ICommand ReconnectZMmcCommand { get; set; }
         private object ZMmcLock = new object();
         public bool ZMmcReconnecting = false;
         public bool ZMmcConnected = false;
@@ -692,12 +743,178 @@ namespace Quintessence.Ibp2018.ViewModel
         }
 
         // X goto zero command
+        public ICommand GotoXZeroCommand { get; set; }
+        private bool canGotoXZeroCommand = false;
+        private bool CanExecuteGotoXZeroMethod(object param) { return canGotoXZeroCommand; }
+        private void ExecuteGotoXZeroMethod(object param)
+        {
+            canGotoXZeroCommand = false;
+            try
+            {
+                PortResponse pr = XyMmc.GotoZeroX();
+                if (pr.Code == PortResponse.SUCCESS)
+                {
+                    MessageBox.Show("Done X axis goto zero on " + XyMmc.SerialPortName + ".", "X-Y scanner", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Error when X axis goto to zero on " + XyMmc.SerialPortName + ". " + pr.Message,
+                    "X-Y scanner", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }
+            catch (Exception ex)
+            {
+                PortResponse pr = new PortResponse(PortResponse.ERR_ZERO, ex.Message, ex);
+                MessageBox.Show("Error when X axis goto to zero on " + XyMmc.SerialPortName + ". " + ex.Message,
+                    "X-Y scanner", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+            canGotoXZeroCommand = true;
+        }
 
         // Y goto zero command
+        public ICommand GotoYZeroCommand { get; set; }
+        private bool canGotoYZeroCommand = false;
+        private bool CanExecuteGotoYZeroMethod(object param) { return canGotoYZeroCommand; }
+        private void ExecuteGotoYZeroMethod(object param)
+        {
+            canGotoYZeroCommand = false;
+            try
+            {
+                PortResponse pr = XyMmc.GotoZeroY();
+                if (pr.Code == PortResponse.SUCCESS)
+                {
+                    MessageBox.Show("Done Y axis goto zero on " + XyMmc.SerialPortName + ".", "X-Y scanner", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Error when Y axis goto to zero on " + XyMmc.SerialPortName + ". " + pr.Message,
+                    "X-Y scanner", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }
+            catch (Exception ex)
+            {
+                PortResponse pr = new PortResponse(PortResponse.ERR_ZERO, ex.Message, ex);
+                MessageBox.Show("Error when Y axis goto to zero on " + XyMmc.SerialPortName + ". " + ex.Message,
+                    "X-Y scanner", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+            canGotoYZeroCommand = true;
+        }
+
+        // Z goto zero command
+        public ICommand GotoZZeroCommand { get; set; }
+        private bool canGotoZZeroCommand = false;
+        private bool CanExecuteGotoZZeroMethod(object param) { return canGotoZZeroCommand; }
+        private void ExecuteGotoZZeroMethod(object param)
+        {
+            canGotoZZeroCommand = false;
+            try
+            {
+                PortResponse pr = ZMmc.GotoZeroX();
+                if (pr.Code == PortResponse.SUCCESS)
+                {
+                    MessageBox.Show("Done Z axis goto zero on " + ZMmc.SerialPortName + ".", "X-Y scanner", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Error when Z axis goto to zero on " + ZMmc.SerialPortName + ". " + pr.Message,
+                    "X-Y scanner", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }
+            catch (Exception ex)
+            {
+                PortResponse pr = new PortResponse(PortResponse.ERR_ZERO, ex.Message, ex);
+                MessageBox.Show("Error when Z axis goto to zero on " + ZMmc.SerialPortName + ". " + ex.Message,
+                    "X-Y scanner", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+            canGotoZZeroCommand = true;
+        }
 
         // X set zero command
+        public ICommand SetXZeroCommand { get; set; }
+        private bool canSetXZeroCommand = false;
+        private bool CanExecuteSetXZeroMethod(object param) { return canSetXZeroCommand; }
+        private void ExecuteSetXZeroMethod(object param)
+        {
+            canSetXZeroCommand = false;
+            try
+            {
+                PortResponse pr = XyMmc.SetZeroX();
+                if (pr.Code == PortResponse.SUCCESS)
+                {
+                    MessageBox.Show("Done set X axis as zero on " + XyMmc.SerialPortName + ".", "X-Y scanner", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Error when set X axis as zero on " + XyMmc.SerialPortName + ". " + pr.Message,
+                    "X-Y scanner", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }
+            catch (Exception ex)
+            {
+                PortResponse pr = new PortResponse(PortResponse.ERR_ZERO, ex.Message, ex);
+                MessageBox.Show("Error when set X axis as zero on " + XyMmc.SerialPortName + ". " + ex.Message,
+                    "X-Y scanner", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+            canSetXZeroCommand = true;
+        }
 
         // Y set zero command
+        public ICommand SetYZeroCommand { get; set; }
+        private bool canSetYZeroCommand = false;
+        private bool CanExecuteSetYZeroMethod(object param) { return canSetYZeroCommand; }
+        private void ExecuteSetYZeroMethod(object param)
+        {
+            canSetYZeroCommand = false;
+            try
+            {
+                PortResponse pr = XyMmc.SetZeroY();
+                if (pr.Code == PortResponse.SUCCESS)
+                {
+                    MessageBox.Show("Done set Y axis as zero on " + XyMmc.SerialPortName + ".", "X-Y scanner", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Error when set Y axis as zero on " + XyMmc.SerialPortName + ". " + pr.Message,
+                    "X-Y scanner", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }
+            catch (Exception ex)
+            {
+                PortResponse pr = new PortResponse(PortResponse.ERR_ZERO, ex.Message, ex);
+                MessageBox.Show("Error when set Y axis as zero on " + XyMmc.SerialPortName + ". " + ex.Message,
+                    "X-Y scanner", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+            canSetYZeroCommand = true;
+        }
+
+        // Z set zero command
+        public ICommand SetZZeroCommand { get; set; }
+        private bool canSetZZeroCommand = false;
+        private bool CanExecuteSetZZeroMethod(object param) { return canSetZZeroCommand; }
+        private void ExecuteSetZZeroMethod(object param)
+        {
+            canSetZZeroCommand = false;
+            try
+            {
+                PortResponse pr = ZMmc.SetZeroX();
+                if (pr.Code == PortResponse.SUCCESS)
+                {
+                    MessageBox.Show("Done set Z axis as zero on " + ZMmc.SerialPortName + ".", "Z axis", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Error when set Y axis as zero on " + ZMmc.SerialPortName + ". " + pr.Message,
+                    "Z axis", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }
+            catch (Exception ex)
+            {
+                PortResponse pr = new PortResponse(PortResponse.ERR_ZERO, ex.Message, ex);
+                MessageBox.Show("Error when set Y axis as zero on " + ZMmc.SerialPortName + ". " + ex.Message,
+                    "Z axis", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+            canSetZZeroCommand = true;
+        }
 
         #endregion
 
