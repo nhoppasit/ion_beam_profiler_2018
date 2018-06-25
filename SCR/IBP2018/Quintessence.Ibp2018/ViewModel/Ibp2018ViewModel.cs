@@ -63,8 +63,8 @@ namespace Quintessence.Ibp2018.ViewModel
                 OnPropertyChanged("A1VisaAddressText");
             }
         }
-        public double Current1 { get { return _Ammeter1.Current; } set { _Ammeter1.Current = value; OnPropertyChanged("Current1Text"); } }
-        public string Current1Text { get { return _Ammeter1.Current.ToString(); } set { _Ammeter1.Current = Convert.ToSingle(value); OnPropertyChanged("Current1Text"); } }
+        public double Current1 { get { return _Ammeter1.Current; } set { _Ammeter1.Current = value; OnPropertyChanged("Current1TextuA"); } }
+        public string Current1TextuA { get { return (_Ammeter1.Current * 1e6).ToString(); } set { _Ammeter1.Current = Convert.ToDouble(value) / 1e6; OnPropertyChanged("Current1TextuA"); } }
 
         /* ----------------------------------------------------------
          * Ammeter-2 Properties
@@ -83,8 +83,8 @@ namespace Quintessence.Ibp2018.ViewModel
             }
         }
         public string A2VisaAddressText { get { return _Ammeter2.VisaAddress; } }
-        public double Current2 { get { return _Ammeter2.Current; } set { _Ammeter2.Current = value; OnPropertyChanged("Current2Text"); } }
-        public string Current2Text { get { return _Ammeter2.Current.ToString(); } set { _Ammeter2.Current = Convert.ToSingle(value); OnPropertyChanged("Current1Text"); } }
+        public double Current2 { get { return _Ammeter2.Current; } set { _Ammeter2.Current = value; OnPropertyChanged("Current2TextuA"); } }
+        public string Current2TextuA { get { return (_Ammeter2.Current * 1e6).ToString(); } set { _Ammeter2.Current = Convert.ToDouble(value) / 1e6; OnPropertyChanged("Current2TextuA"); } }
 
         // Sensor interval
         private int _sensorInterval = 1;
@@ -170,7 +170,7 @@ namespace Quintessence.Ibp2018.ViewModel
                 try { _XyMmc.XFigtureMinimum = Convert.ToDouble(value); }
                 catch { _XyMmc.XFigtureMinimum = 0; }
                 OnPropertyChanged("XFigtureMinimum");
-                OnPropertyChanged("XScanRangeList");                
+                OnPropertyChanged("XScanRangeList");
             }
         }
         public string YFigtureMinimum
@@ -342,7 +342,7 @@ namespace Quintessence.Ibp2018.ViewModel
             // Create commands
             InitializeMeterCommand = new RelayCommand(ExecuteInitializeMeterMethod, CanExecuteInitializeMeterMethod);
             ConfigureMeterCommand = new RelayCommand(ExecuteConfigureMeterMethod, CanExecuteConfigureMeterMethod);
-            MeasureCurrentCommand = new RelayCommand(ExecuteMeasureMethod, CanExecuteMeasureMethod);
+            RunCommand = new RelayCommand(ExecuteRunMethod, CanExecuteRunMethod);
             GenerateNewDemoDataCommand = new RelayCommand(ExecuteGenerateDemoDataMethod, CanExecuteGenerateDemoDataMethod);
 
             // Serial port of xy and z mmc
@@ -471,6 +471,52 @@ namespace Quintessence.Ibp2018.ViewModel
                 }
             }
             canReconnectMeter2 = true;
+        }
+
+        /// <summary>
+        /// Read Current
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        private bool CanExecuteReconnectMeter1Method(object parameter) { return canReconnectMeter1; }
+        private void ExecuteReconnectMeter1Method(object parameter)
+        {
+            canReconnectMeter1 = false;
+            lock (Meter1Lock)
+            {
+                try
+                {
+                    Meter1Reconnecting = true;
+                    Meter1Connected = false;
+
+                    GpibResponse gr = _Ammeter1.InitializeMeterForCurrent();
+                    gr = _Ammeter1.ConfigureMeterForCurrent();
+                    gr = _Ammeter1.MeasureCurrent();
+
+                    if (gr.Code == GpibResponse.SUCCESS)
+                    {
+                        Meter1Connected = true;
+                        Meter1Reconnecting = false;
+                        MessageBox.Show("Meter 1 on " + _Ammeter1.VisaAddress + " reconnected.", "Connect meters", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        Meter1Connected = true;
+                        Meter1Reconnecting = false;
+                        MessageBox.Show("Cannot reconnect meter 1 on " + _Ammeter1.VisaAddress + ". " + gr.Message,
+                            "Connect meters", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    }
+                }
+                catch (SystemException ex)
+                {
+                    GpibResponse gr = new GpibResponse("RE", ex.Message, ex);
+                    Meter1Connected = false;
+                    Meter1Reconnecting = false;
+                    MessageBox.Show("Cannot reconnect meter 1 on " + _Ammeter1.VisaAddress + ". " + ex.Message,
+                        "Connect meters", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }
+            canReconnectMeter1 = true;
         }
 
         // New measurement command by button
@@ -617,9 +663,9 @@ namespace Quintessence.Ibp2018.ViewModel
         }
 
         // Measurement
-        public ICommand MeasureCurrentCommand { get; set; }
-        private bool CanExecuteMeasureMethod(object parameter) { return canStop; }
-        private void ExecuteMeasureMethod(object parameter)
+        public ICommand RunCommand { get; set; }
+        private bool CanExecuteRunMethod(object parameter) { return canStop; }
+        private void ExecuteRunMethod(object parameter)
         {
             _continueInitMeter = false;
             MessageBox.Show("Measured");

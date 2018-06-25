@@ -129,11 +129,11 @@
                 <RibbonGroup Header="Meter value">
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal">
-                            <RibbonTextBox x:Name="txtDMMValue1_2" Text="{Binding Path=Current1Text, Mode=OneWay}"  TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>
+                            <RibbonTextBox x:Name="txtDMMValue1_2" Text="{Binding Path=Current1TextuA, Mode=OneWay}"  TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>
                             <Label Content="Volt"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <RibbonTextBox x:Name="txtDMMValue2_2" Text="{Binding Path=Current2, Mode=OneWay}" TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>
+                            <RibbonTextBox x:Name="txtDMMValue2_2" Text="{Binding Path=Current2TextuA, Mode=OneWay}" TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>
                             <Label Content="Volt"/>
                         </StackPanel>
                     </StackPanel>
@@ -390,11 +390,14 @@
                 <RibbonGroup Header="Measure">
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal">
-                            <RibbonTextBox x:Name="txtDMMValue1" Text="{Binding Path=Current1Text,Mode=OneWay}" TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>
-                            <Label Content="Volt"/>
+                            <RibbonTextBox x:Name="txtDMMValue1" Text="{Binding Path=Current1TextuA,Mode=OneWay}" TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>
+                            <Label Content="uA"/>
+                            <RibbonButton Label="Read" Command="{Binding RunCommand}" SmallImageSource="Images/Refresh.png" />
                         </StackPanel>
-                        <RibbonCheckBox Label=" Auto read" SmallImageSource="Images/Refresh.png"/>
-                        <RibbonButton Label="Read" Command="{Binding MeasureCurrentCommand}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <RibbonTextBox x:Name="txtDMMValue2" Text="{Binding Path=Current2TextuA,Mode=OneWay}" TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>
+                            <Label Content="uA"/>
+                        </StackPanel>                        
                     </StackPanel>
                 </RibbonGroup>
                 <!--PORT-->
