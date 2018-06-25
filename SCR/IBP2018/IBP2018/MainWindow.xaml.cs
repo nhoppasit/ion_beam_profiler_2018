@@ -21,6 +21,7 @@ using Quintessence.Ibp2018.ViewModel;
 using Quintessence.MotionControl;
 using Quintessence.MotionControl.MMC2;
 using System.Reflection;
+using Quintessence.Ibp2018.Model;
 
 namespace IBP2018
 {
@@ -93,6 +94,12 @@ namespace IBP2018
 
             #endregion
 
+            #region New Measurement
+            bwNewMeasurement.WorkerReportsProgress = true;
+            bwNewMeasurement.DoWork += BwNewMeasurement_DoWork;
+            bwNewMeasurement.RunWorkerCompleted += BwNewMeasurement_RunWorkerCompleted;
+            mnuNew.Click += MnuNew_Click;
+            #endregion
         }
 
         /// <summary>
@@ -306,6 +313,58 @@ namespace IBP2018
                 zJogValue = -(int)(Convert.ToDouble(cboXStep.SelectedItem.ToString()) * MMC2Info.STEPPERMILLIMETER);
                 bwZJog.RunWorkerAsync();
             }
+        }
+        #endregion
+
+        #region New measurement
+        #region new measurement background worker
+        BackgroundWorker bwNewMeasurement = new BackgroundWorker();
+        private void BwNewMeasurement_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) { mnuNew.IsEnabled = true; }
+        private void BwNewMeasurement_DoWork(object sender, DoWorkEventArgs e)
+        {
+            this.mainGrid.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
+            {
+                mnuNew.IsEnabled = false;
+                View.WaitForNewMeasurementDialog dlg = new View.WaitForNewMeasurementDialog();
+                dlg.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                dlg.Topmost = true;
+                dlg.Show();
+                dlg.SetProgressValue(0);
+                Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
+                Ibp2018DataTableModel dt1 = vm.CurrentDataTables[0];
+                Ibp2018DataTableModel dt2 = vm.CurrentDataTables[1];
+                MMC2Info scn = vm.XyMmc;
+                double xStep = scn.XScanStep, yStep = scn.YScanStep;
+                double xMin = Math.Min(scn.XScanStart, scn.XScanEnd), xMax = Math.Max(scn.XScanStart, scn.XScanEnd);
+                double yMin = Math.Min(scn.YScanStart, scn.YScanEnd), yMax = Math.Max(scn.YScanStart, scn.YScanEnd);
+                int colCount = (int)((xMax - xMin) / xStep) + 1;
+                int rowCount = (int)((yMax - yMin) / yStep) + 1;
+                dt1.ColumnNames = new List<string>();
+                dt2.ColumnNames = new List<string>();
+                dt1.ColumnHeaders = new List<string>();
+                dt2.ColumnHeaders = new List<string>();
+                dt1.Datatable.Rows.Clear();
+                dt2.Datatable.Rows.Clear();
+                dt1.Datatable.Columns.Clear();
+                dt2.Datatable.Columns.Clear();
+                dlg.SetProgressValue(50);
+                dt1.Datatable.Columns.Add("Y_Step", typeof(string));
+                dt2.Datatable.Columns.Add("Y_Step", typeof(string));
+                dt1.ColumnNames.Add("Y_Step");
+                dt2.ColumnNames.Add("Y_Step");
+                dt1.ColumnHeaders.Add("Y Step");
+                dt2.ColumnHeaders.Add("Y Step");
+                Thread.Sleep(500);
+                dlg.SetProgressValue(100);
+                Thread.Sleep(500);
+                dlg.Close();
+            }));
+        }
+        #endregion
+        
+        private void MnuNew_Click(object sender, RoutedEventArgs e)
+        {
+            bwNewMeasurement.RunWorkerAsync();
         }
         #endregion
 

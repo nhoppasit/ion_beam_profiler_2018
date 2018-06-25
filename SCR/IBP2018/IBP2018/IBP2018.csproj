@@ -89,6 +89,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Behavior\InputBindingsManager.cs" />
+    <Compile Include="View\WaitForNewMeasurementDialog.xaml.cs">
+      <DependentUpon>WaitForNewMeasurementDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WaitDialog.xaml.cs">
       <DependentUpon>WaitDialog.xaml</DependentUpon>
     </Compile>
@@ -105,6 +108,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\WaitForNewMeasurementDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="WaitDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

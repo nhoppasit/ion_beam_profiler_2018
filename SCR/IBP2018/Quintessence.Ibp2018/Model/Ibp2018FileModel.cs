@@ -72,6 +72,8 @@ namespace Quintessence.Ibp2018.Model
         }
         #endregion
 
+        public bool NeedSave { get; set; }
+
         /* -----------------------------------------------------
          * Properties of file
          *    - Rows of current

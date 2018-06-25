@@ -241,7 +241,7 @@ namespace Quintessence.Ibp2018.ViewModel
          * Current tables
          * ---------------------------------------------------------- */
         private IList<Ibp2018DataTableModel> _CurrentTables;
-        public IList<Ibp2018DataTableModel> CurrentTables { get { return _CurrentTables; } set { _CurrentTables = value; } }
+        public IList<Ibp2018DataTableModel> CurrentDataTables { get { return _CurrentTables; } set { _CurrentTables = value; } }
 
         /* ----------------------------------------------------------
          * File / Current-1 Properties
@@ -351,10 +351,6 @@ namespace Quintessence.Ibp2018.ViewModel
 
             // Query and unquery scanner 
             QueryScannerCommand = new RelayCommand(ExecuteQueryScannerMethod, CanExecuteQueryScannerMethod);
-            UnqueryScannerCommand = new RelayCommand(ExecuteUnqueryScannerMethod, CanExecuteUnqueryScannerMethod);
-
-            // New measurement
-            NewMeasurementCommand = new RelayCommand(ExecuteNewMeasurementMethod, CanExecuteNewMeasurementMethod);
 
             #region Reconnect meters
             ReconnectMeter1Command = new RelayCommand(ExecuteReconnectMeter1Method, CanExecuteReconnectMeter1Method);
@@ -618,52 +614,8 @@ namespace Quintessence.Ibp2018.ViewModel
 
         }
 
-        // New measurement command by button
-        public ICommand NewMeasurementCommand { get; set; }
-        private void NewMeasurement()
-        {
-            // Wait dialog can show in UI
-            // AWait for ColumnsGenerating == false
-            canNewMeasurement = false;
-            ColumnsGenerating = true;
-
-            using (WaitForNewMeasurementDialog dlg = new WaitForNewMeasurementDialog())
-            {
-                dlg.TopMost = true;
-                dlg.Show();
-                try
-                {
-                    // Current-1 table columns definetion
-                    _CurrentTables[0].GenerateNewDemoColumns(_XyMmc.XScanStep, _XyMmc.YScanStep, _XyMmc.XScanStart, _XyMmc.XScanEnd, _XyMmc.YScanStart, _XyMmc.YScanEnd);
-
-                    // Binding columns name and header
-                    Current1ColumnCollection.Clear();
-                    for (int i = 0; i < _CurrentTables[0].ColumnNames.Count; i++)
-                    {
-                        Binding binding = new Binding(_CurrentTables[0].ColumnNames[i]);
-                        DataGridTextColumn textColumn = new DataGridTextColumn
-                        {
-                            Header = _CurrentTables[0].ColumnHeaders[i],
-                            Binding = binding
-                        };
-                        Current1ColumnCollection.Add(textColumn);
-                    }
-                }
-                catch (Exception ex) { System.Diagnostics.Trace.WriteLine(">>> " + DateTime.Now.ToString("MMMM dd, yyyy H:mm:ss.fff") + " : " + ex.Message); }
-                dlg.Close();
-            }
-
-            ColumnsGenerating = false;
-            canNewMeasurement = true;
-        }
-        private bool canNewMeasurement = true;
-        public bool MustSavePreviousData = false;
-        private bool CanExecuteNewMeasurementMethod(object parameter) { return canNewMeasurement && !MustSavePreviousData; }
-        public void ExecuteNewMeasurementMethod(object parameter) { NewMeasurement(); }
-
         // Query and unquery scanner
         public ICommand QueryScannerCommand { get; set; }
-        public ICommand UnqueryScannerCommand { get; set; }
         private bool canQueryScanner = true;
         private void QueryScanner()
         {
@@ -722,8 +674,6 @@ namespace Quintessence.Ibp2018.ViewModel
         }
         private bool CanExecuteQueryScannerMethod(object parameter) { return canQueryScanner; }
         private void ExecuteQueryScannerMethod(object parameter) { QueryScanner(); }
-        private bool CanExecuteUnqueryScannerMethod(object parameter) { return true; }
-        private void ExecuteUnqueryScannerMethod(object parameter) { canQueryScanner = true; }
 
         /// <summary>
         /// Initialize dmm 34401a command
@@ -1106,5 +1056,6 @@ namespace Quintessence.Ibp2018.ViewModel
         public GpibResponse ReadCurrent1() { GpibResponse gr = _Ammeter1.MeasureCurrent(); OnPropertyChanged("Current1TextuA"); return gr; }
         public GpibResponse ReadCurrent2() { GpibResponse gr = _Ammeter2.MeasureCurrent(); OnPropertyChanged("Current2TextuA"); return gr; }
         #endregion
+        
     }
 }
