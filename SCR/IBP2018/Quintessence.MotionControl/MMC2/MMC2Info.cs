@@ -75,6 +75,39 @@ namespace Quintessence.MotionControl.MMC2
         private double _XFigtureMaximum; public double XFigtureMaximum { get { return _XFigtureMaximum; } set { _XFigtureMaximum = value; } }
         private double _YFigtureMaximum; public double YFigtureMaximum { get { return _YFigtureMaximum; } set { _YFigtureMaximum = value; } }
 
+        /// <summary>
+        /// รายการสำหรับเลือก X scan range
+        /// </summary>        
+        private List<double> _XScanRangeList;
+        public List<double> XScanRangeList
+        {
+            get
+            {
+                if (_XScanRangeList == null) _XScanRangeList = new List<double>();
+                _XScanRangeList.Clear();
+                for (int i = 0; i <= (int)(_XFigtureMaximum - _XFigtureMinimum); i++)
+                    _XScanRangeList.Add(i + _XFigtureMinimum);
+                return _XScanRangeList;
+            }
+        }
+
+        /// <summary>
+        /// รายการสำหรับเลือก Y scan range
+        /// </summary>
+        private List<double> _YScanRangeList;
+        public List<double> YScanRangeList
+        {
+            get
+            {
+                if (_YScanRangeList == null) _YScanRangeList = new List<double>();
+                _YScanRangeList.Clear();
+                for (int i = (int)_YFigtureMinimum; i <= (int)_YFigtureMaximum; i++)
+                    _YScanRangeList.Add(i);
+                return _YScanRangeList;
+            }
+        }
+
+
         /* ----------------------------------------------------------  
          * Initialize serial port
          * ----------------------------------------------------------  */
@@ -490,6 +523,8 @@ namespace Quintessence.MotionControl.MMC2
                 return pr;
             }
         }
+
+
 
     }
 }

@@ -170,6 +170,7 @@ namespace Quintessence.Ibp2018.ViewModel
                 try { _XyMmc.XFigtureMinimum = Convert.ToDouble(value); }
                 catch { _XyMmc.XFigtureMinimum = 0; }
                 OnPropertyChanged("XFigtureMinimum");
+                OnPropertyChanged("XScanRangeList");                
             }
         }
         public string YFigtureMinimum
@@ -180,6 +181,7 @@ namespace Quintessence.Ibp2018.ViewModel
                 try { _XyMmc.YFigtureMinimum = Convert.ToDouble(value); }
                 catch { _XyMmc.YFigtureMinimum = 0; }
                 OnPropertyChanged("YFigtureMinimum");
+                OnPropertyChanged("YScanRangeList");
             }
         }
         public string XFigtureMaximum
@@ -190,6 +192,7 @@ namespace Quintessence.Ibp2018.ViewModel
                 try { _XyMmc.XFigtureMaximum = Convert.ToDouble(value); }
                 catch { _XyMmc.XFigtureMaximum = 0; }
                 OnPropertyChanged("XFigtureMaximum");
+                OnPropertyChanged("XScanRangeList");
             }
         }
         public string YFigtureMaximum
@@ -200,8 +203,11 @@ namespace Quintessence.Ibp2018.ViewModel
                 try { _XyMmc.YFigtureMaximum = Convert.ToDouble(value); }
                 catch { _XyMmc.YFigtureMaximum = 0; }
                 OnPropertyChanged("XFigtureMaximum");
+                OnPropertyChanged("YScanRangeList");
             }
         }
+        public List<double> XScanRangeList { get { return _XyMmc.XScanRangeList; } }
+        public List<double> YScanRangeList { get { return _XyMmc.YScanRangeList; } }
         private MMC2Info _ZMmc;
         public MMC2Info ZMmc { get { return _ZMmc; } set { _ZMmc = value; } }
         public string ZMmcPortName { get { return _ZMmc.SerialPortName; } set { _ZMmc.SerialPortName = value; OnPropertyChanged("ZMmcPortName"); } }

@@ -244,27 +244,27 @@
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="X Axis"/>
                         <RibbonComboBox Grid.Row="0" Grid.Column="1" SelectionBoxWidth="30" IsEditable="True">
-                            <RibbonGallery x:Name="cboXStart" SelectedItem="{Binding XScanStart}">
-                                <RibbonGalleryCategory x:Name="catXStart"/>
+                            <RibbonGallery x:Name="cboXStart" SelectedItem="{Binding XScanStart}" >
+                                <RibbonGalleryCategory x:Name="catXStart" ItemsSource="{Binding XScanRangeList}"/>                                
                             </RibbonGallery>
                         </RibbonComboBox>
                         <Label Grid.Row="0" Grid.Column="2" Content="to"/>
                         <RibbonComboBox Grid.Row="0" Grid.Column="3" SelectionBoxWidth="30" IsEditable="True">
                             <RibbonGallery x:Name="cboXEnd" SelectedItem="{Binding XScanEnd}">
-                                <RibbonGalleryCategory x:Name="catXEnd"/>
+                                <RibbonGalleryCategory x:Name="catXEnd" ItemsSource="{Binding XScanRangeList}"/>
                             </RibbonGallery>
                         </RibbonComboBox>
                         <Label Grid.Row="0" Grid.Column="4" Content="mm"/>
                         <Label Grid.Row="1" Grid.Column="0" Content="Y Axis"/>
                         <RibbonComboBox Grid.Row="1" Grid.Column="1" SelectionBoxWidth="30" IsEditable="True">
                             <RibbonGallery x:Name="cboYStart" SelectedItem="{Binding YScanStart}">
-                                <RibbonGalleryCategory x:Name="catYStart"/>
+                                <RibbonGalleryCategory x:Name="catYStart" ItemsSource="{Binding YScanRangeList}"/>
                             </RibbonGallery>
                         </RibbonComboBox>
                         <Label Grid.Row="1" Grid.Column="2" Content="to"/>
                         <RibbonComboBox Grid.Row="1" Grid.Column="3" SelectionBoxWidth="30" IsEditable="True">
                             <RibbonGallery x:Name="cboYEnd" SelectedItem="{Binding YScanEnd}">
-                                <RibbonGalleryCategory x:Name="catYEnd"/>
+                                <RibbonGalleryCategory x:Name="catYEnd" ItemsSource="{Binding YScanRangeList}"/>
                             </RibbonGallery>
                         </RibbonComboBox>
                         <Label Grid.Row="1" Grid.Column="4" Content="mm"/>
@@ -382,7 +382,7 @@
                                     <RibbonGalleryCategory x:Name="catAveragingNumber"/>
                                 </RibbonGallery>
                             </RibbonComboBox>
-                            <Label Grid.Row="0" Grid.Column="2" Content="Times"/>
+                            <Label Grid.Row="0" Grid.Column="2" Content="Avg No."/>
                         </StackPanel>
                     </StackPanel>
                 </RibbonGroup>                
