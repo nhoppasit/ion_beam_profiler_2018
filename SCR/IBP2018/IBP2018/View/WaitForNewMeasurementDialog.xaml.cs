@@ -25,13 +25,23 @@ namespace IBP2018.View
             InitializeComponent();
         }
 
+        public double ProgressValue
+        {
+            get { return pgWait.Value; }
+            set
+            {
+                SetProgressValue(value);
+            }
+        }
+
         /// <summary>
         /// Set progress bar value delegate
         /// </summary>
         /// <param name="e">Value is 0.0-1.0</param>
         public void SetProgressValue(double e)
         {
-            pgWait.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () {
+            this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(delegate ()
+            {
                 pgWait.Value = e;
             }));
         }

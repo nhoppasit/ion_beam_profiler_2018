@@ -22,6 +22,7 @@ using Quintessence.MotionControl;
 using Quintessence.MotionControl.MMC2;
 using System.Reflection;
 using Quintessence.Ibp2018.Model;
+using IBP2018.View;
 
 namespace IBP2018
 {
@@ -319,52 +320,89 @@ namespace IBP2018
         #region New measurement
         #region new measurement background worker
         BackgroundWorker bwNewMeasurement = new BackgroundWorker();
-        private void BwNewMeasurement_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) { mnuNew.IsEnabled = true; }
+        WaitForNewMeasurementDialog popWaitNewMeasurement;
+        private void BwNewMeasurement_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) { mnuNew.IsEnabled = true; popWaitNewMeasurement.Close(); }
         private void BwNewMeasurement_DoWork(object sender, DoWorkEventArgs e)
         {
+            //this.mainGrid.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(delegate ()
+            //{
+
+            //}));
+
+            popWaitNewMeasurement.ProgressValue = 0;
+            Thread.Sleep(500);
+            //mnuNew.IsEnabled = false;
+            Ibp2018ViewModel vm = null;
+            Ibp2018DataTableModel dt1 = null;
+            Ibp2018DataTableModel dt2 = null;
+            MMC2Info scn = null;
             this.mainGrid.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
             {
-                mnuNew.IsEnabled = false;
-                View.WaitForNewMeasurementDialog dlg = new View.WaitForNewMeasurementDialog();
-                dlg.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                dlg.Topmost = true;
-                dlg.Show();
-                dlg.SetProgressValue(0);
-                Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
-                Ibp2018DataTableModel dt1 = vm.CurrentDataTables[0];
-                Ibp2018DataTableModel dt2 = vm.CurrentDataTables[1];
-                MMC2Info scn = vm.XyMmc;
-                double xStep = scn.XScanStep, yStep = scn.YScanStep;
-                double xMin = Math.Min(scn.XScanStart, scn.XScanEnd), xMax = Math.Max(scn.XScanStart, scn.XScanEnd);
-                double yMin = Math.Min(scn.YScanStart, scn.YScanEnd), yMax = Math.Max(scn.YScanStart, scn.YScanEnd);
-                int colCount = (int)((xMax - xMin) / xStep) + 1;
-                int rowCount = (int)((yMax - yMin) / yStep) + 1;
-                dt1.ColumnNames = new List<string>();
-                dt2.ColumnNames = new List<string>();
-                dt1.ColumnHeaders = new List<string>();
-                dt2.ColumnHeaders = new List<string>();
-                dt1.Datatable.Rows.Clear();
-                dt2.Datatable.Rows.Clear();
-                dt1.Datatable.Columns.Clear();
-                dt2.Datatable.Columns.Clear();
-                dlg.SetProgressValue(50);
-                dt1.Datatable.Columns.Add("Y_Step", typeof(string));
-                dt2.Datatable.Columns.Add("Y_Step", typeof(string));
-                dt1.ColumnNames.Add("Y_Step");
-                dt2.ColumnNames.Add("Y_Step");
-                dt1.ColumnHeaders.Add("Y Step");
-                dt2.ColumnHeaders.Add("Y Step");
-                Thread.Sleep(500);
-                dlg.SetProgressValue(100);
-                Thread.Sleep(500);
-                dlg.Close();
+                vm = this.mainGrid.DataContext as Ibp2018ViewModel;
+                dt1 = vm.CurrentDataTables[0];
+                dt2 = vm.CurrentDataTables[1];
+                scn = vm.XyMmc;
             }));
+            double xStep = scn.XScanStep, yStep = scn.YScanStep;
+            double xMin = Math.Min(scn.XScanStart, scn.XScanEnd), xMax = Math.Max(scn.XScanStart, scn.XScanEnd);
+            double yMin = Math.Min(scn.YScanStart, scn.YScanEnd), yMax = Math.Max(scn.YScanStart, scn.YScanEnd);
+            int colCount = (int)((xMax - xMin) / xStep) + 1;
+            int rowCount = (int)((yMax - yMin) / yStep) + 1;
+            dt1.ColumnNames = new List<string>();
+            dt2.ColumnNames = new List<string>();
+            dt1.ColumnHeaders = new List<string>();
+            dt2.ColumnHeaders = new List<string>();
+            dt1.Datatable.Rows.Clear();
+            dt2.Datatable.Rows.Clear();
+            dt1.Datatable.Columns.Clear();
+            dt2.Datatable.Columns.Clear();
+            Thread.Sleep(500);
+            popWaitNewMeasurement.ProgressValue = 50;
+            dt1.Datatable.Columns.Add("Y_Step", typeof(string));
+            dt2.Datatable.Columns.Add("Y_Step", typeof(string));
+            dt1.ColumnNames.Add("Y_Step");
+            dt2.ColumnNames.Add("Y_Step");
+            dt1.ColumnHeaders.Add("Y Step");
+            dt2.ColumnHeaders.Add("Y Step");
+            for (int i = 0; i < colCount; i++)
+            {
+                dt1.Datatable.Columns.Add("X_" + i.ToString(), typeof(string));
+                dt1.ColumnNames.Add("X_" + i.ToString());
+                dt1.ColumnHeaders.Add("X=" + (i * xStep).ToString("F2"));
+            }
+
+            bool running = true;
+            popWaitNewMeasurement.ProgressValue = 60;
+            this.mainGrid.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
+            {
+                // Binding columns name and header
+                vm.Current1ColumnCollection.Clear();
+                for (int i = 0; i < dt1.ColumnNames.Count; i++)
+                {
+                    Binding binding = new Binding(dt1.ColumnNames[i]);
+                    DataGridTextColumn textColumn = new DataGridTextColumn();
+                    textColumn.Header = dt1.ColumnHeaders[i];
+                    textColumn.Binding = binding;
+                    vm.Current1ColumnCollection.Add(textColumn);                    
+                }
+                running = false;
+            }));
+
+            while (running) { Thread.Sleep(100); }
+
+            popWaitNewMeasurement.ProgressValue = 70;
+            Thread.Sleep(500);
+            popWaitNewMeasurement.ProgressValue = 100;
+            Thread.Sleep(500);
         }
         #endregion
-        
+
         private void MnuNew_Click(object sender, RoutedEventArgs e)
         {
+            popWaitNewMeasurement = new WaitForNewMeasurementDialog();
             bwNewMeasurement.RunWorkerAsync();
+            popWaitNewMeasurement.Topmost = true;
+            popWaitNewMeasurement.Show();
         }
         #endregion
 
