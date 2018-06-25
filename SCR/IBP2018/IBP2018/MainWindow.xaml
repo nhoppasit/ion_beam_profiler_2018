@@ -33,7 +33,7 @@
             <RibbonTab Header="File" KeyTip="F">
                 <!--File-->
                 <RibbonGroup Header="File">
-                    <RibbonButton x:Name="mnuNew" Label="New" KeyTip="N" LargeImageSource="Images/241-3.ICO" Command="{Binding NewMeasurementCommand}"/>
+                    <RibbonButton x:Name="mnuNew" Label="New" KeyTip="N" LargeImageSource="Images/241-3.ICO"/>
                     <RibbonButton x:Name="mnuOpen" Label="Open" KeyTip="O" LargeImageSource="Images/opentext.ico"/>
                     <RibbonButton x:Name="mnuSave" Label="Save" KeyTip="O" LargeImageSource="Images/ICONDISK350-2.ICO"/>
                 </RibbonGroup>

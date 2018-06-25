@@ -118,6 +118,13 @@ namespace Quintessence.Ibp2018.Model
                 ColumnNames.Add("X_" + i.ToString());
                 ColumnHeaders.Add("X=" + (i * xStep).ToString("F2"));
             }
+
+            // row definition
+            for(int i = 0; i < rowCount; i++)
+            {
+                DataRow r = dataTable.NewRow();
+                r[0] = (i * yStep).ToString("F2");
+            }
         }
     }
 }

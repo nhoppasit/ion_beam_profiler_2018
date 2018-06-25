@@ -65,7 +65,7 @@ namespace Quintessence.Ibp2018.ViewModel
         }
         public double Current1 { get { return _Ammeter1.Current; } set { _Ammeter1.Current = value; OnPropertyChanged("Current1TextuA"); } }
         public string Current1TextuA { get { return (_Ammeter1.Current * 1e6).ToString("0.0"); } set { _Ammeter1.Current = Convert.ToDouble(value) / 1e6; OnPropertyChanged("Current1TextuA"); } }
-        
+
         /* ----------------------------------------------------------
          * Ammeter-2 Properties
          * ---------------------------------------------------------- */
@@ -627,22 +627,30 @@ namespace Quintessence.Ibp2018.ViewModel
             canNewMeasurement = false;
             ColumnsGenerating = true;
 
-            // Current-1 table columns definetion
-            _CurrentTables[0].GenerateNewDemoColumns(_XyMmc.XScanStep, _XyMmc.YScanStep, _XyMmc.XScanStart, _XyMmc.XScanEnd, _XyMmc.YScanStart, _XyMmc.YScanEnd);
-
-            // Current-1 table columns definetion
-
-            // Binding columns name and header
-            Current1ColumnCollection.Clear();
-            for (int i = 0; i < _CurrentTables[0].ColumnNames.Count; i++)
+            using (WaitForNewMeasurementDialog dlg = new WaitForNewMeasurementDialog())
             {
-                Binding binding = new Binding(_CurrentTables[0].ColumnNames[i]);
-                DataGridTextColumn textColumn = new DataGridTextColumn
+                dlg.TopMost = true;
+                dlg.Show();
+                try
                 {
-                    Header = _CurrentTables[0].ColumnHeaders[i],
-                    Binding = binding
-                };
-                Current1ColumnCollection.Add(textColumn);
+                    // Current-1 table columns definetion
+                    _CurrentTables[0].GenerateNewDemoColumns(_XyMmc.XScanStep, _XyMmc.YScanStep, _XyMmc.XScanStart, _XyMmc.XScanEnd, _XyMmc.YScanStart, _XyMmc.YScanEnd);
+
+                    // Binding columns name and header
+                    Current1ColumnCollection.Clear();
+                    for (int i = 0; i < _CurrentTables[0].ColumnNames.Count; i++)
+                    {
+                        Binding binding = new Binding(_CurrentTables[0].ColumnNames[i]);
+                        DataGridTextColumn textColumn = new DataGridTextColumn
+                        {
+                            Header = _CurrentTables[0].ColumnHeaders[i],
+                            Binding = binding
+                        };
+                        Current1ColumnCollection.Add(textColumn);
+                    }
+                }
+                catch (Exception ex) { System.Diagnostics.Trace.WriteLine(">>> " + DateTime.Now.ToString("MMMM dd, yyyy H:mm:ss.fff") + " : " + ex.Message); }
+                dlg.Close();
             }
 
             ColumnsGenerating = false;
