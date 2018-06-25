@@ -1093,5 +1093,10 @@ namespace Quintessence.Ibp2018.ViewModel
             return pr;
         }
         #endregion
+
+        #region Meter Methods
+        public GpibResponse ReadCurrent1() { GpibResponse gr = _Ammeter1.MeasureCurrent(); OnPropertyChanged("Current1TextuA"); return gr; }
+        public GpibResponse ReadCurrent2() { GpibResponse gr = _Ammeter2.MeasureCurrent(); OnPropertyChanged("Current2TextuA"); return gr; }
+        #endregion
     }
 }
