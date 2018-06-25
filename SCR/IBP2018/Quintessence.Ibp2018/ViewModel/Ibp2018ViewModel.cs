@@ -64,8 +64,8 @@ namespace Quintessence.Ibp2018.ViewModel
             }
         }
         public double Current1 { get { return _Ammeter1.Current; } set { _Ammeter1.Current = value; OnPropertyChanged("Current1TextuA"); } }
-        public string Current1TextuA { get { return (_Ammeter1.Current * 1e6).ToString(); } set { _Ammeter1.Current = Convert.ToDouble(value) / 1e6; OnPropertyChanged("Current1TextuA"); } }
-
+        public string Current1TextuA { get { return (_Ammeter1.Current * 1e6).ToString("0.0"); } set { _Ammeter1.Current = Convert.ToDouble(value) / 1e6; OnPropertyChanged("Current1TextuA"); } }
+        
         /* ----------------------------------------------------------
          * Ammeter-2 Properties
          * ---------------------------------------------------------- */
@@ -84,7 +84,7 @@ namespace Quintessence.Ibp2018.ViewModel
         }
         public string A2VisaAddressText { get { return _Ammeter2.VisaAddress; } }
         public double Current2 { get { return _Ammeter2.Current; } set { _Ammeter2.Current = value; OnPropertyChanged("Current2TextuA"); } }
-        public string Current2TextuA { get { return (_Ammeter2.Current * 1e6).ToString(); } set { _Ammeter2.Current = Convert.ToDouble(value) / 1e6; OnPropertyChanged("Current2TextuA"); } }
+        public string Current2TextuA { get { return (_Ammeter2.Current * 1e6).ToString("0.0"); } set { _Ammeter2.Current = Convert.ToDouble(value) / 1e6; OnPropertyChanged("Current2TextuA"); } }
 
         // Sensor interval
         private int _sensorInterval = 1;
@@ -357,9 +357,14 @@ namespace Quintessence.Ibp2018.ViewModel
             NewMeasurementCommand = new RelayCommand(ExecuteNewMeasurementMethod, CanExecuteNewMeasurementMethod);
 
             #region Reconnect meters
-            // Reconnect meter 1
             ReconnectMeter1Command = new RelayCommand(ExecuteReconnectMeter1Method, CanExecuteReconnectMeter1Method);
             ReconnectMeter2Command = new RelayCommand(ExecuteReconnectMeter2Method, CanExecuteReconnectMeter2Method);
+            #endregion
+
+            #region Read current
+            ReadCurrent1Command = new RelayCommand(ExecuteReadCurrent1Method, CanExecuteReadCurrent1Method);
+            ReadCurrent2Command = new RelayCommand(ExecuteReadCurrent2Method, CanExecuteReadCurrent2Method);
+            ReadBothCurrentCommand = new RelayCommand(ExecuteReadBothCurrentMethod, CanExecuteReadBothCurrentMethod);
             #endregion
 
             // Reload settings
@@ -474,49 +479,143 @@ namespace Quintessence.Ibp2018.ViewModel
         }
 
         /// <summary>
-        /// Read Current
-        /// </summary>
-        /// <param name="parameter"></param>
-        /// <returns></returns>
-        private bool CanExecuteReconnectMeter1Method(object parameter) { return canReconnectMeter1; }
-        private void ExecuteReconnectMeter1Method(object parameter)
+        /// Read Current 1
+        /// </summary>       
+        public ICommand ReadCurrent1Command { get; set; }
+        private bool canReadCurrent1 = true;
+        private bool CanExecuteReadCurrent1Method(object parameter) { return canReadCurrent1; }
+        private void ExecuteReadCurrent1Method(object parameter)
         {
-            canReconnectMeter1 = false;
+            canReadCurrent1 = false;
             lock (Meter1Lock)
             {
                 try
                 {
-                    Meter1Reconnecting = true;
-                    Meter1Connected = false;
-
-                    GpibResponse gr = _Ammeter1.InitializeMeterForCurrent();
-                    gr = _Ammeter1.ConfigureMeterForCurrent();
+                    GpibResponse gr;
                     gr = _Ammeter1.MeasureCurrent();
 
                     if (gr.Code == GpibResponse.SUCCESS)
                     {
-                        Meter1Connected = true;
-                        Meter1Reconnecting = false;
-                        MessageBox.Show("Meter 1 on " + _Ammeter1.VisaAddress + " reconnected.", "Connect meters", MessageBoxButton.OK, MessageBoxImage.Information);
+                        //Donothing
+                        OnPropertyChanged("Current1TextuA");
                     }
                     else
                     {
-                        Meter1Connected = true;
-                        Meter1Reconnecting = false;
-                        MessageBox.Show("Cannot reconnect meter 1 on " + _Ammeter1.VisaAddress + ". " + gr.Message,
-                            "Connect meters", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        MessageBox.Show("Read current from meter 1 on " + _Ammeter1.VisaAddress + ". " + gr.Message,
+                            "Meter 1", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     }
                 }
                 catch (SystemException ex)
                 {
                     GpibResponse gr = new GpibResponse("RE", ex.Message, ex);
-                    Meter1Connected = false;
-                    Meter1Reconnecting = false;
-                    MessageBox.Show("Cannot reconnect meter 1 on " + _Ammeter1.VisaAddress + ". " + ex.Message,
-                        "Connect meters", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    MessageBox.Show("Cannot read current from meter 1 on " + _Ammeter1.VisaAddress + ". " + ex.Message,
+                        "Meter 1", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             }
-            canReconnectMeter1 = true;
+            canReadCurrent1 = true;
+        }
+
+        /// <summary>
+        /// Read Current 2
+        /// </summary>       
+        public ICommand ReadCurrent2Command { get; set; }
+        private bool canReadCurrent2 = true;
+        private bool CanExecuteReadCurrent2Method(object parameter) { return canReadCurrent2; }
+        private void ExecuteReadCurrent2Method(object parameter)
+        {
+            canReadCurrent2 = false;
+            lock (Meter2Lock)
+            {
+                try
+                {
+                    GpibResponse gr;
+                    gr = _Ammeter2.MeasureCurrent();
+
+                    if (gr.Code == GpibResponse.SUCCESS)
+                    {
+                        //Donothing
+                        OnPropertyChanged("Current2TextuA");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Read current from meter 2 on " + _Ammeter2.VisaAddress + ". " + gr.Message,
+                            "Meter 2", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    }
+                }
+                catch (SystemException ex)
+                {
+                    GpibResponse gr = new GpibResponse("RE", ex.Message, ex);
+                    MessageBox.Show("Cannot read current from meter 2 on " + _Ammeter2.VisaAddress + ". " + ex.Message,
+                        "Meter 2", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }
+            canReadCurrent2 = true;
+        }
+
+        /// <summary>
+        /// Read boat current 
+        /// </summary>       
+        public ICommand ReadBothCurrentCommand { get; set; }
+        private bool CanExecuteReadBothCurrentMethod(object parameter) { return canReadCurrent2 && canReadCurrent1; }
+        private void ExecuteReadBothCurrentMethod(object parameter)
+        {
+            // 1
+            canReadCurrent1 = false;
+            lock (Meter1Lock)
+            {
+                try
+                {
+                    GpibResponse gr;
+                    gr = _Ammeter1.MeasureCurrent();
+
+                    if (gr.Code == GpibResponse.SUCCESS)
+                    {
+                        //Donothing
+                        OnPropertyChanged("Current1TextuA");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Read current from meter 1 on " + _Ammeter1.VisaAddress + ". " + gr.Message,
+                            "Meter 1", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    }
+                }
+                catch (SystemException ex)
+                {
+                    GpibResponse gr = new GpibResponse("RE", ex.Message, ex);
+                    MessageBox.Show("Cannot read current from meter 1 on " + _Ammeter1.VisaAddress + ". " + ex.Message,
+                        "Meter 1", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }
+            canReadCurrent1 = true;
+            // 2
+            canReadCurrent2 = false;
+            lock (Meter2Lock)
+            {
+                try
+                {
+                    GpibResponse gr;
+                    gr = _Ammeter2.MeasureCurrent();
+
+                    if (gr.Code == GpibResponse.SUCCESS)
+                    {
+                        //Donothing
+                        OnPropertyChanged("Current2TextuA");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Read current from meter 2 on " + _Ammeter2.VisaAddress + ". " + gr.Message,
+                            "Meter 2", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    }
+                }
+                catch (SystemException ex)
+                {
+                    GpibResponse gr = new GpibResponse("RE", ex.Message, ex);
+                    MessageBox.Show("Cannot read current from meter 2 on " + _Ammeter2.VisaAddress + ". " + ex.Message,
+                        "Meter 2", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }
+            canReadCurrent2 = true;
+
         }
 
         // New measurement command by button

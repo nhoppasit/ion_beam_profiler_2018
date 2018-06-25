@@ -392,7 +392,7 @@
                         <StackPanel Orientation="Horizontal">
                             <RibbonTextBox x:Name="txtDMMValue1" Text="{Binding Path=Current1TextuA,Mode=OneWay}" TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>
                             <Label Content="uA"/>
-                            <RibbonButton Label="Read" Command="{Binding RunCommand}" SmallImageSource="Images/Refresh.png" />
+                            <RibbonButton Label="Read" Command="{Binding ReadBothCurrentCommand}" SmallImageSource="Images/Refresh.png" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <RibbonTextBox x:Name="txtDMMValue2" Text="{Binding Path=Current2TextuA,Mode=OneWay}" TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>

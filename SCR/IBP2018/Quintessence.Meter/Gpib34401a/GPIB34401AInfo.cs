@@ -144,6 +144,14 @@ namespace Quintessence.Meter.Gpib34401a
         {
             try
             {
+                if (IsDemo)
+                {
+                    Random rnd = new Random();
+                    Current = rnd.NextDouble() * 1e-5;
+                    GpibResponse gr0 = new GpibResponse(GpibResponse.SUCCESS, Current.ToString(), null);
+                    return gr0;
+                }
+
                 ioDmm.WriteString("*RST", true);//Reset the dmm                
                 ioDmm.WriteString("*CLS", true);//Clear the dmm registers                
                 ioDmm.WriteString("Measure:Current:DC? 1A,0.001MA", true);// Set meter to 1 amp dc range, 0.001mA resolution
