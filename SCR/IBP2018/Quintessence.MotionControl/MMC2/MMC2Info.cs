@@ -5,6 +5,7 @@ using System.Text;
 using System.IO.Ports;
 using System.Threading;
 using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace Quintessence.MotionControl.MMC2
 {
@@ -78,12 +79,12 @@ namespace Quintessence.MotionControl.MMC2
         /// <summary>
         /// รายการสำหรับเลือก X scan range
         /// </summary>        
-        private List<double> _XScanRangeList;
-        public List<double> XScanRangeList
+        private ObservableCollection<double> _XScanRangeList;
+        public ObservableCollection<double> XScanRangeList
         {
             get
             {
-                if (_XScanRangeList == null) _XScanRangeList = new List<double>();
+                if (_XScanRangeList == null) _XScanRangeList = new ObservableCollection<double>();
                 _XScanRangeList.Clear();
                 for (int i = 0; i <= (int)(_XFigtureMaximum - _XFigtureMinimum); i++)
                     _XScanRangeList.Add(i + _XFigtureMinimum);

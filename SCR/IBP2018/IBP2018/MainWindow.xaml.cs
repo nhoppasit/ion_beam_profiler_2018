@@ -23,6 +23,7 @@ using Quintessence.MotionControl.MMC2;
 using System.Reflection;
 using Quintessence.Ibp2018.Model;
 using IBP2018.View;
+using System.Collections.ObjectModel;
 
 namespace IBP2018
 {
@@ -101,6 +102,22 @@ namespace IBP2018
             bwNewMeasurement.RunWorkerCompleted += BwNewMeasurement_RunWorkerCompleted;
             mnuNew.Click += MnuNew_Click;
             #endregion
+
+            txtXMin.PreviewKeyUp += TxtXMin_PreviewKeyUp;
+        }
+
+        private void TxtXMin_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
+                ObservableCollection<double> listXRange = new ObservableCollection<double>();
+                listXRange = vm.XScanRangeList;
+                catXStart.ItemsSource = null;
+                catXEnd.ItemsSource = null;
+                catXStart.ItemsSource = listXRange;
+                catXEnd.ItemsSource = listXRange;                
+            }
         }
 
         /// <summary>
@@ -117,11 +134,18 @@ namespace IBP2018
             cboXStep.SelectedItem = catXStep.Items[0].ToString();
             cboYStep.SelectedItem = catYStep.Items[0].ToString();
 
-            cboXStart.SelectedItem = catXStart.Items[0].ToString();
-            cboXEnd.SelectedItem = catXEnd.Items[catXEnd.Items.Count - 1].ToString();
 
-            cboYStart.SelectedItem = catYStart.Items[0].ToString();
-            cboYEnd.SelectedItem = catYEnd.Items[catYEnd.Items.Count - 1].ToString();
+            //Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
+            //List<double> listXRange = vm.XScanRangeList;
+            //List<double> listYRange = vm.YScanRangeList;
+            //catXStart.ItemsSource = listXRange;
+            //catXEnd.ItemsSource = listXRange;
+            //cboXStart.SelectedItem = catXStart.Items[0].ToString();
+            //cboXEnd.SelectedItem = catXEnd.Items[catXEnd.Items.Count - 1].ToString();
+            //catYStart.ItemsSource = listYRange;
+            //catYEnd.ItemsSource = listYRange;
+            //cboYStart.SelectedItem = catYStart.Items[0].ToString();
+            //cboYEnd.SelectedItem = catYEnd.Items[catYEnd.Items.Count - 1].ToString();
 
             for (int i = 1; i <= 10; i++)
                 catSensorInterval.Items.Add((i).ToString());
@@ -324,55 +348,51 @@ namespace IBP2018
         private void BwNewMeasurement_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) { mnuNew.IsEnabled = true; popWaitNewMeasurement.Close(); }
         private void BwNewMeasurement_DoWork(object sender, DoWorkEventArgs e)
         {
-            //this.mainGrid.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(delegate ()
-            //{
-
-            //}));
-
-            popWaitNewMeasurement.ProgressValue = 0;
-            Thread.Sleep(500);
-            //mnuNew.IsEnabled = false;
+            Thread.Sleep(100);
+            mnuNew.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { mnuNew.IsEnabled = false; }));
             Ibp2018ViewModel vm = null;
             Ibp2018DataTableModel dt1 = null;
             Ibp2018DataTableModel dt2 = null;
             MMC2Info scn = null;
+            bool running = true;
             this.mainGrid.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
             {
                 vm = this.mainGrid.DataContext as Ibp2018ViewModel;
                 dt1 = vm.CurrentDataTables[0];
                 dt2 = vm.CurrentDataTables[1];
                 scn = vm.XyMmc;
+                double xStep = scn.XScanStep, yStep = scn.YScanStep;
+                double xMin = Math.Min(scn.XScanStart, scn.XScanEnd), xMax = Math.Max(scn.XScanStart, scn.XScanEnd);
+                double yMin = Math.Min(scn.YScanStart, scn.YScanEnd), yMax = Math.Max(scn.YScanStart, scn.YScanEnd);
+                int colCount = (int)((xMax - xMin) / xStep) + 1;
+                int rowCount = (int)((yMax - yMin) / yStep) + 1;
+                dt1.ColumnNames = new List<string>();
+                dt2.ColumnNames = new List<string>();
+                dt1.ColumnHeaders = new List<string>();
+                dt2.ColumnHeaders = new List<string>();
+                dt1.Datatable.Rows.Clear();
+                dt2.Datatable.Rows.Clear();
+                dt1.Datatable.Columns.Clear();
+                dt2.Datatable.Columns.Clear();
+                dt1.Datatable.Columns.Add("Y_Step", typeof(string));
+                dt2.Datatable.Columns.Add("Y_Step", typeof(string));
+                dt1.ColumnNames.Add("Y_Step");
+                dt2.ColumnNames.Add("Y_Step");
+                dt1.ColumnHeaders.Add("Y Step");
+                dt2.ColumnHeaders.Add("Y Step");
+                for (int i = 0; i < colCount; i++)
+                {
+                    dt1.Datatable.Columns.Add("X_" + i.ToString(), typeof(string));
+                    dt1.ColumnNames.Add("X_" + i.ToString());
+                    dt1.ColumnHeaders.Add("X=" + (i * xStep).ToString("F2"));
+                }
+                running = false;
             }));
-            double xStep = scn.XScanStep, yStep = scn.YScanStep;
-            double xMin = Math.Min(scn.XScanStart, scn.XScanEnd), xMax = Math.Max(scn.XScanStart, scn.XScanEnd);
-            double yMin = Math.Min(scn.YScanStart, scn.YScanEnd), yMax = Math.Max(scn.YScanStart, scn.YScanEnd);
-            int colCount = (int)((xMax - xMin) / xStep) + 1;
-            int rowCount = (int)((yMax - yMin) / yStep) + 1;
-            dt1.ColumnNames = new List<string>();
-            dt2.ColumnNames = new List<string>();
-            dt1.ColumnHeaders = new List<string>();
-            dt2.ColumnHeaders = new List<string>();
-            dt1.Datatable.Rows.Clear();
-            dt2.Datatable.Rows.Clear();
-            dt1.Datatable.Columns.Clear();
-            dt2.Datatable.Columns.Clear();
-            Thread.Sleep(500);
-            popWaitNewMeasurement.ProgressValue = 50;
-            dt1.Datatable.Columns.Add("Y_Step", typeof(string));
-            dt2.Datatable.Columns.Add("Y_Step", typeof(string));
-            dt1.ColumnNames.Add("Y_Step");
-            dt2.ColumnNames.Add("Y_Step");
-            dt1.ColumnHeaders.Add("Y Step");
-            dt2.ColumnHeaders.Add("Y Step");
-            for (int i = 0; i < colCount; i++)
+            while (running)
             {
-                dt1.Datatable.Columns.Add("X_" + i.ToString(), typeof(string));
-                dt1.ColumnNames.Add("X_" + i.ToString());
-                dt1.ColumnHeaders.Add("X=" + (i * xStep).ToString("F2"));
+                Thread.Sleep(100);
             }
-
-            bool running = true;
-            popWaitNewMeasurement.ProgressValue = 60;
+            running = true;
             this.mainGrid.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
             {
                 // Binding columns name and header
@@ -383,26 +403,25 @@ namespace IBP2018
                     DataGridTextColumn textColumn = new DataGridTextColumn();
                     textColumn.Header = dt1.ColumnHeaders[i];
                     textColumn.Binding = binding;
-                    vm.Current1ColumnCollection.Add(textColumn);                    
+                    vm.Current1ColumnCollection.Add(textColumn);
                 }
                 running = false;
             }));
+            while (running)
+            {
+                Thread.Sleep(100);
+            }
 
-            while (running) { Thread.Sleep(100); }
-
-            popWaitNewMeasurement.ProgressValue = 70;
-            Thread.Sleep(500);
-            popWaitNewMeasurement.ProgressValue = 100;
-            Thread.Sleep(500);
+            System.Diagnostics.Trace.WriteLine(">>> " + DateTime.Now.ToString() + " End worker.");
         }
         #endregion
 
         private void MnuNew_Click(object sender, RoutedEventArgs e)
         {
             popWaitNewMeasurement = new WaitForNewMeasurementDialog();
-            bwNewMeasurement.RunWorkerAsync();
             popWaitNewMeasurement.Topmost = true;
             popWaitNewMeasurement.Show();
+            bwNewMeasurement.RunWorkerAsync();
         }
         #endregion
 

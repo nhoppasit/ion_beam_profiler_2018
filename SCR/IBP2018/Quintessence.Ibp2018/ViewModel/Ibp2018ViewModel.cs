@@ -206,7 +206,7 @@ namespace Quintessence.Ibp2018.ViewModel
                 OnPropertyChanged("YScanRangeList");
             }
         }
-        public List<double> XScanRangeList { get { return _XyMmc.XScanRangeList; } }
+        public ObservableCollection<double> XScanRangeList { get { return _XyMmc.XScanRangeList; } }
         public List<double> YScanRangeList { get { return _XyMmc.YScanRangeList; } }
         private MMC2Info _ZMmc;
         public MMC2Info ZMmc { get { return _ZMmc; } set { _ZMmc = value; } }
@@ -363,6 +363,8 @@ namespace Quintessence.Ibp2018.ViewModel
             ReadBothCurrentCommand = new RelayCommand(ExecuteReadBothCurrentMethod, CanExecuteReadBothCurrentMethod);
             #endregion
 
+            SetXMinCommand = new RelayCommand(ExecuteSetXMinMethod, CanExecuteSetXMinMethod);
+
             // Reload settings
             ReloadSettings();
         }
@@ -379,6 +381,16 @@ namespace Quintessence.Ibp2018.ViewModel
         }
 
         #region Command definetino
+
+        /// <summary>
+        /// Read boat current 
+        /// </summary>       
+        public ICommand SetXMinCommand { get; set; }
+        private bool CanExecuteSetXMinMethod(object parameter) { return canReadCurrent2 && canReadCurrent1; }
+        private void ExecuteSetXMinMethod(object parameter)
+        {
+            OnPropertyChanged("XScanRangeList");
+        }
 
         // Reconnect meter 1
         public ICommand ReconnectMeter1Command { get; set; }
