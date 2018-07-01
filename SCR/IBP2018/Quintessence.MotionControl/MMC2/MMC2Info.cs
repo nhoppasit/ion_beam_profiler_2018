@@ -84,9 +84,8 @@ namespace Quintessence.MotionControl.MMC2
         {
             get
             {
-                //if (_XScanRangeList == null) _XScanRangeList = new ObservableCollection<double>();
-                //if (0 < _XScanRangeList.Count) _XScanRangeList.Clear();
-                _XScanRangeList = new ObservableCollection<double>();
+                if (_XScanRangeList == null) _XScanRangeList = new ObservableCollection<double>();
+                if (0 < _XScanRangeList.Count) _XScanRangeList.Clear();
                 for (int i = 0; i <= (int)(_XFigtureMaximum - _XFigtureMinimum); i++)
                     _XScanRangeList.Add(i + _XFigtureMinimum);
                 return _XScanRangeList;
