@@ -152,9 +152,9 @@ namespace IBP2018
             canJog = true;
             while (canJog)
             {
-                this.mainGrid.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
+                this.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
                 {
-                    Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
+                    Ibp2018ViewModel vm = this.DataContext as Ibp2018ViewModel;
                     PortResponse pr = vm.XJog(xJogValue);
                     if (pr.Code != PortResponse.SUCCESS && pr.Code != PortResponse.DEMO)
                     {
@@ -212,9 +212,9 @@ namespace IBP2018
             canJog = true;
             while (canJog)
             {
-                this.mainGrid.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
+                this.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
                 {
-                    Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
+                    Ibp2018ViewModel vm = this.DataContext as Ibp2018ViewModel;
                     PortResponse pr = vm.YJog(yJogValue);
                     if (pr.Code != PortResponse.SUCCESS && pr.Code != PortResponse.DEMO)
                     {
@@ -272,9 +272,9 @@ namespace IBP2018
             canJog = true;
             while (canJog)
             {
-                this.mainGrid.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
+                this.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
                 {
-                    Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
+                    Ibp2018ViewModel vm = this.DataContext as Ibp2018ViewModel;
                     PortResponse pr = vm.ZJog(zJogValue);
                     if (pr.Code != PortResponse.SUCCESS && pr.Code != PortResponse.DEMO)
                     {
@@ -336,9 +336,9 @@ namespace IBP2018
             Ibp2018DataTableModel dt2 = null;
             MMC2Info scn = null;
             bool running = true;
-            this.mainGrid.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
+            this.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
             {
-                vm = this.mainGrid.DataContext as Ibp2018ViewModel;
+                vm = this.DataContext as Ibp2018ViewModel;
                 dt1 = vm.CurrentDataTables[0];
                 dt2 = vm.CurrentDataTables[1];
                 scn = vm.XyMmc;
@@ -374,7 +374,7 @@ namespace IBP2018
                 Thread.Sleep(100);
             }
             running = true;
-            this.mainGrid.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
+            this.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
             {
                 // Binding columns name and header
                 vm.Current1ColumnCollection.Clear();

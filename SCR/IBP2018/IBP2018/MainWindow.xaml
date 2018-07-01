@@ -4,17 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IBP2018"    
-              xmlns:ibp2018vm="clr-namespace:Quintessence.Ibp2018.ViewModel;assembly=Quintessence.Ibp2018"
               xmlns:b="clr-namespace:IBP2018.Behavior"
         mc:Ignorable="d"
-        Title="Ion Beam Profiler 2018" Height="450" Width="1000" Icon="Images/Science Network Neighborhood.ico" WindowState="Maximized"
+        Title="Ion Beam Profiler 2018" Height="450" Width="1000" 
+              Icon="Images/Science Network Neighborhood.ico" WindowState="Maximized"
+              DataContext="{StaticResource ibp2018VM}"
               >
 
-    <Window.Resources>
-        <ibp2018vm:Ibp2018ViewModel x:Name="ibp2018VM" x:Key="ibp2018VM"/>
-    </Window.Resources>
-
-    <Grid x:Name="mainGrid" DataContext="{Binding Source={StaticResource ibp2018VM}}">
+    <!--BODY-->
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>

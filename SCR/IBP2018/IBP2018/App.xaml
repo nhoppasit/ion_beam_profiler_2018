@@ -2,8 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:IBP2018"
+             xmlns:ibp2018vm="clr-namespace:Quintessence.Ibp2018.ViewModel;assembly=Quintessence.Ibp2018"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ibp2018vm:Ibp2018ViewModel x:Name="ibp2018VM" x:Key="ibp2018VM"/>
     </Application.Resources>
 </Application>
