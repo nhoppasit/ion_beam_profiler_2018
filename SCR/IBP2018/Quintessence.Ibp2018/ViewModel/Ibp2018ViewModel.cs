@@ -369,10 +369,6 @@ namespace Quintessence.Ibp2018.ViewModel
             SetYScanRangeListCommand = new RelayCommand(ExecuteSetYScanRangeListMethod, CanExecuteSetYScanRangeListMethod);
             #endregion
 
-            #region Close application command ถูกเรียกตอนที่ app กำลังปิดตัว
-            ClosingApplicationCommand = new RelayCommand(ExecuteClosingApplicationMethod, CanExecuteClosingApplicationMethod);
-            #endregion
-
             // Reload settings
             ReloadSettings();
         }
@@ -995,43 +991,57 @@ namespace Quintessence.Ibp2018.ViewModel
             canSetZZeroCommand = true;
         }
 
-        // Z set zero command
-        public ICommand ClosingApplicationCommand { get; set; }
-        private bool canClosingApplicationCommand = true;
-        public bool CanCloseApplication { get; set; }
-        private bool CanExecuteClosingApplicationMethod(object param) { return canClosingApplicationCommand; }
-        private void ExecuteClosingApplicationMethod(object param)
+        /// <summary>
+        /// Close application method for behide code
+        /// </summary>
+        public bool Finalized { get; private set; }
+        public void FinalizeForClose()
         {
-            canClosingApplicationCommand = false;
-            CanCloseApplication = false;
+            Finalized = false;
             try
             {
                 if (_CurrentTables[0].NeedSave)
                 {
-                    SaveFileDialog dlg = new SaveFileDialog();
-                    dlg.Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*";
-                    dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                    if (dlg.ShowDialog() == true)
+                    MessageBoxResult mbr = MessageBox.Show("", "", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                    switch (mbr)
                     {
-                        if (!_CurrentTables[0].SaveToCSV(dlg.FileName)) CanCloseApplication = false;
-                        else CanCloseApplication = true;
-                    }
-                    else
-                    {
-                        CanCloseApplication = false;
+                        case MessageBoxResult.Yes:
+                            SaveFileDialog dlg = new SaveFileDialog
+                            {
+                                Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*",
+                                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+                            };
+                            if (dlg.ShowDialog() == true)
+                            {
+                                if (!_CurrentTables[0].SaveToCSV(dlg.FileName)) Finalized = false;
+                                else Finalized = true;
+                            }
+                            else
+                            {
+                                Finalized = false;
+                            }                            
+                            break;
+                        case MessageBoxResult.No:
+                            Finalized = true;
+                            break;
+                        case MessageBoxResult.Cancel:
+                            Finalized = false;
+                            break;
+                        default:
+                            Finalized = false;
+                            break;
                     }
                 }
                 else
                 {
-                    CanCloseApplication = true;
+                    Finalized = true;
                 }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Trace.WriteLine(">>> " + DateTime.Now.ToString() + " " + ex.Message);
-                CanCloseApplication = false;
+                Finalized = false;
             }
-            canClosingApplicationCommand = true;
         }
 
         #endregion

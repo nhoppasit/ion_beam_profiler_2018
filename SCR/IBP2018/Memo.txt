@@ -1,3 +1,6 @@
+10:48 PM 7/1/2018
+Test about clising() binding
+
 7:03 PM 7/1/2018
 Design about exit and new measurement.
 

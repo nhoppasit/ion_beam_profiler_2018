@@ -105,8 +105,16 @@ namespace IBP2018
 
             #region Exit application
             mnuExit.Click += MnuExit_Click;
+            this.Closing += MainWindow_Closing;
             #endregion
-        }        
+        }
+
+        private void MainWindow_Closing(object sender, CancelEventArgs e)
+        {
+            Ibp2018ViewModel vm = this.DataContext as Ibp2018ViewModel;
+            vm.FinalizeForClose();
+            e.Cancel = !vm.Finalized;
+        }
 
         private void MnuExit_Click(object sender, RoutedEventArgs e)
         {
@@ -329,7 +337,7 @@ namespace IBP2018
         private void BwNewMeasurement_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) { mnuNew.IsEnabled = true; popWaitNewMeasurement.Close(); }
         private void BwNewMeasurement_DoWork(object sender, DoWorkEventArgs e)
         {
-            Thread.Sleep(100);
+            Thread.Sleep(10);
             mnuNew.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { mnuNew.IsEnabled = false; }));
             Ibp2018ViewModel vm = null;
             Ibp2018DataTableModel dt1 = null;
@@ -381,9 +389,11 @@ namespace IBP2018
                 for (int i = 0; i < dt1.ColumnNames.Count; i++)
                 {
                     Binding binding = new Binding(dt1.ColumnNames[i]);
-                    DataGridTextColumn textColumn = new DataGridTextColumn();
-                    textColumn.Header = dt1.ColumnHeaders[i];
-                    textColumn.Binding = binding;
+                    DataGridTextColumn textColumn = new DataGridTextColumn
+                    {
+                        Header = dt1.ColumnHeaders[i],
+                        Binding = binding
+                    };
                     vm.Current1ColumnCollection.Add(textColumn);
                 }
                 running = false;
@@ -399,8 +409,10 @@ namespace IBP2018
 
         private void MnuNew_Click(object sender, RoutedEventArgs e)
         {
-            popWaitNewMeasurement = new WaitForNewMeasurementDialog();
-            popWaitNewMeasurement.Topmost = true;
+            popWaitNewMeasurement = new WaitForNewMeasurementDialog
+            {
+                Topmost = true
+            };
             popWaitNewMeasurement.Show();
             bwNewMeasurement.RunWorkerAsync();
         }
