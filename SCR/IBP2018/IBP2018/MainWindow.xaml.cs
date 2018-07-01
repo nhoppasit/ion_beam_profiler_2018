@@ -131,6 +131,7 @@ namespace IBP2018
             cboXStep.SelectedItem = catXStep.Items[0].ToString();
             cboYStep.SelectedItem = catYStep.Items[0].ToString();
 
+            txtXMin.PreviewKeyUp += TxtXMin_PreviewKeyUp;
             UpdateXScanRangeList();
 
             for (int i = 1; i <= 10; i++)
@@ -140,6 +141,14 @@ namespace IBP2018
             for (int i = 1; i <= 4; i++)
                 catAveragingNumber.Items.Add((i).ToString());
             cboAveragingNumber.SelectedItem = catAveragingNumber.Items[0].ToString();
+        }
+
+        private void TxtXMin_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            if(e.Key== Key.Enter)
+            {
+                UpdateXScanRangeList();
+            }
         }
 
         void UpdateXScanRangeList()
