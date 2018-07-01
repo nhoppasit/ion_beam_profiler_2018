@@ -162,47 +162,47 @@ namespace Quintessence.Ibp2018.ViewModel
                 OnPropertyChanged("YScanEnd");
             }
         }
-        public string XFigtureMinimum
+        public string XFixtureMinimum
         {
-            get { return _XyMmc.XFigtureMinimum.ToString(); }
+            get { return _XyMmc.XFixtureMinimum.ToString(); }
             set
             {
-                try { _XyMmc.XFigtureMinimum = Convert.ToDouble(value); }
-                catch { _XyMmc.XFigtureMinimum = 0; }
-                OnPropertyChanged("XFigtureMinimum");
+                try { _XyMmc.XFixtureMinimum = Convert.ToDouble(value); }
+                catch { _XyMmc.XFixtureMinimum = 0; }
+                OnPropertyChanged("XFixtureMinimum");
                 OnPropertyChanged("XScanRangeList");
             }
         }
-        public string YFigtureMinimum
+        public string YFixtureMinimum
         {
-            get { return _XyMmc.YFigtureMinimum.ToString(); }
+            get { return _XyMmc.YFixtureMinimum.ToString(); }
             set
             {
-                try { _XyMmc.YFigtureMinimum = Convert.ToDouble(value); }
-                catch { _XyMmc.YFigtureMinimum = 0; }
-                OnPropertyChanged("YFigtureMinimum");
+                try { _XyMmc.YFixtureMinimum = Convert.ToDouble(value); }
+                catch { _XyMmc.YFixtureMinimum = 0; }
+                OnPropertyChanged("YFixtureMinimum");
                 OnPropertyChanged("YScanRangeList");
             }
         }
-        public string XFigtureMaximum
+        public string XFixtureMaximum
         {
-            get { return _XyMmc.XFigtureMaximum.ToString(); }
+            get { return _XyMmc.XFixtureMaximum.ToString(); }
             set
             {
-                try { _XyMmc.XFigtureMaximum = Convert.ToDouble(value); }
-                catch { _XyMmc.XFigtureMaximum = 0; }
-                OnPropertyChanged("XFigtureMaximum");
+                try { _XyMmc.XFixtureMaximum = Convert.ToDouble(value); }
+                catch { _XyMmc.XFixtureMaximum = 0; }
+                OnPropertyChanged("XFixtureMaximum");
                 OnPropertyChanged("XScanRangeList");
             }
         }
-        public string YFigtureMaximum
+        public string YFixtureMaximum
         {
-            get { return _XyMmc.YFigtureMaximum.ToString(); }
+            get { return _XyMmc.YFixtureMaximum.ToString(); }
             set
             {
-                try { _XyMmc.YFigtureMaximum = Convert.ToDouble(value); }
-                catch { _XyMmc.YFigtureMaximum = 0; }
-                OnPropertyChanged("XFigtureMaximum");
+                try { _XyMmc.YFixtureMaximum = Convert.ToDouble(value); }
+                catch { _XyMmc.YFixtureMaximum = 0; }
+                OnPropertyChanged("YFixtureMaximum");
                 OnPropertyChanged("YScanRangeList");
             }
         }
@@ -212,23 +212,23 @@ namespace Quintessence.Ibp2018.ViewModel
         public MMC2Info ZMmc { get { return _ZMmc; } set { _ZMmc = value; } }
         public string ZMmcPortName { get { return _ZMmc.SerialPortName; } set { _ZMmc.SerialPortName = value; OnPropertyChanged("ZMmcPortName"); } }
         public string ZLPosText { get { return _ZMmc.ActualX.ToString("F2"); } set { _ZMmc.ActualX = Convert.ToDouble(value); OnPropertyChanged("ZLPosText"); } }
-        public string ZFigtureMinimum
+        public string ZFixtureMinimum
         {
-            get { return _ZMmc.XFigtureMinimum.ToString(); }
+            get { return _ZMmc.XFixtureMinimum.ToString(); }
             set
             {
-                try { _ZMmc.XFigtureMinimum = Convert.ToDouble(value); }
-                catch { _ZMmc.XFigtureMinimum = 0; }
-                OnPropertyChanged("ZFigtureMinimum");
+                try { _ZMmc.XFixtureMinimum = Convert.ToDouble(value); }
+                catch { _ZMmc.XFixtureMinimum = 0; }
+                OnPropertyChanged("ZFixtureMinimum");
             }
         }
         public string ZFigtureMaximum
         {
-            get { return _ZMmc.XFigtureMaximum.ToString(); }
+            get { return _ZMmc.XFixtureMaximum.ToString(); }
             set
             {
-                try { _ZMmc.XFigtureMaximum = Convert.ToDouble(value); }
-                catch { _ZMmc.XFigtureMaximum = 0; }
+                try { _ZMmc.XFixtureMaximum = Convert.ToDouble(value); }
+                catch { _ZMmc.XFixtureMaximum = 0; }
                 OnPropertyChanged("ZFigtureMaximum");
             }
         }
@@ -316,20 +316,20 @@ namespace Quintessence.Ibp2018.ViewModel
             _XyMmc = new MMC2Info
             {
                 SerialPortName = "COM1",
-                XFigtureMinimum = -10,
-                XFigtureMaximum = 10,
-                YFigtureMinimum = -10,
-                YFigtureMaximum = 10
+                XFixtureMinimum = -10,
+                XFixtureMaximum = 10,
+                YFixtureMinimum = -10,
+                YFixtureMaximum = 10
             };
 
             // Create Z axis object
             _ZMmc = new MMC2Info
             {
                 SerialPortName = "COM2",
-                XFigtureMinimum = -10,
-                XFigtureMaximum = 10,
-                YFigtureMinimum = -10,
-                YFigtureMaximum = 10
+                XFixtureMinimum = -10,
+                XFixtureMaximum = 10,
+                YFixtureMinimum = -10,
+                YFixtureMaximum = 10
             };
 
             // Create data tables object
@@ -363,7 +363,10 @@ namespace Quintessence.Ibp2018.ViewModel
             ReadBothCurrentCommand = new RelayCommand(ExecuteReadBothCurrentMethod, CanExecuteReadBothCurrentMethod);
             #endregion
 
-            SetXMinCommand = new RelayCommand(ExecuteSetXMinMethod, CanExecuteSetXMinMethod);
+            #region Update scan range list commands
+            SetXScanRangeListCommand = new RelayCommand(ExecuteSetXScanRangeListMethod, CanExecuteSetXScanRangeListMethod);
+            SetYScanRangeListCommand = new RelayCommand(ExecuteSetYScanRangeListMethod, CanExecuteSetYScanRangeListMethod);
+            #endregion
 
             // Reload settings
             ReloadSettings();
@@ -383,14 +386,21 @@ namespace Quintessence.Ibp2018.ViewModel
         #region Command definetino
 
         /// <summary>
-        /// Read boat current 
+        /// เมื่อมีการกดคีย์ Enter จะมีการกำหนดค่าใหม่กับ Minimum X Fixture และลิซท์ของรายการเลือกตอนกำหนดช่วง scan
         /// </summary>       
-        public ICommand SetXMinCommand { get; set; }
-        private bool CanExecuteSetXMinMethod(object parameter) { return canReadCurrent2 && canReadCurrent1; }
-        private void ExecuteSetXMinMethod(object parameter)
-        {
-            OnPropertyChanged("XScanRangeList");
-        }
+        public ICommand SetXScanRangeListCommand { get; set; }
+        private bool canSetXScanRangeList = true;
+        private bool CanExecuteSetXScanRangeListMethod(object parameter) { return canSetXScanRangeList; }
+        private void ExecuteSetXScanRangeListMethod(object parameter) { canSetXScanRangeList = false; OnPropertyChanged("XScanRangeList"); canSetXScanRangeList = true; }
+
+        /// <summary>
+        /// เมื่อมีการกดคีย์ Enter จะมีการกำหนดค่าใหม่กับ Maximum X Fixture และลิซท์ของรายการเลือกตอนกำหนดช่วง scan
+        /// </summary>       
+        public ICommand SetYScanRangeListCommand { get; set; }
+        private bool canSetYScanRangeList = true;
+        private bool CanExecuteSetYScanRangeListMethod(object parameter) { return canSetYScanRangeList; }
+        private void ExecuteSetYScanRangeListMethod(object parameter) { canSetYScanRangeList = false; OnPropertyChanged("YScanRangeList"); canSetYScanRangeList = true; }
+
 
         // Reconnect meter 1
         public ICommand ReconnectMeter1Command { get; set; }

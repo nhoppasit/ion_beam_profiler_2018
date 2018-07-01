@@ -71,10 +71,10 @@ namespace Quintessence.MotionControl.MMC2
         /* ----------------------------------------------------------  
          * Figture Range
          * ----------------------------------------------------------  */
-        private double _XFigtureMinimum; public double XFigtureMinimum { get { return _XFigtureMinimum; } set { _XFigtureMinimum = value; } }
-        private double _YFigtureMinimum; public double YFigtureMinimum { get { return _YFigtureMinimum; } set { _YFigtureMinimum = value; } }
-        private double _XFigtureMaximum; public double XFigtureMaximum { get { return _XFigtureMaximum; } set { _XFigtureMaximum = value; } }
-        private double _YFigtureMaximum; public double YFigtureMaximum { get { return _YFigtureMaximum; } set { _YFigtureMaximum = value; } }
+        private double _XFigtureMinimum; public double XFixtureMinimum { get { return _XFigtureMinimum; } set { _XFigtureMinimum = value; } }
+        private double _YFigtureMinimum; public double YFixtureMinimum { get { return _YFigtureMinimum; } set { _YFigtureMinimum = value; } }
+        private double _XFigtureMaximum; public double XFixtureMaximum { get { return _XFigtureMaximum; } set { _XFigtureMaximum = value; } }
+        private double _YFigtureMaximum; public double YFixtureMaximum { get { return _YFigtureMaximum; } set { _YFigtureMaximum = value; } }
 
         /// <summary>
         /// รายการสำหรับเลือก X scan range
@@ -244,8 +244,8 @@ namespace Quintessence.MotionControl.MMC2
                 PortResponse pr = QueryPosition();
                 if (pr.Code != PortResponse.SUCCESS) { return pr; }
                 double tAPos = step * MILLIMETERPERSTEP + ActualX;
-                if (tAPos < XFigtureMinimum) step = (int)((XFigtureMinimum - ActualX) * STEPPERMILLIMETER);
-                if (XFigtureMaximum < tAPos) step = (int)((XFigtureMaximum - ActualX) * STEPPERMILLIMETER);
+                if (tAPos < XFixtureMinimum) step = (int)((XFixtureMinimum - ActualX) * STEPPERMILLIMETER);
+                if (XFixtureMaximum < tAPos) step = (int)((XFixtureMaximum - ActualX) * STEPPERMILLIMETER);
 
                 // Communication
                 string stepMessage = "M:XP" + step.ToString() + "\n";
@@ -288,8 +288,8 @@ namespace Quintessence.MotionControl.MMC2
                 PortResponse pr = QueryPosition();
                 if (pr.Code != PortResponse.SUCCESS) { return pr; }
                 double tAPos = step * MILLIMETERPERSTEP + ActualX;
-                if (tAPos < YFigtureMinimum) step = (int)((YFigtureMinimum - ActualY) * STEPPERMILLIMETER);
-                if (YFigtureMaximum < tAPos) step = (int)((YFigtureMaximum - ActualY) * STEPPERMILLIMETER);
+                if (tAPos < YFixtureMinimum) step = (int)((YFixtureMinimum - ActualY) * STEPPERMILLIMETER);
+                if (YFixtureMaximum < tAPos) step = (int)((YFixtureMaximum - ActualY) * STEPPERMILLIMETER);
 
                 // Communication
                 string stepMessage = "M:YP" + step.ToString() + "\n";
@@ -329,8 +329,8 @@ namespace Quintessence.MotionControl.MMC2
 
                 // Validateion with member
                 int step = (int)(ActualX * STEPPERMILLIMETER);
-                if (ActualX < XFigtureMinimum) step = (int)((XFigtureMinimum) * STEPPERMILLIMETER);
-                if (XFigtureMaximum < ActualX) step = (int)((XFigtureMaximum) * STEPPERMILLIMETER);
+                if (ActualX < XFixtureMinimum) step = (int)((XFixtureMinimum) * STEPPERMILLIMETER);
+                if (XFixtureMaximum < ActualX) step = (int)((XFixtureMaximum) * STEPPERMILLIMETER);
 
                 // Communication                
                 string stepMessage = "A:XP" + step.ToString() + "\n";
@@ -366,8 +366,8 @@ namespace Quintessence.MotionControl.MMC2
 
                 // Validateion with member
                 int step = (int)(ActualY * STEPPERMILLIMETER);
-                if (ActualY < YFigtureMinimum) step = (int)((YFigtureMinimum) * STEPPERMILLIMETER);
-                if (YFigtureMaximum < ActualY) step = (int)((YFigtureMaximum) * STEPPERMILLIMETER);
+                if (ActualY < YFixtureMinimum) step = (int)((YFixtureMinimum) * STEPPERMILLIMETER);
+                if (YFixtureMaximum < ActualY) step = (int)((YFixtureMaximum) * STEPPERMILLIMETER);
 
                 // Communication                
                 string stepMessage = "A:YP" + step.ToString() + "\n";
