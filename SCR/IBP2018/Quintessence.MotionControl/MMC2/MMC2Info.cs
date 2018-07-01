@@ -85,7 +85,7 @@ namespace Quintessence.MotionControl.MMC2
             get
             {
                 if (_XScanRangeList == null) _XScanRangeList = new ObservableCollection<double>();
-                _XScanRangeList.Clear();
+                if (_XScanRangeList.Count > 0) _XScanRangeList.Clear();
                 for (int i = 0; i <= (int)(_XFigtureMaximum - _XFigtureMinimum); i++)
                     _XScanRangeList.Add(i + _XFigtureMinimum);
                 return _XScanRangeList;
@@ -95,13 +95,13 @@ namespace Quintessence.MotionControl.MMC2
         /// <summary>
         /// รายการสำหรับเลือก Y scan range
         /// </summary>
-        private List<double> _YScanRangeList;
-        public List<double> YScanRangeList
+        private ObservableCollection<double> _YScanRangeList;
+        public ObservableCollection<double> YScanRangeList
         {
             get
             {
-                if (_YScanRangeList == null) _YScanRangeList = new List<double>();
-                _YScanRangeList.Clear();
+                if (_YScanRangeList == null) _YScanRangeList = new ObservableCollection<double>();
+                if (_YScanRangeList.Count > 0) _YScanRangeList.Clear();
                 for (int i = (int)_YFigtureMinimum; i <= (int)_YFigtureMaximum; i++)
                     _YScanRangeList.Add(i);
                 return _YScanRangeList;

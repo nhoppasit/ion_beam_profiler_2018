@@ -207,7 +207,7 @@ namespace Quintessence.Ibp2018.ViewModel
             }
         }
         public ObservableCollection<double> XScanRangeList { get { return _XyMmc.XScanRangeList; } }
-        public List<double> YScanRangeList { get { return _XyMmc.YScanRangeList; } }
+        public ObservableCollection<double> YScanRangeList { get { return _XyMmc.YScanRangeList; } }
         private MMC2Info _ZMmc;
         public MMC2Info ZMmc { get { return _ZMmc; } set { _ZMmc = value; } }
         public string ZMmcPortName { get { return _ZMmc.SerialPortName; } set { _ZMmc.SerialPortName = value; OnPropertyChanged("ZMmcPortName"); } }
@@ -222,14 +222,14 @@ namespace Quintessence.Ibp2018.ViewModel
                 OnPropertyChanged("ZFixtureMinimum");
             }
         }
-        public string ZFigtureMaximum
+        public string ZFixtureMaximum
         {
             get { return _ZMmc.XFixtureMaximum.ToString(); }
             set
             {
                 try { _ZMmc.XFixtureMaximum = Convert.ToDouble(value); }
                 catch { _ZMmc.XFixtureMaximum = 0; }
-                OnPropertyChanged("ZFigtureMaximum");
+                OnPropertyChanged("ZFixtureMaximum");
             }
         }
 

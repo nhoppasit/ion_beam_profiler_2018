@@ -244,27 +244,27 @@
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="X Axis"/>
                         <RibbonComboBox Grid.Row="0" Grid.Column="1" SelectionBoxWidth="30" IsEditable="False">
-                            <RibbonGallery x:Name="cboXStart" SelectedItem="{Binding XScanStart}" SelectedValue="{Binding XScanStart}">
+                            <RibbonGallery x:Name="cboXStart" SelectedItem="{Binding XScanStart}">
                                 <RibbonGalleryCategory x:Name="catXStart" ItemsSource="{Binding XScanRangeList}"/>                                
                             </RibbonGallery>
                         </RibbonComboBox>
                         <Label Grid.Row="0" Grid.Column="2" Content="to"/>
                         <RibbonComboBox Grid.Row="0" Grid.Column="3" SelectionBoxWidth="30" IsEditable="False">
                             <RibbonGallery x:Name="cboXEnd" SelectedItem="{Binding XScanEnd}">
-                                <RibbonGalleryCategory x:Name="catXEnd"/>
+                                <RibbonGalleryCategory x:Name="catXEnd" ItemsSource="{Binding XScanRangeList}"/>
                             </RibbonGallery>
                         </RibbonComboBox>
                         <Label Grid.Row="0" Grid.Column="4" Content="mm"/>
                         <Label Grid.Row="1" Grid.Column="0" Content="Y Axis"/>
                         <RibbonComboBox Grid.Row="1" Grid.Column="1" SelectionBoxWidth="30" IsEditable="False">
                             <RibbonGallery x:Name="cboYStart" SelectedItem="{Binding YScanStart}">
-                                <RibbonGalleryCategory x:Name="catYStart"/>
+                                <RibbonGalleryCategory x:Name="catYStart" ItemsSource="{Binding YScanRangeList}"/>
                             </RibbonGallery>
                         </RibbonComboBox>
                         <Label Grid.Row="1" Grid.Column="2" Content="to"/>
                         <RibbonComboBox Grid.Row="1" Grid.Column="3" SelectionBoxWidth="30" IsEditable="False">
                             <RibbonGallery x:Name="cboYEnd" SelectedItem="{Binding YScanEnd}">
-                                <RibbonGalleryCategory x:Name="catYEnd"/>
+                                <RibbonGalleryCategory x:Name="catYEnd" ItemsSource="{Binding YScanRangeList}"/>
                             </RibbonGallery>
                         </RibbonComboBox>
                         <Label Grid.Row="1" Grid.Column="4" Content="mm"/>
@@ -313,10 +313,20 @@
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="Min"/>
-                        <RibbonTextBox Grid.Row="0"  Grid.Column="1" x:Name="txtYMin" KeyTip="MIY" Text="{Binding YFixtureMinimum}" b:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="RibbonTextBox.Text"  TextAlignment="Center" TextBoxWidth="25"/>
+                        <RibbonTextBox Grid.Row="0"  Grid.Column="1" x:Name="txtYMin" KeyTip="MIY" Text="{Binding YFixtureMinimum}" 
+                                       b:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="RibbonTextBox.Text"  TextAlignment="Center" TextBoxWidth="25">
+                            <RibbonTextBox.InputBindings>
+                                <KeyBinding Key="Return" Command="{Binding SetYScanRangeListCommand}"/>
+                            </RibbonTextBox.InputBindings>
+                        </RibbonTextBox>
                         <Label Grid.Row="0"  Grid.Column="2" Content="mm"/>
                         <Label Grid.Row="1"  Grid.Column="0" Content="Max"/>
-                        <RibbonTextBox Grid.Row="1"  Grid.Column="1" x:Name="txtYMax" KeyTip="MAY" Text="{Binding YFixtureMaximum}" b:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="RibbonTextBox.Text"  TextAlignment="Center" TextBoxWidth="25"/>
+                        <RibbonTextBox Grid.Row="1"  Grid.Column="1" x:Name="txtYMax" KeyTip="MAY" Text="{Binding YFixtureMaximum}" 
+                                       b:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="RibbonTextBox.Text"  TextAlignment="Center" TextBoxWidth="25">
+                            <RibbonTextBox.InputBindings>
+                                <KeyBinding Key="Return" Command="{Binding SetYScanRangeListCommand}"/>
+                            </RibbonTextBox.InputBindings>
+                        </RibbonTextBox>
                         <Label Grid.Row="1"  Grid.Column="2" Content="mm"/>
                     </Grid>
                 </RibbonGroup>
@@ -333,10 +343,12 @@
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="Min"/>
-                        <RibbonTextBox Grid.Row="0"  Grid.Column="1" x:Name="txtZMin" KeyTip="MIZ" Text="{Binding ZFixtureMinimum}" b:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="RibbonTextBox.Text"  TextAlignment="Center" TextBoxWidth="25"/>
+                        <RibbonTextBox Grid.Row="0"  Grid.Column="1" x:Name="txtZMin" KeyTip="MIZ" Text="{Binding ZFixtureMinimum}" 
+                                       b:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="RibbonTextBox.Text"  TextAlignment="Center" TextBoxWidth="25"/>
                         <Label Grid.Row="0"  Grid.Column="2" Content="mm"/>
                         <Label Grid.Row="1"  Grid.Column="0" Content="Max"/>
-                        <RibbonTextBox Grid.Row="1"  Grid.Column="1" x:Name="txtZMax" KeyTip="MAZ" Text="{Binding ZFixtureMaximum}" b:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="RibbonTextBox.Text"  TextAlignment="Center" TextBoxWidth="25"/>
+                        <RibbonTextBox Grid.Row="1"  Grid.Column="1" x:Name="txtZMax" KeyTip="MAZ" Text="{Binding ZFixtureMaximum}" 
+                                       b:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="RibbonTextBox.Text"  TextAlignment="Center" TextBoxWidth="25"/>
                         <Label Grid.Row="1"  Grid.Column="2" Content="mm"/>
                     </Grid>
                 </RibbonGroup>

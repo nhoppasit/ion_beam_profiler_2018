@@ -102,23 +102,8 @@ namespace IBP2018
             bwNewMeasurement.RunWorkerCompleted += BwNewMeasurement_RunWorkerCompleted;
             mnuNew.Click += MnuNew_Click;
             #endregion
-
-            txtXMin.PreviewKeyUp += TxtXMin_PreviewKeyUp;
         }
 
-        private void TxtXMin_PreviewKeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
-                ObservableCollection<double> listXRange = new ObservableCollection<double>();
-                listXRange = vm.XScanRangeList;
-                catXStart.ItemsSource = null;
-                catXEnd.ItemsSource = null;
-                catXStart.ItemsSource = listXRange;
-                catXEnd.ItemsSource = listXRange;                
-            }
-        }
 
         /// <summary>
         /// Define combobox items
@@ -133,20 +118,7 @@ namespace IBP2018
             }
             cboXStep.SelectedItem = catXStep.Items[0].ToString();
             cboYStep.SelectedItem = catYStep.Items[0].ToString();
-
-
-            //Ibp2018ViewModel vm = this.mainGrid.DataContext as Ibp2018ViewModel;
-            //List<double> listXRange = vm.XScanRangeList;
-            //List<double> listYRange = vm.YScanRangeList;
-            //catXStart.ItemsSource = listXRange;
-            //catXEnd.ItemsSource = listXRange;
-            //cboXStart.SelectedItem = catXStart.Items[0].ToString();
-            //cboXEnd.SelectedItem = catXEnd.Items[catXEnd.Items.Count - 1].ToString();
-            //catYStart.ItemsSource = listYRange;
-            //catYEnd.ItemsSource = listYRange;
-            //cboYStart.SelectedItem = catYStart.Items[0].ToString();
-            //cboYEnd.SelectedItem = catYEnd.Items[catYEnd.Items.Count - 1].ToString();
-
+            
             for (int i = 1; i <= 10; i++)
                 catSensorInterval.Items.Add((i).ToString());
             cboSensorInterval.SelectedItem = catSensorInterval.Items[0].ToString();
