@@ -24,6 +24,7 @@ using System.Reflection;
 using Quintessence.Ibp2018.Model;
 using IBP2018.View;
 using System.Collections.ObjectModel;
+using System.Data;
 
 namespace IBP2018
 {
@@ -396,6 +397,9 @@ namespace IBP2018
             Ibp2018DataTableModel dt1 = null;
             Ibp2018DataTableModel dt2 = null;
             MMC2Info scn = null;
+            double xStep, yStep = 1;
+            double xMin, xMax;
+            double yMin = 0, yMax = 0;
             bool running = true;
             this.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
             {
@@ -403,11 +407,10 @@ namespace IBP2018
                 dt1 = vm.CurrentDataTables[0];
                 dt2 = vm.CurrentDataTables[1];
                 scn = vm.XyMmc;
-                double xStep = scn.XScanStep, yStep = scn.YScanStep;
-                double xMin = Math.Min(scn.XScanStart, scn.XScanEnd), xMax = Math.Max(scn.XScanStart, scn.XScanEnd);
-                double yMin = Math.Min(scn.YScanStart, scn.YScanEnd), yMax = Math.Max(scn.YScanStart, scn.YScanEnd);
+                xStep = scn.XScanStep; yStep = scn.YScanStep;
+                xMin = Math.Min(scn.XScanStart, scn.XScanEnd); xMax = Math.Max(scn.XScanStart, scn.XScanEnd);
+                yMin = Math.Min(scn.YScanStart, scn.YScanEnd); yMax = Math.Max(scn.YScanStart, scn.YScanEnd);
                 int colCount = (int)((xMax - xMin) / xStep) + 1;
-                int rowCount = (int)((yMax - yMin) / yStep) + 1;
                 dt1.ColumnNames = new List<string>();
                 dt2.ColumnNames = new List<string>();
                 dt1.ColumnHeaders = new List<string>();
@@ -467,10 +470,18 @@ namespace IBP2018
                 }
                 running = false;
             }));
-            while (dgvCurrent2.Columns.Count<dt2.ColumnNames.Count)
+            while (dgvCurrent2.Columns.Count < dt2.ColumnNames.Count)
             {
                 //Thread.Sleep(600);
                 System.Diagnostics.Trace.WriteLine(">>> " + DateTime.Now.ToString() + dgvCurrent1.Columns.Count.ToString("fff") + ", " + dgvCurrent2.Columns.Count.ToString());
+            }
+            int rowCount = (int)((yMax - yMin) / yStep) + 1;
+
+            for (int i = 0; i < rowCount; i++)
+            {
+                DataRow rr = vm.CurrentDataTables[0].Datatable.NewRow();
+                rr[0] = "Y=" + (i * yStep).ToString("F2");
+                vm.CurrentDataTables[0].Datatable.Rows.Add(rr);
             }
 
             vm.CurrentDataTables[0].NeedSave = true;
@@ -494,10 +505,10 @@ namespace IBP2018
             popWaitNewMeasurement.Show();
             //mnuNew.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { mnuNew.IsEnabled = false; }));
             mnuNew.IsEnabled = false;
-            dgvCurrent1.Columns.Clear();
-            dgvCurrent1.ItemsSource = null;
-            dgvCurrent2.Columns.Clear();
-            dgvCurrent2.ItemsSource = null;
+            //dgvCurrent1.Columns.Clear();
+            //dgvCurrent1.ItemsSource = null;
+            //dgvCurrent2.Columns.Clear();
+            //dgvCurrent2.ItemsSource = null;
             bwNewMeasurement.RunWorkerAsync();
         }
 
