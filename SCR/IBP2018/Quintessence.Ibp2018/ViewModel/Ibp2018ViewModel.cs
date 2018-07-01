@@ -27,10 +27,7 @@ namespace Quintessence.Ibp2018.ViewModel
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
 
@@ -1013,13 +1010,22 @@ namespace Quintessence.Ibp2018.ViewModel
                             };
                             if (dlg.ShowDialog() == true)
                             {
-                                if (!_CurrentTables[0].SaveToCSV(dlg.FileName)) Finalized = false;
-                                else Finalized = true;
+                                if (!_CurrentTables[0].SaveToCSV(dlg.FileName))
+                                {
+                                    Finalized = false;
+                                }
+                                else
+                                {
+                                    if (!_CurrentTables[0].SaveToCSV(dlg.FileName))
+                                        Finalized = false;
+                                    else
+                                        Finalized = true;
+                                }
                             }
                             else
                             {
                                 Finalized = false;
-                            }                            
+                            }
                             break;
                         case MessageBoxResult.No:
                             Finalized = true;

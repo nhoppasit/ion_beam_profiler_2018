@@ -109,18 +109,13 @@ namespace IBP2018
             #endregion
         }
 
-        private void MainWindow_Closing(object sender, CancelEventArgs e)
-        {
-            Ibp2018ViewModel vm = this.DataContext as Ibp2018ViewModel;
-            vm.FinalizeForClose();
-            e.Cancel = !vm.Finalized;
-        }
+        #region Close application
 
-        private void MnuExit_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
+        private void MainWindow_Closing(object sender, CancelEventArgs e) { Ibp2018ViewModel vm = this.DataContext as Ibp2018ViewModel; vm.FinalizeForClose(); e.Cancel = !vm.Finalized; }
 
+        private void MnuExit_Click(object sender, RoutedEventArgs e) { this.Close(); }
+
+        #endregion
 
         /// <summary>
         /// Define combobox items
@@ -135,7 +130,9 @@ namespace IBP2018
             }
             cboXStep.SelectedItem = catXStep.Items[0].ToString();
             cboYStep.SelectedItem = catYStep.Items[0].ToString();
-            
+
+            UpdateXScanRangeList();
+
             for (int i = 1; i <= 10; i++)
                 catSensorInterval.Items.Add((i).ToString());
             cboSensorInterval.SelectedItem = catSensorInterval.Items[0].ToString();
@@ -144,6 +141,18 @@ namespace IBP2018
                 catAveragingNumber.Items.Add((i).ToString());
             cboAveragingNumber.SelectedItem = catAveragingNumber.Items[0].ToString();
         }
+
+        void UpdateXScanRangeList()
+        {
+            Ibp2018ViewModel vm = this.DataContext as Ibp2018ViewModel;
+            catXStart.Items.Clear();
+            for (int i = 0; i < vm.XScanRangeList.Count; i++)
+            {
+                catXStart.Items.Add(vm.XScanRangeList[i].ToString());
+            }
+            cboXStart.SelectedItem = catXStart.Items[0].ToString();
+        }
+
 
         /// <summary>
         /// Jogging flag
@@ -331,7 +340,8 @@ namespace IBP2018
         #endregion
 
         #region New measurement
-        #region new measurement background worker
+
+        #region Background worker of new measurement 
         BackgroundWorker bwNewMeasurement = new BackgroundWorker();
         WaitForNewMeasurementDialog popWaitNewMeasurement;
         private void BwNewMeasurement_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) { mnuNew.IsEnabled = true; popWaitNewMeasurement.Close(); }
@@ -379,7 +389,7 @@ namespace IBP2018
             }));
             while (running)
             {
-                Thread.Sleep(100);
+                Thread.Sleep(10);
             }
             running = true;
             this.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
@@ -400,13 +410,21 @@ namespace IBP2018
             }));
             while (running)
             {
-                Thread.Sleep(100);
+                Thread.Sleep(10);
             }
 
-            System.Diagnostics.Trace.WriteLine(">>> " + DateTime.Now.ToString() + " End worker.");
+            vm.CurrentDataTables[0].NeedSave = true;
+            vm.CurrentDataTables[1].NeedSave = true;
+
+            System.Diagnostics.Trace.WriteLine(">>> " + DateTime.Now.ToString() + " End new measurement worker.");
         }
         #endregion
 
+        /// <summary>
+        /// New icon on ribbon button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MnuNew_Click(object sender, RoutedEventArgs e)
         {
             popWaitNewMeasurement = new WaitForNewMeasurementDialog
@@ -416,6 +434,7 @@ namespace IBP2018
             popWaitNewMeasurement.Show();
             bwNewMeasurement.RunWorkerAsync();
         }
+
         #endregion
 
     }

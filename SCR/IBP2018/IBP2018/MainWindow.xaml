@@ -243,14 +243,14 @@
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="X Axis"/>
                         <RibbonComboBox Grid.Row="0" Grid.Column="1" SelectionBoxWidth="30" IsEditable="False">
-                            <RibbonGallery x:Name="cboXStart" SelectedItem="{Binding XScanStart}">
-                                <RibbonGalleryCategory x:Name="catXStart" ItemsSource="{Binding XScanRangeList}"/>                                
+                            <RibbonGallery x:Name="cboXStart" SelectedValue="{Binding XScanStart}">
+                                <RibbonGalleryCategory x:Name="catXStart"/>                                
                             </RibbonGallery>
                         </RibbonComboBox>
                         <Label Grid.Row="0" Grid.Column="2" Content="to"/>
                         <RibbonComboBox Grid.Row="0" Grid.Column="3" SelectionBoxWidth="30" IsEditable="False">
                             <RibbonGallery x:Name="cboXEnd" SelectedItem="{Binding XScanEnd}">
-                                <RibbonGalleryCategory x:Name="catXEnd" ItemsSource="{Binding XScanRangeList}"/>
+                                <RibbonGalleryCategory x:Name="catXEnd"/>
                             </RibbonGallery>
                         </RibbonComboBox>
                         <Label Grid.Row="0" Grid.Column="4" Content="mm"/>
