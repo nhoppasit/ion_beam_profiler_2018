@@ -489,10 +489,7 @@ namespace Quintessence.Ibp2018.ViewModel
         /// <summary>
         /// Read Current 1
         /// </summary>       
-        public ICommand ReadCurrent1Command { get; set; }
-        private bool canReadCurrent1 = true;
-        private bool CanExecuteReadCurrent1Method(object parameter) { return canReadCurrent1; }
-        private void ExecuteReadCurrent1Method(object parameter)
+        public void ReadCurrent1Method()
         {
             canReadCurrent1 = false;
             lock (Meter1Lock)
@@ -522,14 +519,15 @@ namespace Quintessence.Ibp2018.ViewModel
             }
             canReadCurrent1 = true;
         }
+        public ICommand ReadCurrent1Command { get; set; }
+        private bool canReadCurrent1 = true;
+        private bool CanExecuteReadCurrent1Method(object parameter) { return canReadCurrent1; }
+        private void ExecuteReadCurrent1Method(object parameter) { ReadCurrent1Method(); }
 
         /// <summary>
         /// Read Current 2
         /// </summary>       
-        public ICommand ReadCurrent2Command { get; set; }
-        private bool canReadCurrent2 = true;
-        private bool CanExecuteReadCurrent2Method(object parameter) { return canReadCurrent2; }
-        private void ExecuteReadCurrent2Method(object parameter)
+        public void ReadCurrent2Method()
         {
             canReadCurrent2 = false;
             lock (Meter2Lock)
@@ -559,72 +557,17 @@ namespace Quintessence.Ibp2018.ViewModel
             }
             canReadCurrent2 = true;
         }
+        public ICommand ReadCurrent2Command { get; set; }
+        private bool canReadCurrent2 = true;
+        private bool CanExecuteReadCurrent2Method(object parameter) { return canReadCurrent2; }
+        private void ExecuteReadCurrent2Method(object parameter) { ReadCurrent2Method(); }
 
         /// <summary>
         /// Read boat current 
         /// </summary>       
         public ICommand ReadBothCurrentCommand { get; set; }
         private bool CanExecuteReadBothCurrentMethod(object parameter) { return canReadCurrent2 && canReadCurrent1; }
-        private void ExecuteReadBothCurrentMethod(object parameter)
-        {
-            // 1
-            canReadCurrent1 = false;
-            lock (Meter1Lock)
-            {
-                try
-                {
-                    GpibResponse gr;
-                    gr = _Ammeter1.MeasureCurrent();
-
-                    if (gr.Code == GpibResponse.SUCCESS)
-                    {
-                        //Donothing
-                        OnPropertyChanged("Current1TextuA");
-                    }
-                    else
-                    {
-                        MessageBox.Show("Read current from meter 1 on " + _Ammeter1.VisaAddress + ". " + gr.Message,
-                            "Meter 1", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                    }
-                }
-                catch (SystemException ex)
-                {
-                    GpibResponse gr = new GpibResponse("RE", ex.Message, ex);
-                    MessageBox.Show("Cannot read current from meter 1 on " + _Ammeter1.VisaAddress + ". " + ex.Message,
-                        "Meter 1", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                }
-            }
-            canReadCurrent1 = true;
-            // 2
-            canReadCurrent2 = false;
-            lock (Meter2Lock)
-            {
-                try
-                {
-                    GpibResponse gr;
-                    gr = _Ammeter2.MeasureCurrent();
-
-                    if (gr.Code == GpibResponse.SUCCESS)
-                    {
-                        //Donothing
-                        OnPropertyChanged("Current2TextuA");
-                    }
-                    else
-                    {
-                        MessageBox.Show("Read current from meter 2 on " + _Ammeter2.VisaAddress + ". " + gr.Message,
-                            "Meter 2", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                    }
-                }
-                catch (SystemException ex)
-                {
-                    GpibResponse gr = new GpibResponse("RE", ex.Message, ex);
-                    MessageBox.Show("Cannot read current from meter 2 on " + _Ammeter2.VisaAddress + ". " + ex.Message,
-                        "Meter 2", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                }
-            }
-            canReadCurrent2 = true;
-
-        }
+        private void ExecuteReadBothCurrentMethod(object parameter) { ReadCurrent1Method(); ReadCurrent2Method(); }
 
         // Query and unquery scanner
         public ICommand QueryScannerCommand { get; set; }
@@ -1064,10 +1007,5 @@ namespace Quintessence.Ibp2018.ViewModel
         }
         #endregion
 
-        #region Meter Methods
-        public GpibResponse ReadCurrent1() { GpibResponse gr = _Ammeter1.MeasureCurrent(); OnPropertyChanged("Current1TextuA"); return gr; }
-        public GpibResponse ReadCurrent2() { GpibResponse gr = _Ammeter2.MeasureCurrent(); OnPropertyChanged("Current2TextuA"); return gr; }
-        #endregion
-        
     }
 }
