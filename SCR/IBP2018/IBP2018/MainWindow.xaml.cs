@@ -117,9 +117,8 @@ namespace IBP2018
 
         #endregion
 
-        /// <summary>
-        /// Define combobox items
-        /// </summary>
+        #region Define combobox items
+
         void InitializeRibbonComboboxMember()
         {
             for (int i = 1; i <= 25; i++)
@@ -131,8 +130,16 @@ namespace IBP2018
             cboXStep.SelectedItem = catXStep.Items[0].ToString();
             cboYStep.SelectedItem = catYStep.Items[0].ToString();
 
-            txtXMin.PreviewKeyUp += TxtXMin_PreviewKeyUp;
+            txtXMin.PreviewKeyUp += TxtXMinMax_PreviewKeyUp;
+            txtXMax.PreviewKeyUp += TxtXMinMax_PreviewKeyUp;
             UpdateXScanRangeList();
+            cboXStart.SelectedValue = catXStart.Items[0].ToString();
+            cboXEnd.SelectedValue = catXEnd.Items[catXEnd.Items.Count - 1].ToString();
+            txtYMin.PreviewKeyUp += TxtYMinMax_PreviewKeyUp;
+            txtYMax.PreviewKeyUp += TxtYMinMax_PreviewKeyUp;
+            UpdateYScanRangeList();
+            cboYStart.SelectedValue = catYStart.Items[0].ToString();
+            cboYEnd.SelectedValue = catYEnd.Items[catYEnd.Items.Count - 1].ToString();
 
             for (int i = 1; i <= 10; i++)
                 catSensorInterval.Items.Add((i).ToString());
@@ -142,26 +149,54 @@ namespace IBP2018
                 catAveragingNumber.Items.Add((i).ToString());
             cboAveragingNumber.SelectedItem = catAveragingNumber.Items[0].ToString();
         }
-
-        private void TxtXMin_PreviewKeyUp(object sender, KeyEventArgs e)
+        private void TxtXMinMax_PreviewKeyUp(object sender, KeyEventArgs e)
         {
-            if(e.Key== Key.Enter)
+            if (e.Key == Key.Enter)
             {
-                UpdateXScanRangeList();
+                this.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { UpdateXScanRangeList(); }));
             }
         }
-
+        private void TxtYMinMax_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                this.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { UpdateYScanRangeList(); }));
+            }
+        }
         void UpdateXScanRangeList()
         {
             Ibp2018ViewModel vm = this.DataContext as Ibp2018ViewModel;
             catXStart.Items.Clear();
+            catXEnd.Items.Clear();
             for (int i = 0; i < vm.XScanRangeList.Count; i++)
             {
                 catXStart.Items.Add(vm.XScanRangeList[i].ToString());
+                catXEnd.Items.Add(vm.XScanRangeList[i].ToString());
             }
-            cboXStart.SelectedItem = catXStart.Items[0].ToString();
+            double pv;
+            pv = Convert.ToDouble(cboXStart.SelectedValue);
+            if (pv < vm.XScanRangeList[0]) cboXStart.SelectedValue = catXStart.Items[0];
+            pv = Convert.ToDouble(cboXEnd.SelectedValue);
+            if (vm.XScanRangeList[vm.XScanRangeList.Count - 1] < pv) cboXEnd.SelectedValue = catXEnd.Items[catXEnd.Items.Count - 1];
+        }
+        void UpdateYScanRangeList()
+        {
+            Ibp2018ViewModel vm = this.DataContext as Ibp2018ViewModel;
+            catYStart.Items.Clear();
+            catYEnd.Items.Clear();
+            for (int i = 0; i < vm.YScanRangeList.Count; i++)
+            {
+                catYStart.Items.Add(vm.YScanRangeList[i].ToString());
+                catYEnd.Items.Add(vm.YScanRangeList[i].ToString());
+            }
+            double pv;
+            pv = Convert.ToDouble(cboYStart.SelectedValue);
+            if (pv < vm.YScanRangeList[0]) cboYStart.SelectedValue = catYStart.Items[0];
+            pv = Convert.ToDouble(cboYEnd.SelectedValue);
+            if (vm.YScanRangeList[vm.YScanRangeList.Count - 1] < pv) cboYEnd.SelectedValue = catYEnd.Items[catYEnd.Items.Count - 1];
         }
 
+        #endregion
 
         /// <summary>
         /// Jogging flag
