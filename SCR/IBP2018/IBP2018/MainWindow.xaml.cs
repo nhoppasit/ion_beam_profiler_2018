@@ -102,6 +102,13 @@ namespace IBP2018
             bwNewMeasurement.RunWorkerCompleted += BwNewMeasurement_RunWorkerCompleted;
             mnuNew.Click += MnuNew_Click;
             #endregion
+
+            mnuExit.Click += MnuExit_Click;
+        }
+
+        private void MnuExit_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
 
 
