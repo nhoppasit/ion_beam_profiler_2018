@@ -388,11 +388,10 @@ namespace IBP2018
         #region Background worker of new measurement 
         BackgroundWorker bwNewMeasurement = new BackgroundWorker();
         WaitForNewMeasurementDialog popWaitNewMeasurement;
-        private void BwNewMeasurement_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) { mnuNew.IsEnabled = true; popWaitNewMeasurement.Close(); }
+        private void BwNewMeasurement_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) { Thread.Sleep(1000); mnuNew.IsEnabled = true; popWaitNewMeasurement.Close(); }
         private void BwNewMeasurement_DoWork(object sender, DoWorkEventArgs e)
         {
             Thread.Sleep(10);
-            mnuNew.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { mnuNew.IsEnabled = false; }));
             Ibp2018ViewModel vm = null;
             Ibp2018DataTableModel dt1 = null;
             Ibp2018DataTableModel dt2 = null;
@@ -428,6 +427,10 @@ namespace IBP2018
                     dt1.Datatable.Columns.Add("X_" + i.ToString(), typeof(string));
                     dt1.ColumnNames.Add("X_" + i.ToString());
                     dt1.ColumnHeaders.Add("X=" + (i * xStep).ToString("F2"));
+
+                    dt2.Datatable.Columns.Add("X_" + i.ToString(), typeof(string));
+                    dt2.ColumnNames.Add("X_" + i.ToString());
+                    dt2.ColumnHeaders.Add("X=" + (i * xStep).ToString("F2"));
                 }
                 running = false;
             }));
@@ -450,11 +453,24 @@ namespace IBP2018
                     };
                     vm.Current1ColumnCollection.Add(textColumn);
                 }
+                // Binding columns name and header
+                vm.Current2ColumnCollection.Clear();
+                for (int i = 0; i < dt2.ColumnNames.Count; i++)
+                {
+                    Binding binding = new Binding(dt2.ColumnNames[i]);
+                    DataGridTextColumn textColumn = new DataGridTextColumn
+                    {
+                        Header = dt2.ColumnHeaders[i],
+                        Binding = binding
+                    };
+                    vm.Current2ColumnCollection.Add(textColumn);
+                }
                 running = false;
             }));
-            while (running)
+            while (dgvCurrent2.Columns.Count<dt2.ColumnNames.Count)
             {
-                Thread.Sleep(10);
+                //Thread.Sleep(600);
+                System.Diagnostics.Trace.WriteLine(">>> " + DateTime.Now.ToString() + dgvCurrent1.Columns.Count.ToString("fff") + ", " + dgvCurrent2.Columns.Count.ToString());
             }
 
             vm.CurrentDataTables[0].NeedSave = true;
@@ -476,6 +492,12 @@ namespace IBP2018
                 Topmost = true
             };
             popWaitNewMeasurement.Show();
+            //mnuNew.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { mnuNew.IsEnabled = false; }));
+            mnuNew.IsEnabled = false;
+            dgvCurrent1.Columns.Clear();
+            dgvCurrent1.ItemsSource = null;
+            dgvCurrent2.Columns.Clear();
+            dgvCurrent2.ItemsSource = null;
             bwNewMeasurement.RunWorkerAsync();
         }
 

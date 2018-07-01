@@ -241,9 +241,9 @@ namespace Quintessence.Ibp2018.ViewModel
         private IList<Ibp2018DataTableModel> _CurrentTables;
         public IList<Ibp2018DataTableModel> CurrentDataTables { get { return _CurrentTables; } set { _CurrentTables = value; } }
 
-        /* ----------------------------------------------------------
-         * File / Current-1 Properties
-         * ---------------------------------------------------------- */
+        /// <summary>
+        /// File / Current-1 Properties
+        /// </summary>
         public DataTable CurrentTable1
         {
             get
@@ -260,20 +260,58 @@ namespace Quintessence.Ibp2018.ViewModel
             }
         }
 
-        /* ----------------------------------------------------------
-         * ColumnCollection designed for dynamic datagrid columns
-         * ---------------------------------------------------------- */
-        private ObservableCollection<DataGridColumn> _columnCollection = new ObservableCollection<DataGridColumn>();
+        /// <summary>
+        /// File / Current-2 Properties
+        /// </summary>
+        public DataTable CurrentTable2
+        {
+            get
+            {
+                return _CurrentTables[1].Datatable;
+            }
+            set
+            {
+                if (_CurrentTables[1].Datatable != value)
+                {
+                    _CurrentTables[1].Datatable = value;
+                }
+                OnPropertyChanged("CurrentTable2");
+            }
+        }
+
+        /// <summary>
+        /// ColumnCollection designed for dynamic datagrid columns
+        /// </summary>
+        private ObservableCollection<DataGridColumn> _columnCollection1 = new ObservableCollection<DataGridColumn>();
         public ObservableCollection<DataGridColumn> Current1ColumnCollection
         {
             get
             {
-                return this._columnCollection;
+                return this._columnCollection1;
             }
             set
             {
-                _columnCollection = value;
-                OnPropertyChanged("ColumnCollection");
+                _columnCollection1 = value;
+                OnPropertyChanged("Current1ColumnCollection");
+                //Error
+                //base.OnPropertyChanged<ObservableCollection<DataGridColumn>>(() => this.ColumnCollection);
+            }
+        }
+
+        /// <summary>
+        /// ColumnCollection designed for dynamic datagrid columns
+        /// </summary>
+        private ObservableCollection<DataGridColumn> _columnCollection2 = new ObservableCollection<DataGridColumn>();
+        public ObservableCollection<DataGridColumn> Current2ColumnCollection
+        {
+            get
+            {
+                return this._columnCollection2;
+            }
+            set
+            {
+                _columnCollection2 = value;
+                OnPropertyChanged("Current2ColumnCollection");
                 //Error
                 //base.OnPropertyChanged<ObservableCollection<DataGridColumn>>(() => this.ColumnCollection);
             }
@@ -999,7 +1037,7 @@ namespace Quintessence.Ibp2018.ViewModel
             {
                 if (_CurrentTables[0].NeedSave)
                 {
-                    MessageBoxResult mbr = MessageBox.Show("", "", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                    MessageBoxResult mbr = MessageBox.Show("Do you want to save current data ?", "Save", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
                     switch (mbr)
                     {
                         case MessageBoxResult.Yes:

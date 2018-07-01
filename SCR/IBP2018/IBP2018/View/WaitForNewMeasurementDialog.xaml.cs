@@ -27,19 +27,26 @@ namespace IBP2018.View
             bw.DoWork += Bw_DoWork;
             bw.RunWorkerCompleted += Bw_RunWorkerCompleted;
             this.Loaded += WaitForNewMeasurementDialog_Loaded;
+            this.Closing += WaitForNewMeasurementDialog_Closing;
             pgWait.Value = 0;
+        }
+
+        private void WaitForNewMeasurementDialog_Closing(object sender, CancelEventArgs e)
+        {
+            stopFlag = true;
         }
 
         #region Auto progress trigger
         private void WaitForNewMeasurementDialog_Loaded(object sender, RoutedEventArgs e)
         {
+            stopFlag = false;
             bw.RunWorkerAsync();
         }
         BackgroundWorker bw = new BackgroundWorker();
         private bool stopFlag = false;
         private void Bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            // Donothing
+            stopFlag = true;
         }
         private void Bw_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -49,7 +56,7 @@ namespace IBP2018.View
                 v += 5;
                 if (100 < v) v = 0;
                 SetProgressValue(v);
-                System.Threading.Thread.Sleep(70);
+                System.Threading.Thread.Sleep(10);
             }
         }
         public void Stop() { stopFlag = true; }
