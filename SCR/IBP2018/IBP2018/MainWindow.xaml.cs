@@ -103,8 +103,10 @@ namespace IBP2018
             mnuNew.Click += MnuNew_Click;
             #endregion
 
+            #region Exit application
             mnuExit.Click += MnuExit_Click;
-        }
+            #endregion
+        }        
 
         private void MnuExit_Click(object sender, RoutedEventArgs e)
         {

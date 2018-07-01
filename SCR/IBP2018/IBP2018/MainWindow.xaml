@@ -7,7 +7,8 @@
               xmlns:ibp2018vm="clr-namespace:Quintessence.Ibp2018.ViewModel;assembly=Quintessence.Ibp2018"
               xmlns:b="clr-namespace:IBP2018.Behavior"
         mc:Ignorable="d"
-        Title="Ion Beam Profiler 2018" Height="450" Width="1000" Icon="Images/Science Network Neighborhood.ico" WindowState="Maximized">
+        Title="Ion Beam Profiler 2018" Height="450" Width="1000" Icon="Images/Science Network Neighborhood.ico" WindowState="Maximized"
+              >
 
     <Window.Resources>
         <ibp2018vm:Ibp2018ViewModel x:Name="ibp2018VM" x:Key="ibp2018VM"/>

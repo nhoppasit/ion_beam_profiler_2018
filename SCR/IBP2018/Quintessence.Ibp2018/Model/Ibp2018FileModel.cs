@@ -128,5 +128,10 @@ namespace Quintessence.Ibp2018.Model
                 r[0] = (i * yStep).ToString("F2");
             }
         }
+
+        public bool SaveToCSV(string fullFileName)
+        {
+            return true;
+        }
     }
 }

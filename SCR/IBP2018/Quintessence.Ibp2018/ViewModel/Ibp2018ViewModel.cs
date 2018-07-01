@@ -12,6 +12,7 @@ using System.Windows;
 using System.Threading;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
+using Microsoft.Win32;
 using System.Data;
 using System.Windows.Media;
 using Quintessence.Ibp2018.Model;
@@ -366,6 +367,10 @@ namespace Quintessence.Ibp2018.ViewModel
             #region Update scan range list commands
             SetXScanRangeListCommand = new RelayCommand(ExecuteSetXScanRangeListMethod, CanExecuteSetXScanRangeListMethod);
             SetYScanRangeListCommand = new RelayCommand(ExecuteSetYScanRangeListMethod, CanExecuteSetYScanRangeListMethod);
+            #endregion
+
+            #region Close application command ถูกเรียกตอนที่ app กำลังปิดตัว
+            ClosingApplicationCommand = new RelayCommand(ExecuteClosingApplicationMethod, CanExecuteClosingApplicationMethod);
             #endregion
 
             // Reload settings
@@ -988,6 +993,45 @@ namespace Quintessence.Ibp2018.ViewModel
                     "Z axis", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
             canSetZZeroCommand = true;
+        }
+
+        // Z set zero command
+        public ICommand ClosingApplicationCommand { get; set; }
+        private bool canClosingApplicationCommand = true;
+        public bool CanCloseApplication { get; set; }
+        private bool CanExecuteClosingApplicationMethod(object param) { return canClosingApplicationCommand; }
+        private void ExecuteClosingApplicationMethod(object param)
+        {
+            canClosingApplicationCommand = false;
+            CanCloseApplication = false;
+            try
+            {
+                if (_CurrentTables[0].NeedSave)
+                {
+                    SaveFileDialog dlg = new SaveFileDialog();
+                    dlg.Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*";
+                    dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    if (dlg.ShowDialog() == true)
+                    {
+                        if (!_CurrentTables[0].SaveToCSV(dlg.FileName)) CanCloseApplication = false;
+                        else CanCloseApplication = true;
+                    }
+                    else
+                    {
+                        CanCloseApplication = false;
+                    }
+                }
+                else
+                {
+                    CanCloseApplication = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.WriteLine(">>> " + DateTime.Now.ToString() + " " + ex.Message);
+                CanCloseApplication = false;
+            }
+            canClosingApplicationCommand = true;
         }
 
         #endregion
