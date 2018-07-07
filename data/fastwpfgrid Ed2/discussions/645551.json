@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1446210",
+    "ThreadId": "645551",
+    "Html": "I'm looking for a fast DataGird alternative. I'm very impressed by the speed and capabilities of the FastWPFGrid shown in the demos. As far as I understand the code, the display possibilities are very flexible, since I could implement a &quot;custom&quot; cell type by returning a rendered bitmap of whatever representation I would like. For edit mode, however, the cell turns into a text editor. Would it be &quot;easily&quot; possible to extend the FastWPFGrid such that I can return a custom edit control? Maybe you could point me in the right direction to get started.<br />\n",
+    "PostedDate": "2015-09-28T11:55:39.763-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1446216",
+    "ThreadId": "645551",
+    "Html": "It should be possible to create custom editing control. From my point of view the easist way to achieve this is to define custom template (eg. EditControlTemplate), which will be innstantiated instead of default textbox\r<br />\n<br />\nEditing textbox is defined in file FastGridControl.xaml, &lt;TextBox x:Name=&quot;edText&quot;... It will be neccessary to find all code working with &quot;edText&quot; object (adjust position, manage visibility) and extend it to support templated control<br />\n",
+    "PostedDate": "2015-09-28T12:27:38.293-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

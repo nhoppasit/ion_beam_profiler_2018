@@ -1,0 +1,67 @@
+<div class="wikidoc"><b>Project Description</b><br />Fast WPF datagrid control designed to work with large datasets, with mandatory data virtualization.<br /><br />
+<ul><li>fast DataGrid control for .NET - WPF</li>
+<li>designed for large data sets</li>
+<li>both columns and rows are defined in model</li>
+<li>uses MVVM design pattern, but (for performance reasons) does not use classic WPF binding</li>
+<li>works only with data virtualization (UI virtualization is not needed as in other WPF datagrid controls)</li>
+<li>for rendering is used <a href="http://writeablebitmapex.codeplex.com/">WriteableBitmapEx</a> library</li></ul>
+
+<h2>Features</h2><ul><li>Fast scrolling and rendering</li>
+<li>Excel-like mouse-drag selecting</li>
+<li>Hide columns/rows</li>
+<li>Frozen columns/rows</li>
+<li>Own rendering, WPF templates are not used. Supported objects - text (with italic, bold attributes), images, image buttons</li></ul>
+<br /><img src="http://download-codeplex.sec.s-msft.com/Download?ProjectName=fastwpfgrid&DownloadId=1440759" alt="grid1.png" title="grid1.png" /><br /><img src="http://download-codeplex.sec.s-msft.com/Download?ProjectName=fastwpfgrid&DownloadId=1440812" alt="grid2.png" title="grid2.png" /><br />
+<h2>References</h2>FastWPFGrid is used in DbMouse project ( <a href="http:///www.jenasoft.com/dbmouse">http:///www.jenasoft.com/dbmouse</a> )<br />
+<h2>Model implementation</h2>Grid control is bind to model, which controls displayed data. Below is example of model implementation.<br /><br /><pre>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using FastWpfGrid;
+
+namespace FastWpfGridTest
+{
+    public class GridModel1 : FastGridModelBase
+    {
+        private Dictionary&lt;Tuple&lt;int, int&gt;, string&gt; _editedCells = new Dictionary&lt;Tuple&lt;int, int&gt;, string&gt;();
+        private static string[] _columnBasicNames = new[] { &quot;&quot;, &quot;Value:&quot;, &quot;Long column value:&quot; };
+
+        public override int ColumnCount
+        {
+            get { return 100; }
+        }
+
+        public override int RowCount
+        {
+            get { return 1000; }
+        }
+
+        public override string GetCellText(int row, int column)
+        {
+            var key = Tuple.Create(row, column);
+            if (_editedCells.ContainsKey(key)) return _editedCells[key];
+
+
+            return String.Format(&quot;{0}{1},{2}&quot;, _columnBasicNames[column % _columnBasicNames.Length], row + 1, column + 1);
+        }
+
+        public override void SetCellText(int row, int column, string value)
+        {
+            var key = Tuple.Create(row, column);
+            _editedCells[key] = value;
+        }
+
+        public override IFastGridCell GetGridHeader(IFastGridView view)
+        {
+            var impl = new FastGridCellImpl();
+            var btn = impl.AddImageBlock(view.IsTransposed ? &quot;/Images/flip_horizontal_small.png&quot; : &quot;/Images/flip_vertical_small.png&quot;);
+            btn.CommandParameter = FastWpfGrid.FastGridControl.ToggleTransposedCommand;
+            btn.ToolTip = &quot;Swap rows and columns&quot;;
+            return impl;
+        }
+    }
+}
+
+</pre></div><div class="ClearBoth"></div>

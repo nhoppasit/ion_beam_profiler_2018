@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "I downloaded the source code and ran the FastWPFGridTest project. Using this code in the GetColumnHeaderText Method:\r\n```\r\nreturn \"Column \" + (column + 1).ToString() + new string('X', 20);\r\n```\r\nI was able to see some graphical issues when scrolling horizontally all the way to the right with the mouse.\r\n\r\nThe first issue I noticed that there was a vertical line next to the scroll bar that had pixels sporadically taken out of it. Quickly scrolling down vertically and then back up causes the grid to paint normally. Right clicking the scrollbar and clicking 'scroll here' seems fine.\r\n\r\nThe second issue I found was in the second to last header cell the bottom of that cell's border there was a segment that was missing over on the right. If I moved my mouse over to that header cell it would paint normally\r\n\r\nI have attached an image that shows both issues.\r\n\r\n\r\n",
+    "LastUpdatedDate": "2015-10-06T11:05:36.727-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "fastwpfgrid",
+    "ReportedDate": "2015-10-06T11:05:36.413-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Graphical issues with wide columns",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 1
+  },
+  "FileAttachments": [
+    {
+      "FileId": 1494137,
+      "FileName": "Fastgridissues2.png",
+      "DownloadUrl": ".\\1494137"
+    }
+  ],
+  "Comments": []
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1437067",
+    "ThreadId": "642278",
+    "Html": "How would I implement the virtual mode if I don't know the Total number of records, the ODBC cursor I use to fetch data, provides me only 5 methods\r<br />\n<br />\nFirst\r<br />\nLast\r<br />\nPrev\r<br />\nNext\r<br />\nbool ReadCurrent(int columnIndex)\r<br />\n<br />\nand I say, don't try to find any solution to get total number of records, is not available. \r<br />\n<br />\nThank you.<br />\n",
+    "PostedDate": "2015-08-03T09:41:59.033-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1438026",
+    "ThreadId": "642278",
+    "Html": "This functionality must be implemented in model in FastWpfGrid.\r<br />\n<br />\nOne possible way to achieve this is following:\r<br />\nThe model should return number of rows, which is actually loaded, when user scrolls to last N rows (GetCell() or GetRowHeader() method for last N rows is called), model should load next M rows. If there are no next rows available, models marks it so that no furher read is done.\r<br />\n<br />\nRegards\r<br />\nJan<br />\n",
+    "PostedDate": "2015-08-10T10:14:14.923-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

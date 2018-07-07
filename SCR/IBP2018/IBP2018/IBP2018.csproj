@@ -178,6 +178,14 @@
     <Resource Include="Images\Refresh.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FastWpfGrid\FastWpfGrid.csproj">
+      <Project>{e9d6f03c-bfb5-4d31-a15e-7f789b4bbcc3}</Project>
+      <Name>FastWpfGrid</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Log File\Log File.csproj">
+      <Project>{e2537b7a-2bfd-47b2-b44c-da2f2c76d526}</Project>
+      <Name>Log File</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Quintessence.Ibp2018\Quintessence.Ibp2018.csproj">
       <Project>{c6aeb9c6-bdee-4b08-be26-234eeae9a29d}</Project>
       <Name>Quintessence.Ibp2018</Name>

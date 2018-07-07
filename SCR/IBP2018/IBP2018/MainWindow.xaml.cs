@@ -97,12 +97,12 @@ namespace IBP2018
 
             #endregion
 
-            #region New Measurement
-            bwNewMeasurement.WorkerReportsProgress = true;
-            bwNewMeasurement.DoWork += BwNewMeasurement_DoWork;
-            bwNewMeasurement.RunWorkerCompleted += BwNewMeasurement_RunWorkerCompleted;
-            mnuNew.Click += MnuNew_Click;
-            #endregion
+            //#region New Measurement
+            //bwNewMeasurement.WorkerReportsProgress = true;
+            //bwNewMeasurement.DoWork += BwNewMeasurement_DoWork;
+            //bwNewMeasurement.RunWorkerCompleted += BwNewMeasurement_RunWorkerCompleted;
+            //mnuNew.Click += MnuNew_Click;
+            //#endregion
 
             #region Exit application
             mnuExit.Click += MnuExit_Click;
@@ -324,9 +324,9 @@ namespace IBP2018
         }
         #endregion
 
-        #region Z Jog by button's mouse down and up
+        #region Z Jog by button's mouse down and up ------------------------------------------------------------
 
-        #region Z Jog background worker
+        #region Z Jog background worker ------------------------------------------------------------
         BackgroundWorker bwZJog = new BackgroundWorker();
         private void BwZJog_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) { canJog = false; }
         private void BwZJog_DoWork(object sender, DoWorkEventArgs e)
@@ -384,9 +384,9 @@ namespace IBP2018
         }
         #endregion
 
-        #region New measurement
+        #region New measurement ------------------------------------------------------------
 
-        #region Background worker of new measurement 
+        #region Background worker of new measurement ------------------------------------------------------------
         BackgroundWorker bwNewMeasurement = new BackgroundWorker();
         WaitForNewMeasurementDialog popWaitNewMeasurement;
         private void BwNewMeasurement_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) { Thread.Sleep(1000); mnuNew.IsEnabled = true; popWaitNewMeasurement.Close(); }

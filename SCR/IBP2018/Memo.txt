@@ -1,3 +1,9 @@
+11:35 PM 7/7/2018
+ใช้ fastwpfgrid
+
+10:00 PM 7/7/2018
+การสร้าง ด้วย datagrid ใช้หน่วยความจำเยอะมาก
+
 10:48 PM 7/1/2018
 Test about clising() binding
 
