@@ -36,39 +36,50 @@ namespace IBP2018
         // ------------------------------- CONSTRUCTOR ---------------------------------
         public MainWindow()
         {
+            // ----------------------------------------------------------
             // Initialize
+            // ----------------------------------------------------------
             InitializeComponent();
 
-            // Combobox
+            // ----------------------------------------------------------
+            // Comboboxs
+            // ----------------------------------------------------------
             InitializeRibbonComboboxMember();
 
+            // ----------------------------------------------------------
             // Version
+            // ----------------------------------------------------------
             this.Title = "Ion Beam Profiler Version: " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-            #region JOGGING
-
-            #region X
+            // ----------------------------------------------------------
             // X jog background worker
+            // ----------------------------------------------------------
             bwXJog.WorkerReportsProgress = true;
             bwXJog.DoWork += BwXJog_DoWork;
             bwXJog.RunWorkerCompleted += BwXJog_RunWorkerCompleted;
 
+            // ----------------------------------------------------------
             // X negative jog
+            // ----------------------------------------------------------
             mnuXJogNegative.PreviewMouseDown += MnuXJogNegative_PreviewMouseDown;
             mnuXJogNegative.PreviewMouseUp += MnuXJogNegative_PreviewMouseUp;
 
+            // ----------------------------------------------------------
             // X positive jog
+            // ----------------------------------------------------------
             mnuXJogPositive.PreviewMouseDown += MnuXJogPositive_PreviewMouseDown;
             mnuXJogPositive.PreviewMouseUp += MnuXJogPositive_PreviewMouseUp;
-            #endregion
 
-            #region Y
+            // ----------------------------------------------------------
             // Y Jog background worker
+            // ----------------------------------------------------------
             bwYJog.WorkerReportsProgress = true;
             bwYJog.DoWork += BwYJog_DoWork;
             bwYJog.RunWorkerCompleted += BwYJog_RunWorkerCompleted;
 
+            // ----------------------------------------------------------
             // Y negative jog
+            // ----------------------------------------------------------
             mnuYJogNegative.PreviewMouseDown += MnuYJogNegative_PreviewMouseDown;
             mnuYJogNegative.PreviewMouseUp += MnuYJogNegative_PreviewMouseUp;
 
@@ -76,52 +87,44 @@ namespace IBP2018
             mnuYJogPositive.PreviewMouseDown += MnuYJogPositive_PreviewMouseDown;
             mnuYJogPositive.PreviewMouseUp += MnuYJogPositive_PreviewMouseUp;
 
-            #endregion
-
-            #region Z
-
+            // ----------------------------------------------------------
             // Z Jog background worker
+            // ----------------------------------------------------------
             bwZJog.WorkerReportsProgress = true;
             bwZJog.DoWork += BwZJog_DoWork;
             bwZJog.RunWorkerCompleted += BwZJog_RunWorkerCompleted;
 
+            // ----------------------------------------------------------
             // Y negative jog
+            // ----------------------------------------------------------
             mnuZJogNegative.PreviewMouseDown += MnuZJogNegative_PreviewMouseDown;
             mnuZJogNegative.PreviewMouseUp += MnuZJogNegative_PreviewMouseUp;
 
+            // ----------------------------------------------------------
             // Y positive jog
+            // ----------------------------------------------------------
             mnuZJogPositive.PreviewMouseDown += MnuZJogPositive_PreviewMouseDown;
             mnuZJogPositive.PreviewMouseUp += MnuZJogPositive_PreviewMouseUp;
 
-            #endregion
-
-            #endregion
-
-            //#region New Measurement
-            //bwNewMeasurement.WorkerReportsProgress = true;
-            //bwNewMeasurement.DoWork += BwNewMeasurement_DoWork;
-            //bwNewMeasurement.RunWorkerCompleted += BwNewMeasurement_RunWorkerCompleted;
-            //mnuNew.Click += MnuNew_Click;
-            //#endregion
-
-            #region Exit application
+            // ----------------------------------------------------------
+            // Exit application
+            // ----------------------------------------------------------
             mnuExit.Click += MnuExit_Click;
             this.Closing += MainWindow_Closing;
-            #endregion
         }
+        // ------------------------------- CONSTRUCTOR ---------------------------------
 
-        #region Close application
-
+        #region Close application ------------------------------------------------------------
         private void MainWindow_Closing(object sender, CancelEventArgs e) { Ibp2018ViewModel vm = this.DataContext as Ibp2018ViewModel; vm.FinalizeForClose(); e.Cancel = !vm.Finalized; }
-
         private void MnuExit_Click(object sender, RoutedEventArgs e) { this.Close(); }
-
         #endregion
 
-        #region Define combobox items
-
+        #region Define combobox items ------------------------------------------------------------
         void InitializeRibbonComboboxMember()
         {
+            // ---------------------------------------------------------
+            // X-Y Scanner resolution
+            // ---------------------------------------------------------
             for (int i = 1; i <= 25; i++)
             {
                 // Mininum resolution of 0.02 millimeters in X and Y axis
@@ -131,21 +134,30 @@ namespace IBP2018
             cboXStep.SelectedItem = catXStep.Items[0].ToString();
             cboYStep.SelectedItem = catYStep.Items[0].ToString();
 
-            txtXMin.PreviewKeyUp += TxtXMinMax_PreviewKeyUp;
+            // ---------------------------------------------------------
+            // Scan region of X-Y scanner
+            // ---------------------------------------------------------
+            txtXMin.PreviewKeyUp += TxtXMinMax_PreviewKeyUp; // re-assign items to combobox both of min and max
             txtXMax.PreviewKeyUp += TxtXMinMax_PreviewKeyUp;
             UpdateXScanRangeList();
             cboXStart.SelectedValue = catXStart.Items[0].ToString();
             cboXEnd.SelectedValue = catXEnd.Items[catXEnd.Items.Count - 1].ToString();
-            txtYMin.PreviewKeyUp += TxtYMinMax_PreviewKeyUp;
+            txtYMin.PreviewKeyUp += TxtYMinMax_PreviewKeyUp; // re-assign items to combobox both of min and max
             txtYMax.PreviewKeyUp += TxtYMinMax_PreviewKeyUp;
             UpdateYScanRangeList();
             cboYStart.SelectedValue = catYStart.Items[0].ToString();
             cboYEnd.SelectedValue = catYEnd.Items[catYEnd.Items.Count - 1].ToString();
 
+            // ---------------------------------------------------------
+            // DMMs meas interval
+            // ---------------------------------------------------------
             for (int i = 1; i <= 10; i++)
                 catSensorInterval.Items.Add((i).ToString());
             cboSensorInterval.SelectedItem = catSensorInterval.Items[0].ToString();
 
+            // ---------------------------------------------------------
+            // DMMs meas average
+            // ---------------------------------------------------------
             for (int i = 1; i <= 4; i++)
                 catAveragingNumber.Items.Add((i).ToString());
             cboAveragingNumber.SelectedItem = catAveragingNumber.Items[0].ToString();
@@ -154,7 +166,7 @@ namespace IBP2018
         {
             if (e.Key == Key.Enter)
             {
-                this.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { UpdateXScanRangeList(); }));
+                this.Dispatcher.Invoke(DispatcherPriority.ApplicationIdle, new Action(delegate () { UpdateXScanRangeList(); }));
             }
         }
         private void TxtYMinMax_PreviewKeyUp(object sender, KeyEventArgs e)
@@ -196,17 +208,10 @@ namespace IBP2018
             pv = Convert.ToDouble(cboYEnd.SelectedValue);
             if (vm.YScanRangeList[vm.YScanRangeList.Count - 1] < pv) cboYEnd.SelectedValue = catYEnd.Items[catYEnd.Items.Count - 1];
         }
-
         #endregion
 
-        /// <summary>
-        /// Jogging flag
-        /// </summary>
-        private volatile bool canJog = true;
-
-        #region X Jog by button's mouse down and up
-
-        #region X Jog background worker
+        #region X Jog by button's mouse down and up ------------------------------------------------------------
+        private volatile bool canJog = true; // Jogging flag
         BackgroundWorker bwXJog = new BackgroundWorker();
         private void BwXJog_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) { canJog = false; }
         private void BwXJog_DoWork(object sender, DoWorkEventArgs e)
@@ -235,8 +240,6 @@ namespace IBP2018
                 Thread.Sleep(100);
             }
         }
-        #endregion
-
         private int xJogValue = 50;
         private void MnuXJogPositive_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
@@ -264,9 +267,7 @@ namespace IBP2018
         }
         #endregion
 
-        #region Y Jog by button's mouse down and up 
-
-        #region Y Jog background worker
+        #region Y Jog by button's mouse down and up ------------------------------------------------------------
         BackgroundWorker bwYJog = new BackgroundWorker();
         private void BwYJog_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) { canJog = false; }
         private void BwYJog_DoWork(object sender, DoWorkEventArgs e)
@@ -295,8 +296,6 @@ namespace IBP2018
                 Thread.Sleep(100);
             }
         }
-        #endregion
-
         private int yJogValue = 50;
         private void MnuYJogPositive_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
@@ -325,8 +324,6 @@ namespace IBP2018
         #endregion
 
         #region Z Jog by button's mouse down and up ------------------------------------------------------------
-
-        #region Z Jog background worker ------------------------------------------------------------
         BackgroundWorker bwZJog = new BackgroundWorker();
         private void BwZJog_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) { canJog = false; }
         private void BwZJog_DoWork(object sender, DoWorkEventArgs e)
@@ -355,8 +352,6 @@ namespace IBP2018
                 Thread.Sleep(100);
             }
         }
-        #endregion
-
         private int zJogValue = 50;
         private void MnuZJogPositive_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
@@ -383,136 +378,6 @@ namespace IBP2018
             }
         }
         #endregion
-
-        #region New measurement ------------------------------------------------------------
-
-        #region Background worker of new measurement ------------------------------------------------------------
-        BackgroundWorker bwNewMeasurement = new BackgroundWorker();
-        WaitForNewMeasurementDialog popWaitNewMeasurement;
-        private void BwNewMeasurement_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) { Thread.Sleep(1000); mnuNew.IsEnabled = true; popWaitNewMeasurement.Close(); }
-        private void BwNewMeasurement_DoWork(object sender, DoWorkEventArgs e)
-        {
-            Thread.Sleep(10);
-            Ibp2018ViewModel vm = null;
-            Ibp2018DataTableModel dt1 = null;
-            Ibp2018DataTableModel dt2 = null;
-            MMC2Info scn = null;
-            double xStep, yStep = 1;
-            double xMin, xMax;
-            double yMin = 0, yMax = 0;
-            bool running = true;
-            this.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
-            {
-                vm = this.DataContext as Ibp2018ViewModel;
-                dt1 = vm.CurrentDataTables[0];
-                dt2 = vm.CurrentDataTables[1];
-                scn = vm.XyMmc;
-                xStep = scn.XScanStep; yStep = scn.YScanStep;
-                xMin = Math.Min(scn.XScanStart, scn.XScanEnd); xMax = Math.Max(scn.XScanStart, scn.XScanEnd);
-                yMin = Math.Min(scn.YScanStart, scn.YScanEnd); yMax = Math.Max(scn.YScanStart, scn.YScanEnd);
-                int colCount = (int)((xMax - xMin) / xStep) + 1;
-                dt1.ColumnNames = new List<string>();
-                dt2.ColumnNames = new List<string>();
-                dt1.ColumnHeaders = new List<string>();
-                dt2.ColumnHeaders = new List<string>();
-                dt1.Datatable.Rows.Clear();
-                dt2.Datatable.Rows.Clear();
-                dt1.Datatable.Columns.Clear();
-                dt2.Datatable.Columns.Clear();
-                dt1.Datatable.Columns.Add("Y_Step", typeof(string));
-                dt2.Datatable.Columns.Add("Y_Step", typeof(string));
-                dt1.ColumnNames.Add("Y_Step");
-                dt2.ColumnNames.Add("Y_Step");
-                dt1.ColumnHeaders.Add("Y Step");
-                dt2.ColumnHeaders.Add("Y Step");
-                for (int i = 0; i < colCount; i++)
-                {
-                    dt1.Datatable.Columns.Add("X_" + i.ToString(), typeof(string));
-                    dt1.ColumnNames.Add("X_" + i.ToString());
-                    dt1.ColumnHeaders.Add("X=" + (i * xStep).ToString("F2"));
-
-                    dt2.Datatable.Columns.Add("X_" + i.ToString(), typeof(string));
-                    dt2.ColumnNames.Add("X_" + i.ToString());
-                    dt2.ColumnHeaders.Add("X=" + (i * xStep).ToString("F2"));
-                }
-                running = false;
-            }));
-            while (running)
-            {
-                Thread.Sleep(10);
-            }
-            running = true;
-            this.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate ()
-            {
-                // Binding columns name and header
-                vm.Current1ColumnCollection.Clear();
-                for (int i = 0; i < dt1.ColumnNames.Count; i++)
-                {
-                    Binding binding = new Binding(dt1.ColumnNames[i]);
-                    DataGridTextColumn textColumn = new DataGridTextColumn
-                    {
-                        Header = dt1.ColumnHeaders[i],
-                        Binding = binding
-                    };
-                    vm.Current1ColumnCollection.Add(textColumn);
-                }
-                // Binding columns name and header
-                vm.Current2ColumnCollection.Clear();
-                for (int i = 0; i < dt2.ColumnNames.Count; i++)
-                {
-                    Binding binding = new Binding(dt2.ColumnNames[i]);
-                    DataGridTextColumn textColumn = new DataGridTextColumn
-                    {
-                        Header = dt2.ColumnHeaders[i],
-                        Binding = binding
-                    };
-                    vm.Current2ColumnCollection.Add(textColumn);
-                }
-                running = false;
-            }));
-            while (dgvCurrent2.Columns.Count < dt2.ColumnNames.Count)
-            {
-                //Thread.Sleep(600);
-                System.Diagnostics.Trace.WriteLine(">>> " + DateTime.Now.ToString() + dgvCurrent1.Columns.Count.ToString("fff") + ", " + dgvCurrent2.Columns.Count.ToString());
-            }
-            int rowCount = (int)((yMax - yMin) / yStep) + 1;
-
-            for (int i = 0; i < rowCount; i++)
-            {
-                DataRow rr = vm.CurrentDataTables[0].Datatable.NewRow();
-                rr[0] = "Y=" + (i * yStep).ToString("F2");
-                vm.CurrentDataTables[0].Datatable.Rows.Add(rr);
-            }
-
-            vm.CurrentDataTables[0].NeedSave = true;
-            vm.CurrentDataTables[1].NeedSave = true;
-
-            System.Diagnostics.Trace.WriteLine(">>> " + DateTime.Now.ToString() + " End new measurement worker.");
-        }
-        #endregion
-
-        /// <summary>
-        /// New icon on ribbon button
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MnuNew_Click(object sender, RoutedEventArgs e)
-        {
-            popWaitNewMeasurement = new WaitForNewMeasurementDialog
-            {
-                Topmost = true
-            };
-            popWaitNewMeasurement.Show();
-            //mnuNew.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate () { mnuNew.IsEnabled = false; }));
-            mnuNew.IsEnabled = false;
-            //dgvCurrent1.Columns.Clear();
-            //dgvCurrent1.ItemsSource = null;
-            //dgvCurrent2.Columns.Clear();
-            //dgvCurrent2.ItemsSource = null;
-            bwNewMeasurement.RunWorkerAsync();
-        }
-
-        #endregion
-
+        
     }
 }
