@@ -33,6 +33,8 @@ namespace IBP2018
     /// </summary>
     public partial class MainWindow : RibbonWindow
     {
+        private CurrentGridModel currentGridModel1;
+
         // ------------------------------- CONSTRUCTOR ---------------------------------
         public MainWindow()
         {
@@ -40,6 +42,12 @@ namespace IBP2018
             // Initialize
             // ----------------------------------------------------------
             InitializeComponent();
+
+            // ----------------------------------------------------------
+            // current grid models
+            // ----------------------------------------------------------
+            dgvCurrent1.Model = currentGridModel1 = new CurrentGridModel();
+
 
             // ----------------------------------------------------------
             // Comboboxs

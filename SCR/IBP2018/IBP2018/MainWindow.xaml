@@ -452,24 +452,23 @@
         <!--Current File ต้องทำ 2 meter tab and 3d surface-->
         <TabControl Grid.Row="1">
             <TabItem Header="Current-1">
-                <!--<Grid>
+                <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="400*"/>
                         <ColumnDefinition Width="5"/>
                         <ColumnDefinition Width="200*"/>
                     </Grid.ColumnDefinitions>
 
-                    <DataGrid x:Name="dgvCurrent1" Grid.Column="0" AutoGenerateColumns="False" ItemsSource="{Binding CurrentTable1}" b:DataGridColumnsBehavior.BindableColumns="{Binding Current1ColumnCollection}"/>
+                    <FastWpfGrid:FastGridControl x:Name="dgvCurrent1" Grid.Row="1">
+                        <FastWpfGrid:FastGridControl.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Test menu" />
+                            </ContextMenu>
+                        </FastWpfGrid:FastGridControl.ContextMenu>
+                    </FastWpfGrid:FastGridControl>
                     <GridSplitter Grid.Column="1" Background="White" Width="5" HorizontalAlignment="Stretch"/>
 
-                </Grid>-->
-                <FastWpfGrid:FastGridControl x:Name="dgvCurrent1" Grid.Row="1">
-                    <FastWpfGrid:FastGridControl.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="Test menu" />
-                        </ContextMenu>
-                    </FastWpfGrid:FastGridControl.ContextMenu>
-                </FastWpfGrid:FastGridControl>
+                </Grid>
             </TabItem>
             <TabItem Header="Current-2">
                 <Grid>
