@@ -31,14 +31,14 @@ namespace Quintessence.Ibp2018.ViewModel
         }
         #endregion
 
-        /* ----------------------------------------------------------
-         * MODELS
-         *  - Two Ammeter, Gpib
-         *  - Two MMC2, Serial port
-         * ---------------------------------------------------------- */
-        /* ----------------------------------------------------------
-         * Ammeter-1 Properties
-         * ---------------------------------------------------------- */
+        /// <summary>
+        /// MODELS
+        /// - Two Ammeter, Gpib
+        /// - Two MMC2, Serial port
+        /// 
+        /// Ammeter-1 Properties
+        /// Ammeter-2 Properties
+        /// </summary>
         private Gpib34401aInfo _Ammeter1;
         public Gpib34401aInfo Ammeter1 { get { return _Ammeter1; } set { _Ammeter1 = value; } }
         public int A1GpibAddress
@@ -63,10 +63,7 @@ namespace Quintessence.Ibp2018.ViewModel
         }
         public double Current1 { get { return _Ammeter1.Current; } set { _Ammeter1.Current = value; OnPropertyChanged("Current1TextuA"); } }
         public string Current1TextuA { get { return (_Ammeter1.Current * 1e6).ToString("0.0"); } set { _Ammeter1.Current = Convert.ToDouble(value) / 1e6; OnPropertyChanged("Current1TextuA"); } }
-
-        /* ----------------------------------------------------------
-         * Ammeter-2 Properties
-         * ---------------------------------------------------------- */
+        // -----------
         private Gpib34401aInfo _Ammeter2;
         public Gpib34401aInfo Ammeter2 { get { return _Ammeter2; } set { _Ammeter2 = value; } }
         public int A2GpibAddress
@@ -83,18 +80,14 @@ namespace Quintessence.Ibp2018.ViewModel
         public string A2VisaAddressText { get { return _Ammeter2.VisaAddress; } }
         public double Current2 { get { return _Ammeter2.Current; } set { _Ammeter2.Current = value; OnPropertyChanged("Current2TextuA"); } }
         public string Current2TextuA { get { return (_Ammeter2.Current * 1e6).ToString("0.0"); } set { _Ammeter2.Current = Convert.ToDouble(value) / 1e6; OnPropertyChanged("Current2TextuA"); } }
-
-        // Sensor interval
-        private int _sensorInterval = 1;
+        private int _sensorInterval = 1; // Sensor interval
         public int SensorInterval { get { return _sensorInterval; } set { _sensorInterval = value; OnPropertyChanged("SensorInterval"); } }
-
-        // Meter demo mode
-        private bool _IsMetersDemo = false;
+        private bool _IsMetersDemo = false; // Meter demo mode
         public bool IsMetersDemo { get { return _IsMetersDemo; } set { _IsMetersDemo = _Ammeter1.IsDemo = _Ammeter2.IsDemo = value; OnPropertyChanged("IsMetersDemo"); } }
 
-        /* ----------------------------------------------------------
-         * X-Y scanner and Z axis object
-         * ---------------------------------------------------------- */
+        /// <summary>
+        /// X-Y scanner and Z axis object and vm properties
+        /// </summary>
         private MMC2Info _XyMmc;
         public MMC2Info XyMmc { get { return _XyMmc; } set { _XyMmc = value; } }
         public string XyMmcPortName { get { return _XyMmc.SerialPortName; } set { _XyMmc.SerialPortName = value; OnPropertyChanged("XyMmcPortName"); } }
@@ -230,102 +223,8 @@ namespace Quintessence.Ibp2018.ViewModel
                 OnPropertyChanged("ZFixtureMaximum");
             }
         }
-
-        // Demo mode of scanner
-        private bool _IsScannerDemo = false;
+        private bool _IsScannerDemo = false; // Demo mode of scanner
         public bool IsScannerDemo { get { return _IsScannerDemo; } set { _IsScannerDemo = _XyMmc.IsDemo = _ZMmc.IsDemo = value; OnPropertyChanged("IsScannerDemo"); } }
-
-        /* ----------------------------------------------------------
-         * Current tables
-         * ---------------------------------------------------------- */
-        private IList<Ibp2018DataTableModel> _CurrentTables;
-        public IList<Ibp2018DataTableModel> CurrentDataTables { get { return _CurrentTables; } set { _CurrentTables = value; } }
-
-        /// <summary>
-        /// File / Current-1 Properties
-        /// </summary>
-        public DataTable CurrentTable1
-        {
-            get
-            {
-                return _CurrentTables[0].Datatable;
-            }
-            set
-            {
-                if (_CurrentTables[0].Datatable != value)
-                {
-                    _CurrentTables[0].Datatable = value;
-                }
-                OnPropertyChanged("CurrentTable1");
-            }
-        }
-
-        /// <summary>
-        /// File / Current-2 Properties
-        /// </summary>
-        public DataTable CurrentTable2
-        {
-            get
-            {
-                return _CurrentTables[1].Datatable;
-            }
-            set
-            {
-                if (_CurrentTables[1].Datatable != value)
-                {
-                    _CurrentTables[1].Datatable = value;
-                }
-                OnPropertyChanged("CurrentTable2");
-            }
-        }
-
-        /// <summary>
-        /// ColumnCollection designed for dynamic datagrid columns
-        /// </summary>
-        private ObservableCollection<DataGridColumn> _columnCollection1 = new ObservableCollection<DataGridColumn>();
-        public ObservableCollection<DataGridColumn> Current1ColumnCollection
-        {
-            get
-            {
-                return this._columnCollection1;
-            }
-            set
-            {
-                _columnCollection1 = value;
-                OnPropertyChanged("Current1ColumnCollection");
-                //Error
-                //base.OnPropertyChanged<ObservableCollection<DataGridColumn>>(() => this.ColumnCollection);
-            }
-        }
-
-        /// <summary>
-        /// ColumnCollection designed for dynamic datagrid columns
-        /// </summary>
-        private ObservableCollection<DataGridColumn> _columnCollection2 = new ObservableCollection<DataGridColumn>();
-        public ObservableCollection<DataGridColumn> Current2ColumnCollection
-        {
-            get
-            {
-                return this._columnCollection2;
-            }
-            set
-            {
-                _columnCollection2 = value;
-                OnPropertyChanged("Current2ColumnCollection");
-                //Error
-                //base.OnPropertyChanged<ObservableCollection<DataGridColumn>>(() => this.ColumnCollection);
-            }
-        }
-
-        #region Commands declaration
-        // Commands for binding to buttons
-
-        // Commands of xy and z mmc reconnect
-
-        // New measurement
-
-        // Re-connect meters
-        #endregion
 
         // --------------------------------------- CONSTRUCTOR ------------------------------------------------
         public Ibp2018ViewModel()
@@ -366,13 +265,6 @@ namespace Quintessence.Ibp2018.ViewModel
                 XFixtureMaximum = 10,
                 YFixtureMinimum = -10,
                 YFixtureMaximum = 10
-            };
-
-            // Create data tables object
-            _CurrentTables = new List<Ibp2018DataTableModel>
-            {
-                new Ibp2018DataTableModel(),
-                new Ibp2018DataTableModel()
             };
 
             // Create commands
@@ -736,34 +628,12 @@ namespace Quintessence.Ibp2018.ViewModel
         public ICommand GenerateNewDemoDataCommand { get; set; }
         private void GenerateDemoData()
         {
-            // Wait dialog can show in view 
-            // Wait for columns.count
-
-            canDemo = false;
-            ColumnsGenerating = true;
-
-            // Current-1 data table
-            _CurrentTables[0].GenerateNewDemoColumns(_XyMmc.XScanStep, _XyMmc.YScanStep, _XyMmc.XScanStart, _XyMmc.XScanEnd, _XyMmc.YScanStart, _XyMmc.YScanEnd);
-
-            // Binding columns name and header
-            Current1ColumnCollection.Clear();
-            for (int i = 0; i < _CurrentTables[0].ColumnNames.Count; i++)
-            {
-                Binding binding = new Binding(_CurrentTables[0].ColumnNames[i]);
-                DataGridTextColumn textColumn = new DataGridTextColumn();
-                textColumn.Header = _CurrentTables[0].ColumnHeaders[i];
-                textColumn.Binding = binding;
-                Current1ColumnCollection.Add(textColumn);
-            }
-
-
-
-            ColumnsGenerating = false;
-            canDemo = true;
+            canGenerateDemoData = false;
+            
+            canGenerateDemoData = true;
         }
-        private bool canDemo = true;
-        public bool ColumnsGenerating = false;
-        private bool CanExecuteGenerateDemoDataMethod(object parameter) { return canDemo; }
+        private bool canGenerateDemoData = true;
+        private bool CanExecuteGenerateDemoDataMethod(object parameter) { return canGenerateDemoData; }
         public void ExecuteGenerateDemoDataMethod(object parameter) { GenerateDemoData(); }
 
         // Reconnect xy mmc command
@@ -1035,7 +905,7 @@ namespace Quintessence.Ibp2018.ViewModel
             Finalized = false;
             try
             {
-                if (_CurrentTables[0].NeedSave)
+                if (/*_CurrentTables[0].NeedSave*/ true)
                 {
                     MessageBoxResult mbr = MessageBox.Show("Do you want to save current data ?", "Save", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
                     switch (mbr)
@@ -1048,17 +918,17 @@ namespace Quintessence.Ibp2018.ViewModel
                             };
                             if (dlg.ShowDialog() == true)
                             {
-                                if (!_CurrentTables[0].SaveToCSV(dlg.FileName))
-                                {
-                                    Finalized = false;
-                                }
-                                else
-                                {
-                                    if (!_CurrentTables[0].SaveToCSV(dlg.FileName))
-                                        Finalized = false;
-                                    else
-                                        Finalized = true;
-                                }
+                                //if (!_CurrentTables[0].SaveToCSV(dlg.FileName))
+                                //{
+                                //    Finalized = false;
+                                //}
+                                //else
+                                //{
+                                //    if (!_CurrentTables[0].SaveToCSV(dlg.FileName))
+                                //        Finalized = false;
+                                //    else
+                                //        Finalized = true;
+                                //}
                             }
                             else
                             {

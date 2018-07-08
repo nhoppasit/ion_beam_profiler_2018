@@ -9,8 +9,7 @@ namespace Quintessence.Ibp2018.Model
 {
     public class CurrentGridModel : FastGridModelBase
     {
-        private Dictionary<Tuple<int, int>, string> _editedCells = new Dictionary<Tuple<int, int>, string>();
-        private static string[] _columnBasicNames = new[] { "", "Value:", "Long column value:" };
+        public Dictionary<Tuple<int, int>, string> EditedCells = new Dictionary<Tuple<int, int>, string>();
 
         public override int ColumnCount
         {
@@ -25,7 +24,7 @@ namespace Quintessence.Ibp2018.Model
         public override string GetCellText(int row, int column)
         {
             var key = Tuple.Create(row, column);
-            if (_editedCells.ContainsKey(key)) return _editedCells[key];
+            if (EditedCells.ContainsKey(key)) return EditedCells[key];
 
             return "";
         }
@@ -33,7 +32,7 @@ namespace Quintessence.Ibp2018.Model
         public override void SetCellText(int row, int column, string value)
         {
             var key = Tuple.Create(row, column);
-            _editedCells[key] = value;
+            EditedCells[key] = value;
         }
 
         public override void HandleSelectionCommand(IFastGridView view, string command)
@@ -62,5 +61,6 @@ namespace Quintessence.Ibp2018.Model
             });
             return res;
         }
+
     }
 }
