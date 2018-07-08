@@ -226,26 +226,19 @@ namespace Quintessence.Ibp2018.ViewModel
         private bool _IsScannerDemo = false; // Demo mode of scanner
         public bool IsScannerDemo { get { return _IsScannerDemo; } set { _IsScannerDemo = _XyMmc.IsDemo = _ZMmc.IsDemo = value; OnPropertyChanged("IsScannerDemo"); } }
 
-        // --------------------------------------- CONSTRUCTOR ------------------------------------------------
+        /// <summary>
+        /// Current grid tables
+        /// </summary>
+        public List<CurrentGridModel> CurrentGrid = new List<CurrentGridModel>();
+
+        /// <summary>
+        /// --------------------------------------- CONSTRUCTOR ------------------------------------------------
+        /// </summary>
         public Ibp2018ViewModel()
         {
             // Create meters object
             _Ammeter1 = new Gpib34401aInfo();
             _Ammeter2 = new Gpib34401aInfo();
-
-            // Meter 1
-            Gpib34401aInfo a1 = new Gpib34401aInfo
-            {
-                GpibBoardNumber = 0,
-                GpibAddress = 26
-            };
-
-            // Meter 2
-            Gpib34401aInfo a2 = new Gpib34401aInfo
-            {
-                GpibBoardNumber = 0,
-                GpibAddress = 27
-            };
 
             // Create XY scanner object
             _XyMmc = new MMC2Info
@@ -266,6 +259,9 @@ namespace Quintessence.Ibp2018.ViewModel
                 YFixtureMinimum = -10,
                 YFixtureMaximum = 10
             };
+
+            CurrentGrid.Add(new CurrentGridModel());
+            CurrentGrid.Add(new CurrentGridModel());
 
             // Create commands
             InitializeMeterCommand = new RelayCommand(ExecuteInitializeMeterMethod, CanExecuteInitializeMeterMethod);
@@ -329,8 +325,9 @@ namespace Quintessence.Ibp2018.ViewModel
         private bool CanExecuteSetYScanRangeListMethod(object parameter) { return canSetYScanRangeList; }
         private void ExecuteSetYScanRangeListMethod(object parameter) { canSetYScanRangeList = false; OnPropertyChanged("YScanRangeList"); canSetYScanRangeList = true; }
 
-
-        // Reconnect meter 1
+        /// <summary>
+        /// Reconnect meter 1 command
+        /// </summary>
         public ICommand ReconnectMeter1Command { get; set; }
         private object Meter1Lock = new object();
         public bool Meter1Reconnecting = false;
@@ -377,7 +374,9 @@ namespace Quintessence.Ibp2018.ViewModel
             canReconnectMeter1 = true;
         }
 
-        // Reconnect meter 2
+        /// <summary>
+        /// Reconnect meter 2 command
+        /// </summary>
         public ICommand ReconnectMeter2Command { get; set; }
         private object Meter2Lock = new object();
         public bool Meter2Reconnecting = false;
@@ -629,7 +628,7 @@ namespace Quintessence.Ibp2018.ViewModel
         private void GenerateDemoData()
         {
             canGenerateDemoData = false;
-            
+
             canGenerateDemoData = true;
         }
         private bool canGenerateDemoData = true;

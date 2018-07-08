@@ -46,7 +46,8 @@ namespace IBP2018
             // ----------------------------------------------------------
             // current grid models
             // ----------------------------------------------------------
-            dgvCurrent1.Model = currentGridModel1 = new CurrentGridModel();
+            var vm = this.DataContext as Ibp2018ViewModel;
+            dgvCurrent1.Model = vm.CurrentGrid[0];
 
 
             // ----------------------------------------------------------
