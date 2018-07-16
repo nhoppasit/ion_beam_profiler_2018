@@ -33,8 +33,6 @@ namespace IBP2018
     /// </summary>
     public partial class MainWindow : RibbonWindow
     {
-        private CurrentGridModel currentGridModel1;
-
         // ------------------------------- CONSTRUCTOR ---------------------------------
         public MainWindow()
         {
@@ -47,8 +45,13 @@ namespace IBP2018
             // current grid models
             // ----------------------------------------------------------
             var vm = this.DataContext as Ibp2018ViewModel;
+            vm.CurrentGrid[0].DefineNewHeaders();
+            HashSet<int> frozen = new HashSet<int>();
+            frozen.Add(0);
+            frozen.Add(1);
+            vm.CurrentGrid[0].SetColumnArrange(new HashSet<int>(), frozen);
+            dgvCurrent1.HeaderWidth = 40;
             dgvCurrent1.Model = vm.CurrentGrid[0];
-
 
             // ----------------------------------------------------------
             // Comboboxs

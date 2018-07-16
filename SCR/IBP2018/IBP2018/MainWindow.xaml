@@ -460,7 +460,7 @@
                     </Grid.ColumnDefinitions>
 
                     <!--Grid 1 : current 1-->
-                    <FastWpfGrid:FastGridControl x:Name="dgvCurrent1" Grid.Row="1">
+                    <FastWpfGrid:FastGridControl x:Name="dgvCurrent1" Grid.Row="1" MinColumnWidthOverride="40">
                         <FastWpfGrid:FastGridControl.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Test menu" />

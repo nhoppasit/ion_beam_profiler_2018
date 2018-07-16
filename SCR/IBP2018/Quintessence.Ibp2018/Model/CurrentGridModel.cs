@@ -9,18 +9,71 @@ namespace Quintessence.Ibp2018.Model
 {
     public class CurrentGridModel : FastGridModelBase
     {
-        public Dictionary<Tuple<int, int>, string> EditedCells = new Dictionary<Tuple<int, int>, string>();
+        /// <summary>
+        /// Headers ทีเก็บหัวข้อ
+        /// </summary>
+        public Dictionary<Tuple<int>, string> Headers = new Dictionary<Tuple<int>, string>();
 
+        public void DefineNewHeaders()
+        {
+            int i = 0;
+            Headers.Clear();
+            Headers[Tuple.Create(i++)] = " Student ID ";
+            Headers[Tuple.Create(i++)] = "           Full Name                  ";
+            Headers[Tuple.Create(i++)] = "   A1   ";
+            Headers[Tuple.Create(i++)] = "   A2   ";
+            Headers[Tuple.Create(i++)] = "   A3   ";
+            Headers[Tuple.Create(i++)] = "   A4   ";
+            Headers[Tuple.Create(i++)] = "   A1   ";
+            Headers[Tuple.Create(i++)] = "   A2   ";
+            Headers[Tuple.Create(i++)] = "   A3   ";
+            Headers[Tuple.Create(i++)] = "   A4   ";
+            Headers[Tuple.Create(i++)] = "   A1   ";
+            Headers[Tuple.Create(i++)] = "   A2   ";
+            Headers[Tuple.Create(i++)] = "   A3   ";
+            Headers[Tuple.Create(i++)] = "   A4   ";
+            Headers[Tuple.Create(i++)] = "   A1   ";
+            Headers[Tuple.Create(i++)] = "   A2   ";
+            Headers[Tuple.Create(i++)] = "   A3   ";
+            Headers[Tuple.Create(i++)] = "   A4   ";
+            Headers[Tuple.Create(i++)] = "   A1   ";
+            Headers[Tuple.Create(i++)] = "   A2   ";
+            Headers[Tuple.Create(i++)] = "   A3   ";
+            Headers[Tuple.Create(i++)] = "   A4   ";
+            Headers[Tuple.Create(i++)] = "   A1   ";
+            Headers[Tuple.Create(i++)] = "   A2   ";
+            Headers[Tuple.Create(i++)] = "   A3   ";
+            Headers[Tuple.Create(i++)] = "   A4   ";
+            Headers[Tuple.Create(i++)] = "   A1   ";
+            Headers[Tuple.Create(i++)] = "   A2   ";
+            Headers[Tuple.Create(i++)] = "   A3   ";
+            Headers[Tuple.Create(i++)] = "   A4   ";
+            Headers[Tuple.Create(i++)] = "   A1   ";
+            Headers[Tuple.Create(i++)] = "   A2   ";
+            Headers[Tuple.Create(i++)] = "   A3   ";
+            Headers[Tuple.Create(i++)] = "   A4   ";
+            _columnCount = Headers.Count;
+        }
+
+        public Dictionary<Tuple<int, int>, string> EditedCells = new Dictionary<Tuple<int, int>, string>();
+ 
+        public double XStep { get; set; }        
+
+        public double YStep { get; set; }
+
+        public int XCount { get { return _columnCount; } set { _columnCount = value; } }
+        private int _columnCount = 70;
         public override int ColumnCount
         {
-            get { return 70; }
+            get { return _columnCount; }
         }
 
+        private int _rowCount = 10;
         public override int RowCount
         {
-            get { return 1000; }
+            get { return _rowCount; }
         }
-
+        
         public override string GetCellText(int row, int column)
         {
             var key = Tuple.Create(row, column);
@@ -40,13 +93,26 @@ namespace Quintessence.Ibp2018.Model
             MessageBox.Show(command);
         }
 
-        public override IFastGridCell GetColumnHeader(IFastGridView view, int column)
+        public override IFastGridCell GetGridHeader(IFastGridView view)
         {
             var res = new FastGridCellImpl();
             res.Blocks.Add(new FastGridBlockImpl
             {
                 IsBold = true,
-                TextData = string.Format("X={0:0.00}", column * 0.02),
+                TextData = "  No.",
+            });
+            return res;
+        }
+
+        public override IFastGridCell GetColumnHeader(IFastGridView view, int column)
+        {
+            var res = new FastGridCellImpl();
+            var key = Tuple.Create(column);
+            res.Blocks.Add(new FastGridBlockImpl
+            {
+                IsBold = true,
+                //TextData = string.Format("X={0:0.00}", column * 0.02),
+                TextData = Headers[key],
             });
             return res;
         }
@@ -56,11 +122,12 @@ namespace Quintessence.Ibp2018.Model
             var res = new FastGridCellImpl();
             res.Blocks.Add(new FastGridBlockImpl
             {
-                IsBold = true,
-                TextData = String.Format("Y={0:0.00}", row * 0.02)
+                IsBold = false,
+                TextData = String.Format("{0,6}", row*50+1)
             });
             return res;
         }
+
 
     }
 }
