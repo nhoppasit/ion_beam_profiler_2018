@@ -30,11 +30,7 @@ namespace FastWpfGrid
         private Color[] _alternatingColors = new Color[]
             {
                 Colors.White,
-                Colors.White,
                 Color.FromRgb(235, 235, 235),
-                Colors.White,
-                Colors.White,
-                Color.FromRgb(235, 245, 255)
             };
 
         private Color _activeRegionFrameColor = Color.FromRgb(0xAA, 0xAA, 0xFF);

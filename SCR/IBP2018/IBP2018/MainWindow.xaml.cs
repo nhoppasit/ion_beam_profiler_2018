@@ -151,6 +151,7 @@ namespace IBP2018
             UpdateXScanRangeList();
             cboXStart.SelectedValue = catXStart.Items[0].ToString();
             cboXEnd.SelectedValue = catXEnd.Items[catXEnd.Items.Count - 1].ToString();
+            //
             txtYMin.PreviewKeyUp += TxtYMinMax_PreviewKeyUp; // re-assign items to combobox both of min and max
             txtYMax.PreviewKeyUp += TxtYMinMax_PreviewKeyUp;
             UpdateYScanRangeList();
