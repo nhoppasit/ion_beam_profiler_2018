@@ -899,7 +899,7 @@ namespace Quintessence.Ibp2018.ViewModel
         /// Close application method for behide code
         /// </summary>
         public bool Finalized { get; private set; }
-        public void FinalizeForClose()
+        public void FinalizeForClose() // Save confirmation
         {
             Finalized = false;
             try

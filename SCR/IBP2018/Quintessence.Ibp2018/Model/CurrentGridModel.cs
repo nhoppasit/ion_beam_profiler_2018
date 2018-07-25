@@ -9,6 +9,8 @@ namespace Quintessence.Ibp2018.Model
 {
     public class CurrentGridModel : FastGridModelBase
     {
+        
+
         public Dictionary<Tuple<int, int>, string> EditedCells = new Dictionary<Tuple<int, int>, string>();
 
         public override int ColumnCount
