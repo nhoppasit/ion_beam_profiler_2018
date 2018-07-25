@@ -33,7 +33,6 @@ namespace IBP2018
     /// </summary>
     public partial class MainWindow : RibbonWindow
     {
-        private CurrentGridModel currentGridModel1;
 
         // ------------------------------- CONSTRUCTOR ---------------------------------
         public MainWindow()
@@ -48,6 +47,12 @@ namespace IBP2018
             // ----------------------------------------------------------
             var vm = this.DataContext as Ibp2018ViewModel;
             dgvCurrent1.Model = vm.CurrentGrid[0];
+            dgvCurrent1.MinColumnWidthOverride = 10;
+            dgvCurrent1.HeaderWidth = 60;
+
+            // ----------------------------------------------------------
+            // current grid models
+            // ----------------------------------------------------------
 
 
             // ----------------------------------------------------------
@@ -121,6 +126,53 @@ namespace IBP2018
             mnuExit.Click += MnuExit_Click;
             this.Closing += MainWindow_Closing;
         }
+
+        private void MnuC1Paste_from_clipboard_Click(object sender, RoutedEventArgs e)
+        {
+            int row = (int)dgvCurrent1.CurrentRow;
+            int col = (int)dgvCurrent1.CurrentColumn;
+            //MessageBox.Show(String.Format("{0},{1}", row + 1, col + 1));
+            string text = Clipboard.GetText(TextDataFormat.CommaSeparatedValue);
+            if (text == "" || text == null) return;
+            var model = (this.DataContext as Ibp2018ViewModel).CurrentGrid[0] as CurrentGridModel;
+            bool asked = false, replaceFlag = false;
+            int r = 0, c = 0;
+            string[] rText = text.Replace("\r\n", ";").Split(';');
+            foreach (string s in rText)
+            {
+                string[] cText = s.Split(',');
+                c = 0;
+                foreach (string t in cText)
+                {
+                    try
+                    {
+                        if (model.EditedCells[Tuple.Create(row + r, col + c)] != null)
+                        {
+                            if (!asked)
+                            {
+                                if (MessageBox.Show("Do you want to replace the non-empty cells?", "Paste", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                                    replaceFlag = true;
+                                else
+                                    replaceFlag = false;
+                                asked = true;
+                            }
+                            if (replaceFlag)
+                                if (double.TryParse(t, out double dbl)) model.EditedCells[Tuple.Create(row + r, col + c)] = dbl;
+                        }
+                    }
+                    catch
+                    {
+                        if (double.TryParse(t, out double dbl)) model.EditedCells[Tuple.Create(row + r, col + c)] = dbl;
+                    }
+                    c++;
+                    if (model.ColumnCount < col + c) break;
+                }
+                r++;
+                if (model.RowCount < row + r) break;
+            }
+            model.InvalidateAll();
+        }
+
         // ------------------------------- CONSTRUCTOR ---------------------------------
 
         #region Close application ------------------------------------------------------------
@@ -388,6 +440,6 @@ namespace IBP2018
             }
         }
         #endregion
-        
+
     }
 }

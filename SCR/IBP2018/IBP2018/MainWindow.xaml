@@ -463,7 +463,7 @@
                     <FastWpfGrid:FastGridControl x:Name="dgvCurrent1" Grid.Row="1">
                         <FastWpfGrid:FastGridControl.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Test menu" />
+                                <MenuItem Click="MnuC1Paste_from_clipboard_Click" Header="Paste from clipboard" />
                             </ContextMenu>
                         </FastWpfGrid:FastGridControl.ContextMenu>
                     </FastWpfGrid:FastGridControl>
