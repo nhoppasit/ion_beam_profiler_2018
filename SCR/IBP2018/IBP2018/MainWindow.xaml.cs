@@ -125,62 +125,112 @@ namespace IBP2018
             // ----------------------------------------------------------
             mnuExit.Click += MnuExit_Click;
             this.Closing += MainWindow_Closing;
+
+            // ----------------------------------------------------------
+            // Background for paste csv to cells
+            // ----------------------------------------------------------
+            bwPasteCSV.DoWork += BwPasteCSV_DoWork;
+            bwPasteCSV.RunWorkerCompleted += BwPasteCSV_RunWorkerCompleted;
+            bwPasteCSV.ProgressChanged += BwPasteCSV_ProgressChanged;
+            bwPasteCSV.WorkerReportsProgress = true;
+            bwPasteCSV.WorkerSupportsCancellation = true;
+
+        }
+
+        // ------------------------------- CONSTRUCTOR ---------------------------------
+
+        #region Paste clipboard to cells ---------------------------------------------------------------------
+
+        BackgroundWorker bwPasteCSV = new BackgroundWorker();
+
+        private void BwPasteCSV_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            lblStatus.Content = string.Format("Paste from clipboard: {0}...", e.ProgressPercentage);
+            pgStatus.Value = e.ProgressPercentage;
+        }
+
+        private void BwPasteCSV_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            var model = (this.DataContext as Ibp2018ViewModel).CurrentGrid[0] as CurrentGridModel;
+            model.InvalidateAll();
+            lblStatus.Content = string.Empty;
+            pgStatus.Value = 0;
+            pgStatus.Visibility = Visibility.Hidden;
+        }
+
+        private void BwPasteCSV_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = (BackgroundWorker)sender;
+            object[] varargin = (object[])e.Argument;
+            string text = (string)varargin[0];
+            var model = varargin[1] as CurrentGridModel;
+
+            int row = (int)dgvCurrent1.CurrentRow;
+            int col = (int)dgvCurrent1.CurrentColumn;
+
+            bool asked = false, replaceFlag = false;
+            int r = 0, c = 0;
+            string[] rText = text.Replace("\r\n", ";").Split(';');
+            foreach (string s in rText)
+            {
+                string[] cText = s.Split(',');
+                c = 0;
+                foreach (string t in cText)
+                {
+                    try
+                    {
+                        if (model.EditedCells[Tuple.Create(row + r, col + c)] != null)
+                        {
+                            if (!asked)
+                            {
+                                if (MessageBox.Show("Do you want to replace the non-empty cells?", "Paste", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                                    replaceFlag = true;
+                                else
+                                    replaceFlag = false;
+                                asked = true;
+                            }
+                            if (replaceFlag)
+                                if (double.TryParse(t, out double dbl)) model.EditedCells[Tuple.Create(row + r, col + c)] = dbl;
+                        }
+                    }
+                    catch
+                    {
+                        if (double.TryParse(t, out double dbl)) model.EditedCells[Tuple.Create(row + r, col + c)] = dbl;
+                    }
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(delegate ()
+                    {
+                        model.InvalidateCell(row + r, col + c);
+                        //model.InvalidateAll();
+                    })); // ไม่ค่อยเห็นว่า invalidate                    
+                    c++;
+                    if (model.ColumnCount < col + c) break;
+                }
+                r++;
+                if (model.RowCount < row + r) break;
+                worker.ReportProgress((int)((float)r / (float)rText.Length * 100));
+            }
+            model.InvalidateAll();
         }
 
         private void MnuC1Paste_from_clipboard_Click(object sender, RoutedEventArgs e)
         {
-            int row = (int)dgvCurrent1.CurrentRow;
-            int col = (int)dgvCurrent1.CurrentColumn;
-            //MessageBox.Show(String.Format("{0},{1}", row + 1, col + 1));
+            //var model = (this.DataContext as Ibp2018ViewModel).CurrentGrid[0] as CurrentGridModel;
             string text = Clipboard.GetText(TextDataFormat.CommaSeparatedValue);
-            if (text == "" || text == null) return;
-
-            var model = (this.DataContext as Ibp2018ViewModel).CurrentGrid[0] as CurrentGridModel;
-
-            this.Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(delegate ()
+            if (text == "" || text == null)
             {
-                bool asked = false, replaceFlag = false;
-                int r = 0, c = 0;
-                string[] rText = text.Replace("\r\n", ";").Split(';');
-                foreach (string s in rText)
+                return;
+            }
+            else
+            {
+                if (!bwPasteCSV.IsBusy)
                 {
-                    string[] cText = s.Split(',');
-                    c = 0;
-                    foreach (string t in cText)
-                    {
-                        try
-                        {
-                            if (model.EditedCells[Tuple.Create(row + r, col + c)] != null)
-                            {
-                                if (!asked)
-                                {
-                                    if (MessageBox.Show("Do you want to replace the non-empty cells?", "Paste", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                                        replaceFlag = true;
-                                    else
-                                        replaceFlag = false;
-                                    asked = true;
-                                }
-                                if (replaceFlag)
-                                    if (double.TryParse(t, out double dbl)) model.EditedCells[Tuple.Create(row + r, col + c)] = dbl;
-                            }
-                        }
-                        catch
-                        {
-                            if (double.TryParse(t, out double dbl)) model.EditedCells[Tuple.Create(row + r, col + c)] = dbl;
-                        }
-                        this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(delegate () { model.InvalidateAll(); }));
-                        c++;
-                        if (model.ColumnCount < col + c) break;
-                    }
-                    r++;
-                    if (model.RowCount < row + r) break;
+                    pgStatus.Visibility = Visibility.Visible;
+                    bwPasteCSV.RunWorkerAsync(new object[] { text, (this.DataContext as Ibp2018ViewModel).CurrentGrid[0] as CurrentGridModel });
                 }
-
-                //model.InvalidateAll();
-            }));
+            }
         }
 
-        // ------------------------------- CONSTRUCTOR ---------------------------------
+        #endregion
 
         #region Close application ------------------------------------------------------------
         private void MainWindow_Closing(object sender, CancelEventArgs e) { Ibp2018ViewModel vm = this.DataContext as Ibp2018ViewModel; vm.FinalizeForClose(); e.Cancel = !vm.Finalized; }

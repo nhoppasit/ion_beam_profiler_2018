@@ -17,6 +17,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
         <!--Menus-->
@@ -245,7 +246,7 @@
                         <Label Grid.Row="0" Grid.Column="0" Content="X Axis"/>
                         <RibbonComboBox Grid.Row="0" Grid.Column="1" SelectionBoxWidth="30" IsEditable="False">
                             <RibbonGallery x:Name="cboXStart" SelectedValue="{Binding XScanStart}">
-                                <RibbonGalleryCategory x:Name="catXStart"/>                                
+                                <RibbonGalleryCategory x:Name="catXStart"/>
                             </RibbonGallery>
                         </RibbonComboBox>
                         <Label Grid.Row="0" Grid.Column="2" Content="to"/>
@@ -378,7 +379,7 @@
                     <StackPanel Orientation="Vertical">
                         <Label Content="Simulate query without ports."/>
                         <RibbonCheckBox IsChecked="{Binding IsScannerDemo}"/>
-                    </StackPanel>                    
+                    </StackPanel>
                 </RibbonGroup>
             </RibbonTab>
 
@@ -407,7 +408,7 @@
                             <Label Grid.Row="0" Grid.Column="2" Content="Avg No."/>
                         </StackPanel>
                     </StackPanel>
-                </RibbonGroup>                
+                </RibbonGroup>
                 <!--Measure-->
                 <RibbonGroup Header="Measure">
                     <StackPanel Orientation="Vertical">
@@ -419,7 +420,7 @@
                         <StackPanel Orientation="Horizontal">
                             <RibbonTextBox x:Name="txtDMMValue2" Text="{Binding Path=Current2TextuA,Mode=OneWay}" TextAlignment="Center" TextBoxWidth="70" IsReadOnlyCaretVisible="True"/>
                             <Label Content="uA"/>
-                        </StackPanel>                        
+                        </StackPanel>
                     </StackPanel>
                 </RibbonGroup>
                 <!--PORT-->
@@ -467,7 +468,7 @@
                             </ContextMenu>
                         </FastWpfGrid:FastGridControl.ContextMenu>
                     </FastWpfGrid:FastGridControl>
-                    
+
                     <GridSplitter Grid.Column="1" Background="White" Width="5" HorizontalAlignment="Stretch"/>
 
                 </Grid>
@@ -485,6 +486,13 @@
                 </Grid>
             </TabItem>
         </TabControl>
+
+        <StatusBar Grid.Row="2">
+            <StackPanel Orientation="Horizontal">
+                <Label Name="lblStatus"/>
+                <ProgressBar Name="pgStatus" Margin="0,0,0,0" Width="200" Minimum="0" Maximum="100" Height="16" Visibility="Hidden" VerticalAlignment="Center"/>
+            </StackPanel>
+        </StatusBar>
 
     </Grid>
 
