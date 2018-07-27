@@ -134,43 +134,50 @@ namespace IBP2018
             //MessageBox.Show(String.Format("{0},{1}", row + 1, col + 1));
             string text = Clipboard.GetText(TextDataFormat.CommaSeparatedValue);
             if (text == "" || text == null) return;
+
             var model = (this.DataContext as Ibp2018ViewModel).CurrentGrid[0] as CurrentGridModel;
-            bool asked = false, replaceFlag = false;
-            int r = 0, c = 0;
-            string[] rText = text.Replace("\r\n", ";").Split(';');
-            foreach (string s in rText)
+
+            this.Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(delegate ()
             {
-                string[] cText = s.Split(',');
-                c = 0;
-                foreach (string t in cText)
+                bool asked = false, replaceFlag = false;
+                int r = 0, c = 0;
+                string[] rText = text.Replace("\r\n", ";").Split(';');
+                foreach (string s in rText)
                 {
-                    try
+                    string[] cText = s.Split(',');
+                    c = 0;
+                    foreach (string t in cText)
                     {
-                        if (model.EditedCells[Tuple.Create(row + r, col + c)] != null)
+                        try
                         {
-                            if (!asked)
+                            if (model.EditedCells[Tuple.Create(row + r, col + c)] != null)
                             {
-                                if (MessageBox.Show("Do you want to replace the non-empty cells?", "Paste", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                                    replaceFlag = true;
-                                else
-                                    replaceFlag = false;
-                                asked = true;
+                                if (!asked)
+                                {
+                                    if (MessageBox.Show("Do you want to replace the non-empty cells?", "Paste", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                                        replaceFlag = true;
+                                    else
+                                        replaceFlag = false;
+                                    asked = true;
+                                }
+                                if (replaceFlag)
+                                    if (double.TryParse(t, out double dbl)) model.EditedCells[Tuple.Create(row + r, col + c)] = dbl;
                             }
-                            if (replaceFlag)
-                                if (double.TryParse(t, out double dbl)) model.EditedCells[Tuple.Create(row + r, col + c)] = dbl;
                         }
+                        catch
+                        {
+                            if (double.TryParse(t, out double dbl)) model.EditedCells[Tuple.Create(row + r, col + c)] = dbl;
+                        }
+                        this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(delegate () { model.InvalidateAll(); }));
+                        c++;
+                        if (model.ColumnCount < col + c) break;
                     }
-                    catch
-                    {
-                        if (double.TryParse(t, out double dbl)) model.EditedCells[Tuple.Create(row + r, col + c)] = dbl;
-                    }
-                    c++;
-                    if (model.ColumnCount < col + c) break;
+                    r++;
+                    if (model.RowCount < row + r) break;
                 }
-                r++;
-                if (model.RowCount < row + r) break;
-            }
-            model.InvalidateAll();
+
+                //model.InvalidateAll();
+            }));
         }
 
         // ------------------------------- CONSTRUCTOR ---------------------------------
