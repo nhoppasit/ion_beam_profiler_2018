@@ -135,20 +135,61 @@ namespace IBP2018
             bwPasteCSV.WorkerReportsProgress = true;
             bwPasteCSV.WorkerSupportsCancellation = true;
 
+            // ----------------------------------------------------------
+            // DATA GRID CURRENT1: Delete cell's content
+            // ----------------------------------------------------------
+            dgvCurrent1.KeyUp += DgvCurrent1_KeyUp;
+
         }
 
         // ------------------------------- CONSTRUCTOR ---------------------------------
 
+        #region Datagrid cerrent1: keyup
+
+        private void DgvCurrent1_KeyUp(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Delete:
+                    DeleteSelectedCellContent();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        void DeleteSelectedCellContent()
+        {
+            MessageBoxResult mbr = MessageBox.Show("DATA WILL BE PERMANENT DELETED. Press [OK] to delete or [CANCEL] to cancel.", "Delete cell content", MessageBoxButton.OKCancel, MessageBoxImage.Question);
+            if (mbr == MessageBoxResult.OK)
+            {
+                int row = (int)dgvCurrent1.CurrentRow;
+                int col = (int)dgvCurrent1.CurrentColumn;
+                var model = (this.DataContext as Ibp2018ViewModel).CurrentGrid[0] as CurrentGridModel;
+                var sc = dgvCurrent1.GetSelectedModelCells();
+                foreach (FastWpfGrid.FastGridCellAddress ce in sc)
+                {
+                    var key = Tuple.Create((int)ce.Row, (int)ce.Column);
+                    if (model.EditedCells.ContainsKey(key)) model.EditedCells.Remove(key);
+                }
+                model.InvalidateAll();
+            }
+            else
+            {
+                /*DONOTHING*/
+            }
+        }
+
+        #endregion
+
         #region Paste clipboard to cells ---------------------------------------------------------------------
 
         BackgroundWorker bwPasteCSV = new BackgroundWorker();
-
         private void BwPasteCSV_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             lblStatus.Content = string.Format("Paste from clipboard: {0}...", e.ProgressPercentage);
             pgStatus.Value = e.ProgressPercentage;
         }
-
         private void BwPasteCSV_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             var model = (this.DataContext as Ibp2018ViewModel).CurrentGrid[0] as CurrentGridModel;
@@ -157,7 +198,6 @@ namespace IBP2018
             pgStatus.Value = 0;
             pgStatus.Visibility = Visibility.Hidden;
         }
-
         private void BwPasteCSV_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = (BackgroundWorker)sender;
@@ -211,7 +251,6 @@ namespace IBP2018
             }
             model.InvalidateAll();
         }
-
         private void MnuC1Paste_from_clipboard_Click(object sender, RoutedEventArgs e)
         {
             //var model = (this.DataContext as Ibp2018ViewModel).CurrentGrid[0] as CurrentGridModel;

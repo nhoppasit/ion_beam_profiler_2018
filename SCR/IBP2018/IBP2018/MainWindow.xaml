@@ -450,7 +450,7 @@
             </RibbonTab>
         </Ribbon>
 
-        <!--Current File ต้องทำ 2 meter tab and 3d surface-->
+        <!--DATA GRID: Current File ต้องทำ 2 meter tab and 3d surface-->
         <TabControl Grid.Row="1">
             <TabItem Header="Current-1">
                 <Grid>
@@ -469,7 +469,7 @@
                         </FastWpfGrid:FastGridControl.ContextMenu>
                     </FastWpfGrid:FastGridControl>
 
-                    <GridSplitter Grid.Column="1" Background="White" Width="5" HorizontalAlignment="Stretch"/>
+                    <GridSplitter Grid.Column="1" Background="WhiteSmoke" Width="5" HorizontalAlignment="Stretch"/>
 
                 </Grid>
             </TabItem>
@@ -487,6 +487,7 @@
             </TabItem>
         </TabControl>
 
+        <!--Status bar-->
         <StatusBar Grid.Row="2">
             <StackPanel Orientation="Horizontal">
                 <Label Name="lblStatus"/>
