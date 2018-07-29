@@ -139,18 +139,39 @@ namespace IBP2018
 
         // ------------------------------- CONSTRUCTOR ---------------------------------
 
-        #region Datagrid cerrent1: keyup - copy/cut/paste and clipboard
-
+        #region KEYUP: current1 dgv:- copy/cut/paste and clipboard -----------------------------------------------------------------
         private void DgvCurrent1_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Delete) { DeleteSelectedCellContent(); return; }
-            if (e.Key == Key.X && Keyboard.Modifiers == ModifierKeys.Control) { CutSelectedCellContent(); return; }
+            // -----------------------------------------
+            // DEL = DELETE
+            // -----------------------------------------
+            if (e.Key == Key.Delete)
+            {
+                var vm = this.DataContext as Ibp2018ViewModel;
+                vm.CurrentGrid[0].StartDeleteContentsThread(new object[] { lblStatus, pgStatus, dgvCurrent1.GetSelectedModelCells() });
+                return;
+            }
+            // -----------------------------------------
+            // CTRL+X = CUT
+            // -----------------------------------------
+            if (e.Key == Key.X && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                var vm = this.DataContext as Ibp2018ViewModel;
+                vm.CurrentGrid[0].StartCutContentToClipboardThread(new object[] { lblStatus, pgStatus, dgvCurrent1.GetSelectedModelCells() });
+                return;
+            }
+            // -----------------------------------------
+            // CTRL+C = COPY
+            // -----------------------------------------
             if (e.Key == Key.C && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 var vm = this.DataContext as Ibp2018ViewModel;
-                vm.CurrentGrid[0].StartCopyngToClipboardThread(new object[] { lblStatus, pgStatus, dgvCurrent1.GetSelectedModelCells() });
+                vm.CurrentGrid[0].StartCopyingToClipboardThread(new object[] { lblStatus, pgStatus, dgvCurrent1.GetSelectedModelCells() });
                 return;
             }
+            // -----------------------------------------
+            // CTRL+V = PASTE
+            // -----------------------------------------
             if (e.Key == Key.V && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 var vm = this.DataContext as Ibp2018ViewModel;
@@ -158,80 +179,14 @@ namespace IBP2018
                 return;
             }
         }
-        void DeleteSelectedCellContent()
-        {
-            MessageBoxResult mbr = MessageBox.Show("DATA WILL BE PERMANENT DELETED. Press [OK] to delete or [CANCEL] to cancel.", "Delete cell content", MessageBoxButton.OKCancel, MessageBoxImage.Question);
-            if (mbr == MessageBoxResult.OK)
-            {
-                int row = (int)dgvCurrent1.CurrentRow;
-                int col = (int)dgvCurrent1.CurrentColumn;
-                var model = (this.DataContext as Ibp2018ViewModel).CurrentGrid[0] as CurrentGridModel;
-                var sc = dgvCurrent1.GetSelectedModelCells();
-                foreach (FastWpfGrid.FastGridCellAddress ce in sc)
-                {
-                    var key = Tuple.Create((int)ce.Row, (int)ce.Column);
-                    if (model.EditedCells.ContainsKey(key)) model.EditedCells.Remove(key);
-                }
-                model.InvalidateAll();
-            }
-            else
-            {
-                /*DONOTHING*/
-            }
-        }
-        void CutSelectedCellContent()
-        {
-            int row = (int)dgvCurrent1.CurrentRow;
-            int col = (int)dgvCurrent1.CurrentColumn;
-            var model = (this.DataContext as Ibp2018ViewModel).CurrentGrid[0] as CurrentGridModel;
-            var selectedCellAddresses = dgvCurrent1.GetSelectedModelCells();
-            Dictionary<Tuple<int, int>, double?> selectedCells = new Dictionary<Tuple<int, int>, double?>();
-            int r0 = int.MaxValue, rm = int.MinValue, c0 = int.MaxValue, cm = int.MinValue;
-            foreach (FastWpfGrid.FastGridCellAddress cell in selectedCellAddresses)
-            {
-                // update range
-                r0 = Math.Min(r0, (int)cell.Row);
-                rm = Math.Max(rm, (int)cell.Row);
-                c0 = Math.Min(c0, (int)cell.Column);
-                cm = Math.Max(cm, (int)cell.Column);
+        #endregion
 
-                // delete and save to temp dict
-                var key = Tuple.Create((int)cell.Row, (int)cell.Column);
-                if (model.EditedCells.ContainsKey(key))
-                {
-                    selectedCells[key] = model.EditedCells[key];
-                    model.EditedCells.Remove(key);
-                }
-                else
-                {
-                    selectedCells[key] = null;
-                }
-            }
-            model.InvalidateAll();
-
-            // Set clipboard text as selected
-            StringBuilder sb = new StringBuilder();
-            for (int r = r0; r <= rm; r++)
-            {
-                for (int c = c0; c <= cm; c++)
-                {
-                    var key = Tuple.Create(r, c);
-                    sb.Append(selectedCells[key].ToString());
-                    if (c < cm) sb.Append(",");
-                }
-                if (r < rm) sb.Append("\r\n");
-            }
-            Clipboard.SetText(sb.ToString(), TextDataFormat.CommaSeparatedValue);
-        }
-
-        #region Paste clipboard to cells 
+        #region CONTEXT MENU: current1 dgv:- Paste clipboard to cells -----------------------------------------------------------------
         private void MnuC1Paste_from_clipboard_Click(object sender, RoutedEventArgs e)
         {
             var model = (this.DataContext as Ibp2018ViewModel).CurrentGrid[0] as CurrentGridModel;
             model.StartPastingFromClipboardThread(new object[] { lblStatus, pgStatus, (int)dgvCurrent1.CurrentRow, (int)dgvCurrent1.CurrentColumn });
         }
-        #endregion
-
         #endregion
 
 
