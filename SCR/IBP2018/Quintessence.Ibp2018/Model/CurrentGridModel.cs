@@ -12,19 +12,32 @@ namespace Quintessence.Ibp2018.Model
 {
     public class CurrentGridModel : FastGridModelBase
     {
-        #region CONSTRUCTOR
+        #region CONSTRUCTOR ---------------------------------------------------------------------------------
         public CurrentGridModel()
         {
-            bwPasteCSV.DoWork += BwPasteCSV_DoWork;
-            bwPasteCSV.ProgressChanged += BwPasteCSV_ProgressChanged;
-            bwPasteCSV.RunWorkerCompleted += BwPasteCSV_RunWorkerCompleted;
-            bwPasteCSV.WorkerReportsProgress = true;
-            bwPasteCSV.WorkerSupportsCancellation = true;
+            // --------------------------------------------------------
+            // Paste from clipboard
+            // --------------------------------------------------------
+            bgwPasteCSV.DoWork += BgwPasteCSV_DoWork;
+            bgwPasteCSV.ProgressChanged += BgwPasteCSV_ProgressChanged;
+            bgwPasteCSV.RunWorkerCompleted += BgwPasteCSV_RunWorkerCompleted;
+            bgwPasteCSV.WorkerReportsProgress = true;
+            bgwPasteCSV.WorkerSupportsCancellation = true;
+
+            // --------------------------------------------------------
+            // Copy to clipboard
+            // --------------------------------------------------------
+            bgwCopyCSV.DoWork += BgwCopyCSV_DoWork;
+            bgwCopyCSV.ProgressChanged += BgwCopyCSV_ProgressChanged;
+            bgwCopyCSV.RunWorkerCompleted += BgwCopyCSV_RunWorkerCompleted;
+            bgwCopyCSV.WorkerReportsProgress = true;
+            bgwCopyCSV.WorkerSupportsCancellation = true;
         }
         #endregion
 
-
         #region Variables -----------------------------------------------------------------------------------
+        ProgressBar pgStatus;
+        Label lblStatus;
         public Dictionary<Tuple<int, int>, double> EditedCells = new Dictionary<Tuple<int, int>, double>();
         #endregion
 
@@ -85,28 +98,26 @@ namespace Quintessence.Ibp2018.Model
         #endregion
 
         #region Paste thread -------------------------------------------------------------------------------
-        ProgressBar pgStatus;
-        Label lblStatus;
-        BackgroundWorker bwPasteCSV = new BackgroundWorker();
-        private void BwPasteCSV_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        BackgroundWorker bgwPasteCSV = new BackgroundWorker();
+        private void BgwPasteCSV_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            lblStatus.Content = string.Format("Paste from clipboard: {0}...", e.ProgressPercentage);
+            lblStatus.Content = string.Format("Paste from clipboard...{0:#}%", e.ProgressPercentage);
             pgStatus.Value = e.ProgressPercentage;
         }
-        private void BwPasteCSV_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void BgwPasteCSV_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             this.InvalidateAll();
             lblStatus.Content = String.Empty;
             pgStatus.Value = 0;
             pgStatus.Visibility = Visibility.Hidden;
         }
-        private void BwPasteCSV_DoWork(object sender, DoWorkEventArgs e)
+        private void BgwPasteCSV_DoWork(object sender, DoWorkEventArgs e)
         {
             // sneder and parameters
             BackgroundWorker worker = (BackgroundWorker)sender;
             object[] varargin = (object[])e.Argument;
             string text = (string)varargin[0];
-            int row = (int)varargin[1];            
+            int row = (int)varargin[1];
             int col = (int)varargin[2];
 
             // start pasting
@@ -138,7 +149,7 @@ namespace Quintessence.Ibp2018.Model
                     catch
                     {
                         if (double.TryParse(t, out double dbl)) this.EditedCells[Tuple.Create(row + r, col + c)] = dbl;
-                    }                    
+                    }
                     c++;
                     if (this.ColumnCount < col + c) break;
                 }
@@ -163,11 +174,92 @@ namespace Quintessence.Ibp2018.Model
             }
             else
             {
-                if (!bwPasteCSV.IsBusy)
+                if (!bgwPasteCSV.IsBusy)
                 {
                     pgStatus.Visibility = Visibility.Visible;
-                    bwPasteCSV.RunWorkerAsync(new object[] { text/*from clipboard*/, (int)objArray[2]/*number of row*/, (int)objArray[3] /*number of column*/ });
+                    bgwPasteCSV.RunWorkerAsync(new object[] { text/*from clipboard*/, (int)objArray[2]/*number of row*/, (int)objArray[3] /*number of column*/ });
                 }
+            }
+        }
+        #endregion
+
+        #region Paste thread -------------------------------------------------------------------------------
+        StringBuilder sbCopy = new StringBuilder();
+        BackgroundWorker bgwCopyCSV = new BackgroundWorker();
+        private void BgwCopyCSV_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            lblStatus.Content = string.Format("Copying...{0:#}%", e.ProgressPercentage);
+            pgStatus.Value = e.ProgressPercentage;
+        }
+        private void BgwCopyCSV_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        { 
+            Clipboard.SetText(sbCopy.ToString(), TextDataFormat.CommaSeparatedValue);
+            this.InvalidateAll();
+            lblStatus.Content = String.Empty;
+            pgStatus.Value = 0;
+            pgStatus.Visibility = Visibility.Hidden;
+        }
+        private void BgwCopyCSV_DoWork(object sender, DoWorkEventArgs e)
+        {
+            // sneder and parameters
+            BackgroundWorker worker = (BackgroundWorker)sender;
+            object[] varargin = (object[])e.Argument;
+            var selectedCellAddresses = (HashSet<FastGridCellAddress>)varargin[0];
+            Dictionary<Tuple<int, int>, double?> selectedCells = new Dictionary<Tuple<int, int>, double?>();
+            int r0 = int.MaxValue, rm = int.MinValue, c0 = int.MaxValue, cm = int.MinValue;
+            int p = 0;
+            foreach (FastWpfGrid.FastGridCellAddress cell in selectedCellAddresses)
+            {
+                // update range
+                r0 = Math.Min(r0, (int)cell.Row);
+                rm = Math.Max(rm, (int)cell.Row);
+                c0 = Math.Min(c0, (int)cell.Column);
+                cm = Math.Max(cm, (int)cell.Column);
+
+                // delete and save to temp dict
+                var key = Tuple.Create((int)cell.Row, (int)cell.Column);
+                if (this.EditedCells.ContainsKey(key))
+                {
+                    selectedCells[key] = this.EditedCells[key];
+                }
+                else
+                {
+                    selectedCells[key] = null;
+                }
+                bgwCopyCSV.ReportProgress(p / selectedCellAddresses.Count * 50);
+            }
+            this.InvalidateAll();
+            bgwCopyCSV.ReportProgress(50);
+
+            // Set clipboard text as selected
+            p = 0;
+            sbCopy.Clear();
+            for (int r = r0; r <= rm; r++)
+            {
+                for (int c = c0; c <= cm; c++)
+                {
+                    var key = Tuple.Create(r, c);
+                    sbCopy.Append(selectedCells[key].ToString());
+                    if (c < cm) sbCopy.Append(",");
+                }
+                if (r < rm) sbCopy.Append("\r\n");
+                bgwCopyCSV.ReportProgress(p / (rm * cm) * 100); 
+            }            
+        }
+        /// <summary>
+        /// เริ่มต้นธีด สำหรับสำเนาข้อความไปไว้ที่ clipboard
+        /// </summary>
+        /// <param name="objArray">1. Status Label Control,  2. Progress Bar Control,  3. HashSet<FastGridCellAddress> obj เป็นรายการจาก FastWpfGrid.GetSelectedModelCells()</param>
+        public void StartCopyngToClipboardThread(object[] objArray)
+        {
+            lblStatus = (Label)objArray[0];
+            pgStatus = (ProgressBar)objArray[1];
+            lblStatus.Content = "Copying...";
+            var selectedCellAddresses = (HashSet<FastGridCellAddress>)objArray[2];
+            if (!bgwCopyCSV.IsBusy)
+            {
+                pgStatus.Visibility = Visibility.Visible;
+                bgwCopyCSV.RunWorkerAsync(new object[] { selectedCellAddresses });
             }
         }
         #endregion
