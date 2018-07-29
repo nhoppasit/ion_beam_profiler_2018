@@ -154,7 +154,7 @@ namespace IBP2018
         {
             if (e.Key == Key.Delete) { DeleteSelectedCellContent(); return; }
             if (e.Key == Key.X && Keyboard.Modifiers == ModifierKeys.Control) { CutSelectedCellContent(); return; }
-            if(e.Key==Key.V && Keyboard.Modifiers == ModifierKeys.Control) { StartPastingFromClipboardThread(); return; }
+            if (e.Key == Key.V && Keyboard.Modifiers == ModifierKeys.Control) { StartPastingFromClipboardThread(); return; }
         }
         void DeleteSelectedCellContent()
         {
@@ -293,7 +293,10 @@ namespace IBP2018
         }
         private void MnuC1Paste_from_clipboard_Click(object sender, RoutedEventArgs e)
         {
-            StartPastingFromClipboardThread();
+            //StartPastingFromClipboardThread();
+            var model = (this.DataContext as Ibp2018ViewModel).CurrentGrid[0] as CurrentGridModel;
+            object[] objArr = new object[] { lblStatus, pgStatus, (int)dgvCurrent1.CurrentRow, (int)dgvCurrent1.CurrentColumn };
+            model.StartPastingFromClipboardThread(new object[] { lblStatus, pgStatus, (int)dgvCurrent1.CurrentRow, (int)dgvCurrent1.CurrentColumn });
         }
         private void StartPastingFromClipboardThread()
         {
