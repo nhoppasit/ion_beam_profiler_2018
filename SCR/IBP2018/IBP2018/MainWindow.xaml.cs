@@ -136,7 +136,11 @@ namespace IBP2018
             bwPasteCSV.WorkerSupportsCancellation = true;
 
             // ----------------------------------------------------------
-            // DATA GRID CURRENT1: Delete cell's content
+            // DATA GRID CURRENT1: cell's content operation
+            // - Delete
+            // - Cut 
+            // - Copy
+            // - Paste
             // ----------------------------------------------------------
             dgvCurrent1.KeyUp += DgvCurrent1_KeyUp;
 
@@ -148,16 +152,10 @@ namespace IBP2018
 
         private void DgvCurrent1_KeyUp(object sender, KeyEventArgs e)
         {
-            switch (e.Key)
-            {
-                case Key.Delete:
-                    DeleteSelectedCellContent();
-                    break;
-                default:
-                    break;
-            }
+            if (e.Key == Key.Delete) { DeleteSelectedCellContent(); return; }
+            if (e.Key == Key.X && Keyboard.Modifiers == ModifierKeys.Control) { CutSelectedCellContent(); return; }
+            if(e.Key==Key.V && Keyboard.Modifiers == ModifierKeys.Control) { StartPastingFromClipboardThread(); return; }
         }
-
         void DeleteSelectedCellContent()
         {
             MessageBoxResult mbr = MessageBox.Show("DATA WILL BE PERMANENT DELETED. Press [OK] to delete or [CANCEL] to cancel.", "Delete cell content", MessageBoxButton.OKCancel, MessageBoxImage.Question);
@@ -179,10 +177,52 @@ namespace IBP2018
                 /*DONOTHING*/
             }
         }
+        void CutSelectedCellContent()
+        {
+            int row = (int)dgvCurrent1.CurrentRow;
+            int col = (int)dgvCurrent1.CurrentColumn;
+            var model = (this.DataContext as Ibp2018ViewModel).CurrentGrid[0] as CurrentGridModel;
+            var selectedCellAddresses = dgvCurrent1.GetSelectedModelCells();
+            Dictionary<Tuple<int, int>, double?> selectedCells = new Dictionary<Tuple<int, int>, double?>();
+            int r0 = int.MaxValue, rm = int.MinValue, c0 = int.MaxValue, cm = int.MinValue;
+            foreach (FastWpfGrid.FastGridCellAddress cell in selectedCellAddresses)
+            {
+                // update range
+                r0 = Math.Min(r0, (int)cell.Row);
+                rm = Math.Max(rm, (int)cell.Row);
+                c0 = Math.Min(c0, (int)cell.Column);
+                cm = Math.Max(cm, (int)cell.Column);
 
-        #endregion
+                // delete and save to temp dict
+                var key = Tuple.Create((int)cell.Row, (int)cell.Column);
+                if (model.EditedCells.ContainsKey(key))
+                {
+                    selectedCells[key] = model.EditedCells[key];
+                    model.EditedCells.Remove(key);
+                }
+                else
+                {
+                    selectedCells[key] = null;
+                }
+            }
+            model.InvalidateAll();
 
-        #region Paste clipboard to cells ---------------------------------------------------------------------
+            // Set clipboard text as selected
+            StringBuilder sb = new StringBuilder();
+            for (int r = r0; r <= rm; r++)
+            {
+                for (int c = c0; c <= cm; c++)
+                {
+                    var key = Tuple.Create(r, c);
+                    sb.Append(selectedCells[key].ToString());
+                    if (c < cm) sb.Append(",");
+                }
+                if (r < rm) sb.Append("\r\n");
+            }
+            Clipboard.SetText(sb.ToString(), TextDataFormat.CommaSeparatedValue);
+        }
+
+        #region Paste clipboard to cells 
 
         BackgroundWorker bwPasteCSV = new BackgroundWorker();
         private void BwPasteCSV_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -253,6 +293,10 @@ namespace IBP2018
         }
         private void MnuC1Paste_from_clipboard_Click(object sender, RoutedEventArgs e)
         {
+            StartPastingFromClipboardThread();
+        }
+        private void StartPastingFromClipboardThread()
+        {
             //var model = (this.DataContext as Ibp2018ViewModel).CurrentGrid[0] as CurrentGridModel;
             string text = Clipboard.GetText(TextDataFormat.CommaSeparatedValue);
             if (text == "" || text == null)
@@ -270,6 +314,9 @@ namespace IBP2018
         }
 
         #endregion
+
+        #endregion
+
 
         #region Close application ------------------------------------------------------------
         private void MainWindow_Closing(object sender, CancelEventArgs e) { Ibp2018ViewModel vm = this.DataContext as Ibp2018ViewModel; vm.FinalizeForClose(); e.Cancel = !vm.Finalized; }
