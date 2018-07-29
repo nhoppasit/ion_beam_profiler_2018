@@ -139,7 +139,7 @@ namespace IBP2018
 
         // ------------------------------- CONSTRUCTOR ---------------------------------
 
-        #region Datagrid cerrent1: keyup
+        #region Datagrid cerrent1: keyup - copy/cut/paste and clipboard
 
         private void DgvCurrent1_KeyUp(object sender, KeyEventArgs e)
         {

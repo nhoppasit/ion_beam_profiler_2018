@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -101,15 +102,18 @@ namespace Quintessence.Ibp2018.Model
         BackgroundWorker bgwPasteCSV = new BackgroundWorker();
         private void BgwPasteCSV_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            lblStatus.Content = string.Format("Paste from clipboard...{0:#}%", e.ProgressPercentage);
-            pgStatus.Value = e.ProgressPercentage;
+            if (lblStatus != null) lblStatus.Content = string.Format("Paste from clipboard...{0:#}%", e.ProgressPercentage);
+            if (pgStatus != null) pgStatus.Value = e.ProgressPercentage;
         }
         private void BgwPasteCSV_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             this.InvalidateAll();
-            lblStatus.Content = String.Empty;
-            pgStatus.Value = 0;
-            pgStatus.Visibility = Visibility.Hidden;
+            if (lblStatus != null) lblStatus.Content = String.Empty;
+            if (pgStatus != null)
+            {
+                pgStatus.Value = 0;
+                pgStatus.Visibility = Visibility.Hidden;
+            }
         }
         private void BgwPasteCSV_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -165,10 +169,13 @@ namespace Quintessence.Ibp2018.Model
         /// <param name="objArray">1. Status Label Control,  2. Progress Bar Control,  3. Row index,  4. Column index</param>
         public void StartPastingFromClipboardThread(object[] objArray)
         {
-            lblStatus = (Label)objArray[0];
-            pgStatus = (ProgressBar)objArray[1];
-            string text = Clipboard.GetText(TextDataFormat.CommaSeparatedValue);
-            if (text == "" || text == null)
+            try { lblStatus = (Label)objArray[0]; } catch { lblStatus = null; }
+            try { pgStatus = (ProgressBar)objArray[1]; } catch { pgStatus = null; }
+            int row = 0, col = 0;
+            try { row = (int)objArray[2]; } catch { row = 0; }
+            try { col = (int)objArray[3]; } catch { col = 0; }
+            string textFromClipboard = Clipboard.GetText(TextDataFormat.CommaSeparatedValue);
+            if (textFromClipboard == "" || textFromClipboard == null)
             {
                 return;
             }
@@ -177,7 +184,7 @@ namespace Quintessence.Ibp2018.Model
                 if (!bgwPasteCSV.IsBusy)
                 {
                     pgStatus.Visibility = Visibility.Visible;
-                    bgwPasteCSV.RunWorkerAsync(new object[] { text/*from clipboard*/, (int)objArray[2]/*number of row*/, (int)objArray[3] /*number of column*/ });
+                    bgwPasteCSV.RunWorkerAsync(new object[] { textFromClipboard, row, col });
                 }
             }
         }
@@ -188,16 +195,28 @@ namespace Quintessence.Ibp2018.Model
         BackgroundWorker bgwCopyCSV = new BackgroundWorker();
         private void BgwCopyCSV_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            lblStatus.Content = string.Format("Copying...{0:#}%", e.ProgressPercentage);
-            pgStatus.Value = e.ProgressPercentage;
+            if (e.ProgressPercentage < 100)
+            {
+                if (lblStatus != null) lblStatus.Content = string.Format("Copying...{0:#}%", e.ProgressPercentage);
+                if (pgStatus != null) pgStatus.Value = e.ProgressPercentage;
+            }
+            else
+            {
+                if (lblStatus != null) lblStatus.Content = "Done copying to clipboard";
+                if (pgStatus != null) pgStatus.Visibility = Visibility.Hidden;
+            }
+
         }
         private void BgwCopyCSV_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        { 
+        {
             Clipboard.SetText(sbCopy.ToString(), TextDataFormat.CommaSeparatedValue);
             this.InvalidateAll();
-            lblStatus.Content = String.Empty;
-            pgStatus.Value = 0;
-            pgStatus.Visibility = Visibility.Hidden;
+            if (lblStatus != null) lblStatus.Content = string.Empty;
+            if (pgStatus != null)
+            {
+                pgStatus.Value = 0;
+                pgStatus.Visibility = Visibility.Hidden;
+            }
         }
         private void BgwCopyCSV_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -207,7 +226,7 @@ namespace Quintessence.Ibp2018.Model
             var selectedCellAddresses = (HashSet<FastGridCellAddress>)varargin[0];
             Dictionary<Tuple<int, int>, double?> selectedCells = new Dictionary<Tuple<int, int>, double?>();
             int r0 = int.MaxValue, rm = int.MinValue, c0 = int.MaxValue, cm = int.MinValue;
-            int p = 0;
+            double p = 0;
             foreach (FastWpfGrid.FastGridCellAddress cell in selectedCellAddresses)
             {
                 // update range
@@ -226,7 +245,7 @@ namespace Quintessence.Ibp2018.Model
                 {
                     selectedCells[key] = null;
                 }
-                bgwCopyCSV.ReportProgress(p / selectedCellAddresses.Count * 50);
+                bgwCopyCSV.ReportProgress((int)(p++ / selectedCellAddresses.Count * 50));
             }
             this.InvalidateAll();
             bgwCopyCSV.ReportProgress(50);
@@ -241,10 +260,12 @@ namespace Quintessence.Ibp2018.Model
                     var key = Tuple.Create(r, c);
                     sbCopy.Append(selectedCells[key].ToString());
                     if (c < cm) sbCopy.Append(",");
+                    bgwCopyCSV.ReportProgress((int)(p++ / ((rm - r0 + 1) * (cm - c0 + 1)) * 100));
                 }
                 if (r < rm) sbCopy.Append("\r\n");
-                bgwCopyCSV.ReportProgress(p / (rm * cm) * 100); 
-            }            
+            }
+            bgwCopyCSV.ReportProgress(100);
+            Thread.Sleep(1500);
         }
         /// <summary>
         /// เริ่มต้นธีด สำหรับสำเนาข้อความไปไว้ที่ clipboard
@@ -252,14 +273,66 @@ namespace Quintessence.Ibp2018.Model
         /// <param name="objArray">1. Status Label Control,  2. Progress Bar Control,  3. HashSet<FastGridCellAddress> obj เป็นรายการจาก FastWpfGrid.GetSelectedModelCells()</param>
         public void StartCopyngToClipboardThread(object[] objArray)
         {
-            lblStatus = (Label)objArray[0];
-            pgStatus = (ProgressBar)objArray[1];
-            lblStatus.Content = "Copying...";
+            try { lblStatus = (Label)objArray[0]; } catch { lblStatus = null; }
+            try { pgStatus = (ProgressBar)objArray[1]; } catch { pgStatus = null; }
+            if (lblStatus != null) lblStatus.Content = "Copying...";
             var selectedCellAddresses = (HashSet<FastGridCellAddress>)objArray[2];
             if (!bgwCopyCSV.IsBusy)
             {
                 pgStatus.Visibility = Visibility.Visible;
                 bgwCopyCSV.RunWorkerAsync(new object[] { selectedCellAddresses });
+            }
+        }
+        #endregion
+
+        #region Delete contents thread -------------------------------------------------------------------------------
+        BackgroundWorker bgwDeleteContents = new BackgroundWorker();
+        private void BgwDeleteContents_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            if (lblStatus != null) lblStatus.Content = string.Format("Deleting...{0:#}%", e.ProgressPercentage);
+            if (pgStatus != null) pgStatus.Value = e.ProgressPercentage;
+        }
+        private void BgwDeleteContents_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            this.InvalidateAll();
+            if (lblStatus != null) lblStatus.Content = String.Empty;
+            if (pgStatus != null)
+            {
+                pgStatus.Value = 0;
+                pgStatus.Visibility = Visibility.Hidden;
+            }
+        }
+        private void BgwDeleteContents_DoWork(object sender, DoWorkEventArgs e)
+        {
+            // sneder and parameters
+            BackgroundWorker worker = (BackgroundWorker)sender;
+            object[] varargin = (object[])e.Argument;
+            var selectedCellAddresses = (HashSet<FastGridCellAddress>)varargin[0];
+            foreach (FastWpfGrid.FastGridCellAddress ce in selectedCellAddresses)
+            {
+                var key = Tuple.Create((int)ce.Row, (int)ce.Column);
+                if (this.EditedCells.ContainsKey(key)) this.EditedCells.Remove(key);
+            }
+        }
+        /// <summary>
+        /// เริ่มต้นธีด ลบ ข้อมูลในเซลล์ที่เลือกไว้
+        /// </summary>
+        /// <param name="objArray">1. Status Label Control,  2. Progress Bar Control,  3. HashSet<FastGridCellAddress> obj เป็นรายการจาก FastWpfGrid.GetSelectedModelCells()</param>
+        public void StartDeleteContentsThread(object[] objArray)
+        {
+            MessageBoxResult mbr = MessageBox.Show("DATA WILL BE PERMANENT DELETED. Press [OK] to delete or [CANCEL] to cancel.", "Delete cell content", MessageBoxButton.OKCancel, MessageBoxImage.Question);
+            if (mbr == MessageBoxResult.OK)
+            {
+                try { lblStatus = (Label)objArray[0]; } catch { lblStatus = null; }
+                try { pgStatus = (ProgressBar)objArray[1]; } catch { pgStatus = null; }
+                if (lblStatus != null) lblStatus.Content = "Deleting...";
+                HashSet<FastGridCellAddress> selectedCellAddresses;
+                try { selectedCellAddresses = (HashSet<FastGridCellAddress>)objArray[2]; } catch { selectedCellAddresses = null; }
+                if (!bgwDeleteContents.IsBusy)
+                {
+                    pgStatus.Visibility = Visibility.Visible;
+                    bgwDeleteContents.RunWorkerAsync(new object[] { selectedCellAddresses });
+                }
             }
         }
         #endregion
