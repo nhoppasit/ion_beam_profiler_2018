@@ -62,13 +62,17 @@ namespace Quintessence.Ibp2018.Model
         #endregion
 
         #region Row and column count ------------------------------------------------------------------------
+        private int _columnCount = 30;
+        public int ColumnSize { set { _columnCount = value; } }
         public override int ColumnCount
         {
-            get { return 70; }
+            get { return 10; }
         }
+        private int _rowCount = 30;
+        public int RowSize { set { _rowCount = value; } }
         public override int RowCount
         {
-            get { return 1000; }
+            get { return 10; }
         }
         #endregion
 
@@ -138,10 +142,10 @@ namespace Quintessence.Ibp2018.Model
         {
             // sneder and parameters
             BackgroundWorker worker = (BackgroundWorker)sender;
-            object[] varargin = (object[])e.Argument;
-            string text = (string)varargin[0];
-            int row = (int)varargin[1];
-            int col = (int)varargin[2];
+            var varargin = (PasteToGridContentObject)e.Argument;
+            string text = varargin.Text;
+            int row = varargin.Row;
+            int col = varargin.Column;
 
             // start pasting
             bool asked = false, replaceFlag = false;
@@ -186,15 +190,12 @@ namespace Quintessence.Ibp2018.Model
         /// เริ่มต้นธีด สำหรับวางข้อความจาก clipboard
         /// </summary>
         /// <param name="objArray">1. Status Label Control,  2. Progress Bar Control,  3. Row index,  4. Column index</param>
-        public void StartPastingFromClipboardThread(object[] objArray)
+        public void StartPastingFromClipboardThread(PasteToGridContentObject e)
         {
-            try { lblStatus = (Label)objArray[0]; } catch { lblStatus = null; }
-            try { pgStatus = (ProgressBar)objArray[1]; } catch { pgStatus = null; }
-            int row = 0, col = 0;
-            try { row = (int)objArray[2]; } catch { row = 0; }
-            try { col = (int)objArray[3]; } catch { col = 0; }
-            string textFromClipboard = Clipboard.GetText(TextDataFormat.CommaSeparatedValue);
-            if (textFromClipboard == "" || textFromClipboard == null)
+            try { lblStatus = e.StatusLabel; } catch { lblStatus = null; }
+            try { pgStatus = e.StatusProgressBar; } catch { pgStatus = null; }
+            e.Text = Clipboard.GetText(TextDataFormat.CommaSeparatedValue);
+            if (e.Text == "" || e.Text == null)
             {
                 return;
             }
@@ -203,7 +204,7 @@ namespace Quintessence.Ibp2018.Model
                 if (!bgwPasteCSV.IsBusy)
                 {
                     pgStatus.Visibility = Visibility.Visible;
-                    bgwPasteCSV.RunWorkerAsync(new object[] { textFromClipboard, row, col });
+                    bgwPasteCSV.RunWorkerAsync(e);
                 }
             }
         }
@@ -240,12 +241,13 @@ namespace Quintessence.Ibp2018.Model
         {
             // sneder and parameters
             BackgroundWorker worker = (BackgroundWorker)sender;
-            object[] varargin = (object[])e.Argument;
-            var selectedCellAddresses = (HashSet<FastGridCellAddress>)varargin[0];
+            var varargin = (SelectedGridContentsObject)e.Argument;
+
+            // Start
             Dictionary<Tuple<int, int>, double?> selectedCells = new Dictionary<Tuple<int, int>, double?>();
             int r0 = int.MaxValue, rm = int.MinValue, c0 = int.MaxValue, cm = int.MinValue;
             double p = 0;
-            foreach (FastWpfGrid.FastGridCellAddress cell in selectedCellAddresses)
+            foreach (FastWpfGrid.FastGridCellAddress cell in varargin.SelectedCellAddresses)
             {
                 // update range
                 r0 = Math.Min(r0, (int)cell.Row);
@@ -263,7 +265,7 @@ namespace Quintessence.Ibp2018.Model
                 {
                     selectedCells[key] = null;
                 }
-                bgwCopyCSV.ReportProgress((int)(p++ / selectedCellAddresses.Count * 50));
+                bgwCopyCSV.ReportProgress((int)(p++ / varargin.SelectedCellAddresses.Count * 50));
             }
             this.InvalidateAll();
             bgwCopyCSV.ReportProgress(50);
@@ -289,16 +291,15 @@ namespace Quintessence.Ibp2018.Model
         /// เริ่มต้นธีด สำหรับสำเนาข้อความไปไว้ที่ clipboard
         /// </summary>
         /// <param name="objArray">1. Status Label Control,  2. Progress Bar Control,  3. HashSet<FastGridCellAddress> obj เป็นรายการจาก FastWpfGrid.GetSelectedModelCells()</param>
-        public void StartCopyingToClipboardThread(object[] objArray)
+        public void StartCopyingToClipboardThread(SelectedGridContentsObject e)
         {
-            try { lblStatus = (Label)objArray[0]; } catch { lblStatus = null; }
-            try { pgStatus = (ProgressBar)objArray[1]; } catch { pgStatus = null; }
+            try { lblStatus = e.StatusLabel; } catch { lblStatus = null; }
+            try { pgStatus = e.StatusProgressBar; } catch { pgStatus = null; }
             if (lblStatus != null) lblStatus.Content = "Copying...";
-            var selectedCellAddresses = (HashSet<FastGridCellAddress>)objArray[2];
             if (!bgwCopyCSV.IsBusy)
             {
                 pgStatus.Visibility = Visibility.Visible;
-                bgwCopyCSV.RunWorkerAsync(new object[] { selectedCellAddresses });
+                bgwCopyCSV.RunWorkerAsync(e);
             }
         }
         #endregion
@@ -324,9 +325,10 @@ namespace Quintessence.Ibp2018.Model
         {
             // sneder and parameters
             BackgroundWorker worker = (BackgroundWorker)sender;
-            object[] varargin = (object[])e.Argument;
-            var selectedCellAddresses = (HashSet<FastGridCellAddress>)varargin[0];
-            foreach (FastWpfGrid.FastGridCellAddress ce in selectedCellAddresses)
+            var varargin = (SelectedGridContentsObject)e.Argument;
+
+            // Start
+            foreach (FastWpfGrid.FastGridCellAddress ce in varargin.SelectedCellAddresses)
             {
                 var key = Tuple.Create((int)ce.Row, (int)ce.Column);
                 if (this.EditedCells.ContainsKey(key)) this.EditedCells.Remove(key);
@@ -336,20 +338,18 @@ namespace Quintessence.Ibp2018.Model
         /// เริ่มต้นธีด ลบ ข้อมูลในเซลล์ที่เลือกไว้
         /// </summary>
         /// <param name="objArray">1. Status Label Control,  2. Progress Bar Control,  3. HashSet<FastGridCellAddress> obj เป็นรายการจาก FastWpfGrid.GetSelectedModelCells()</param>
-        public void StartDeleteContentsThread(object[] objArray)
+        public void StartDeleteContentsThread(SelectedGridContentsObject e)
         {
             MessageBoxResult mbr = MessageBox.Show("DATA WILL BE PERMANENT DELETED. Press [OK] to delete or [CANCEL] to cancel.", "Delete cell content", MessageBoxButton.OKCancel, MessageBoxImage.Question);
             if (mbr == MessageBoxResult.OK)
             {
-                try { lblStatus = (Label)objArray[0]; } catch { lblStatus = null; }
-                try { pgStatus = (ProgressBar)objArray[1]; } catch { pgStatus = null; }
+                try { lblStatus = e.StatusLabel; } catch { lblStatus = null; }
+                try { pgStatus = e.StatusProgressBar; } catch { pgStatus = null; }
                 if (lblStatus != null) lblStatus.Content = "Deleting...";
-                HashSet<FastGridCellAddress> selectedCellAddresses;
-                try { selectedCellAddresses = (HashSet<FastGridCellAddress>)objArray[2]; } catch { selectedCellAddresses = null; }
                 if (!bgwDeleteContents.IsBusy)
                 {
                     pgStatus.Visibility = Visibility.Visible;
-                    bgwDeleteContents.RunWorkerAsync(new object[] { selectedCellAddresses });
+                    bgwDeleteContents.RunWorkerAsync(e);
                 }
             }
         }
@@ -386,14 +386,13 @@ namespace Quintessence.Ibp2018.Model
         {
             // sneder and parameters
             BackgroundWorker worker = (BackgroundWorker)sender;
-            object[] varargin = (object[])e.Argument;
-            var selectedCellAddresses = (HashSet<FastGridCellAddress>)varargin[0];
+            var varargin = (SelectedGridContentsObject)e.Argument;
 
             // start
             Dictionary<Tuple<int, int>, double?> selectedCells = new Dictionary<Tuple<int, int>, double?>();
             int r0 = int.MaxValue, rm = int.MinValue, c0 = int.MaxValue, cm = int.MinValue;
             double p = 0;
-            foreach (FastWpfGrid.FastGridCellAddress cell in selectedCellAddresses)
+            foreach (FastWpfGrid.FastGridCellAddress cell in varargin.SelectedCellAddresses)
             {
                 // update range
                 r0 = Math.Min(r0, (int)cell.Row);
@@ -412,7 +411,7 @@ namespace Quintessence.Ibp2018.Model
                 {
                     selectedCells[key] = null;
                 }
-                bgwCutContents.ReportProgress((int)(p++ / selectedCellAddresses.Count * 50));
+                bgwCutContents.ReportProgress((int)(p++ / varargin.SelectedCellAddresses.Count * 50));
             }
             this.InvalidateAll();
             bgwCutContents.ReportProgress(50);
@@ -438,16 +437,15 @@ namespace Quintessence.Ibp2018.Model
         /// เริ่มต้นธีด ทำสำเนาข้อมูลไปไว้ที่ clipboard และลบออกจากเซลล์
         /// </summary>
         /// <param name="objArray">1. Status Label Control,  2. Progress Bar Control,  3. HashSet<FastGridCellAddress> obj เป็นรายการจาก FastWpfGrid.GetSelectedModelCells()</param>
-        public void StartCutContentToClipboardThread(object[] objArray)
+        public void StartCutContentToClipboardThread(SelectedGridContentsObject e)
         {
-            try { lblStatus = (Label)objArray[0]; } catch { lblStatus = null; }
-            try { pgStatus = (ProgressBar)objArray[1]; } catch { pgStatus = null; }
+            try { lblStatus = e.StatusLabel; } catch { lblStatus = null; }
+            try { pgStatus = e.StatusProgressBar; } catch { pgStatus = null; }
             if (lblStatus != null) lblStatus.Content = "Cutting...";
-            var selectedCellAddresses = (HashSet<FastGridCellAddress>)objArray[2];
             if (!bgwCutContents.IsBusy)
             {
                 pgStatus.Visibility = Visibility.Visible;
-                bgwCutContents.RunWorkerAsync(new object[] { selectedCellAddresses });
+                bgwCutContents.RunWorkerAsync(e);
             }
         }
         #endregion

@@ -148,7 +148,12 @@ namespace IBP2018
             if (e.Key == Key.Delete)
             {
                 var vm = this.DataContext as Ibp2018ViewModel;
-                vm.CurrentGrid[0].StartDeleteContentsThread(new object[] { lblStatus, pgStatus, dgvCurrent1.GetSelectedModelCells() });
+                vm.CurrentGrid[0].StartDeleteContentsThread(new SelectedGridContentsObject()
+                {
+                    StatusLabel = lblStatus,
+                    StatusProgressBar = pgStatus,
+                    SelectedCellAddresses = dgvCurrent1.GetSelectedModelCells()
+                });
                 return;
             }
             // -----------------------------------------
@@ -157,7 +162,12 @@ namespace IBP2018
             if (e.Key == Key.X && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 var vm = this.DataContext as Ibp2018ViewModel;
-                vm.CurrentGrid[0].StartCutContentToClipboardThread(new object[] { lblStatus, pgStatus, dgvCurrent1.GetSelectedModelCells() });
+                vm.CurrentGrid[0].StartCutContentToClipboardThread(new SelectedGridContentsObject()
+                {
+                    StatusLabel = lblStatus,
+                    StatusProgressBar = pgStatus,
+                    SelectedCellAddresses = dgvCurrent1.GetSelectedModelCells()
+                });
                 return;
             }
             // -----------------------------------------
@@ -166,7 +176,12 @@ namespace IBP2018
             if (e.Key == Key.C && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 var vm = this.DataContext as Ibp2018ViewModel;
-                vm.CurrentGrid[0].StartCopyingToClipboardThread(new object[] { lblStatus, pgStatus, dgvCurrent1.GetSelectedModelCells() });
+                vm.CurrentGrid[0].StartCopyingToClipboardThread(new SelectedGridContentsObject()
+                {
+                    StatusLabel = lblStatus,
+                    StatusProgressBar = pgStatus,
+                    SelectedCellAddresses = dgvCurrent1.GetSelectedModelCells()
+                });
                 return;
             }
             // -----------------------------------------
@@ -175,7 +190,13 @@ namespace IBP2018
             if (e.Key == Key.V && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 var vm = this.DataContext as Ibp2018ViewModel;
-                vm.CurrentGrid[0].StartPastingFromClipboardThread(new object[] { lblStatus, pgStatus, (int)dgvCurrent1.CurrentRow, (int)dgvCurrent1.CurrentColumn });
+                vm.CurrentGrid[0].StartPastingFromClipboardThread(new PasteToGridContentObject()
+                {
+                    StatusLabel = lblStatus,
+                    StatusProgressBar = pgStatus,
+                    Row = (int)dgvCurrent1.CurrentRow,
+                    Column = (int)dgvCurrent1.CurrentColumn
+                });
                 return;
             }
         }
@@ -185,7 +206,13 @@ namespace IBP2018
         private void MnuC1Paste_from_clipboard_Click(object sender, RoutedEventArgs e)
         {
             var model = (this.DataContext as Ibp2018ViewModel).CurrentGrid[0] as CurrentGridModel;
-            model.StartPastingFromClipboardThread(new object[] { lblStatus, pgStatus, (int)dgvCurrent1.CurrentRow, (int)dgvCurrent1.CurrentColumn });
+            model.StartPastingFromClipboardThread(new PasteToGridContentObject()
+            {
+                StatusLabel = lblStatus,
+                StatusProgressBar = pgStatus,
+                Row = (int)dgvCurrent1.CurrentRow,
+                Column = (int)dgvCurrent1.CurrentColumn
+            });
         }
         #endregion
 
